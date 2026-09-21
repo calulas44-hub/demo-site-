@@ -12,7 +12,7 @@
 (function (global) {
   'use strict';
 
-  var VERSION = 3;
+  var VERSION = 4;
 
   var KEYS = {
     catalog:    'mykonos_catalog_v1',
@@ -31,10 +31,10 @@
     settings: {
       restaurantName: 'MYKONOS',
       slogan: 'LE KEBAB QUI TE MET KO !',
-      phone: '01 23 45 67 89',
-      address: '12 rue de la Grillade, 75000 Paris',
+      phone: '04 42 58 66 58',
+      address: '22 Cours Forbin, 13120 Gardanne',
       email: 'contact@mykonos.fr',
-      hours: 'Tous les jours · 11h30 – 23h00',
+      hours: 'Tous les jours · 11h– 22h30',
       adminCode: '1305',
       currency: '€',
       // Offre menu
@@ -48,13 +48,14 @@
       // Modes de retrait
       fulfillment: ['À emporter', 'Sur place', 'Livraison'],
       deliveryFee: 2.50,
-      // Paramètres e-mail (EmailJS – optionnel, renseignés par l'admin)
-      email_enabled: false,
-      emailjs_publicKey: '',
-      emailjs_serviceId: '',
-      emailjs_templateClient: '',
-      emailjs_templateAdmin: '',
-      admin_notify_email: ''
+      // Paramètres e-mail (EmailJS) — configurés pour MYKONOS.
+      // La clé publique EmailJS est prévue pour être exposée côté client.
+      email_enabled: true,
+      emailjs_publicKey: 'BxBYmURytGUsgurdI',
+      emailjs_serviceId: 'service_djinnos',
+      emailjs_templateClient: 'template_dz7ksew',
+      emailjs_templateAdmin: 'template_lbk1c7z',
+      admin_notify_email: 'calulas44@gmail.com'
     },
 
     categories: [
@@ -194,6 +195,15 @@
     ['categories', 'products', 'sauces', 'crudites', 'drinks', 'promos'].forEach(function (key) {
       if (!Array.isArray(stored[key])) stored[key] = clone(DEFAULT_CATALOG[key]);
     });
+    // Migration v4 : rafraîchit la configuration e-mail (EmailJS) sur les
+    // navigateurs déjà visités, pour que les e-mails partent partout.
+    if ((stored.version || 0) < 4) {
+      ['email_enabled', 'emailjs_publicKey', 'emailjs_serviceId',
+       'emailjs_templateClient', 'emailjs_templateAdmin', 'admin_notify_email']
+        .forEach(function (k) { stored.settings[k] = DEFAULT_CATALOG.settings[k]; });
+      stored.version = VERSION;
+      write(KEYS.catalog, stored);
+    }
     return stored;
   }
   function saveCatalog(catalog) {
