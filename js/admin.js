@@ -35,6 +35,96 @@
   }
   function flashSaving() { var s = el('admSaveState'); s.textContent = 'Enregistrement…'; s.className = 'pill pill--gold'; }
 
+  /* ---------------------------------------------------------------------
+     Alerte sonore + notification à chaque nouvelle commande
+     --------------------------------------------------------------------- */
+  var SOUND_KEY = 'mykonos_admin_sound';
+  var audioCtx = null, orderWatchTimer = null, lastOrderCount = null, titleFlashTimer = null;
+  var BASE_TITLE = 'MYKONOS — Administration';
+
+  function soundEnabled() { try { return localStorage.getItem(SOUND_KEY) !== '0'; } catch (e) { return true; } }
+  function setSoundEnabled(v) { try { localStorage.setItem(SOUND_KEY, v ? '1' : '0'); } catch (e) {} }
+
+  function getAudio() {
+    try {
+      if (!audioCtx) { var AC = window.AudioContext || window.webkitAudioContext; if (AC) audioCtx = new AC(); }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    } catch (e) {}
+    return audioCtx;
+  }
+
+  // Chant d'oiseau synthétisé (3 petits gazouillis) — aucun fichier externe requis
+  function playChirp() {
+    var ctx = getAudio(); if (!ctx) return;
+    try {
+      var now = ctx.currentTime;
+      [0, 0.17, 0.34].forEach(function (t) {
+        var o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine';
+        var s = now + t;
+        o.frequency.setValueAtTime(1900, s);
+        o.frequency.exponentialRampToValueAtTime(3300, s + 0.07);
+        o.frequency.exponentialRampToValueAtTime(2200, s + 0.13);
+        g.gain.setValueAtTime(0.0001, s);
+        g.gain.exponentialRampToValueAtTime(0.32, s + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, s + 0.16);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(s); o.stop(s + 0.18);
+      });
+    } catch (e) {}
+  }
+
+  function notifyDesktop(order) {
+    try {
+      if (!('Notification' in window) || Notification.permission !== 'granted') return;
+      var body = order
+        ? ('Commande #' + order.number + ' · ' + M.money(order.total) +
+           (order.customer ? ' · ' + order.customer.firstName : ''))
+        : 'Nouvelle commande reçue';
+      new Notification('🍽️ Nouvelle commande MYKONOS', { body: body, tag: 'mykonos-order' });
+    } catch (e) {}
+  }
+
+  function flashTitle(n) {
+    try {
+      clearInterval(titleFlashTimer);
+      var on = true, count = 0;
+      titleFlashTimer = setInterval(function () {
+        document.title = on ? ('🔔 ' + n + ' commande' + (n > 1 ? 's' : '') + ' !') : BASE_TITLE;
+        on = !on; if (++count > 12) { clearInterval(titleFlashTimer); document.title = BASE_TITLE; }
+      }, 650);
+    } catch (e) {}
+  }
+
+  function onNewOrders(n) {
+    var orders = M.getOrders();
+    if (soundEnabled()) playChirp();
+    toast('🔔 ' + n + ' nouvelle' + (n > 1 ? 's' : '') + ' commande' + (n > 1 ? 's' : '') + ' !', 'info');
+    notifyDesktop(orders[0]);
+    flashTitle(n);
+    if (currentSection === 'orders' || currentSection === 'dashboard') render(currentSection);
+  }
+
+  function startOrderWatch() {
+    if (orderWatchTimer) return;
+    lastOrderCount = M.getOrders().length;
+    orderWatchTimer = setInterval(function () {
+      var c = M.getOrders().length;
+      if (lastOrderCount !== null && c > lastOrderCount) onNewOrders(c - lastOrderCount);
+      lastOrderCount = c;
+    }, 4000);
+    // remet le titre normal quand l'admin revient sur l'onglet
+    window.addEventListener('focus', function () { clearInterval(titleFlashTimer); document.title = BASE_TITLE; });
+  }
+
+  function updateSoundBtn() {
+    var b = el('admSoundToggle'); if (!b) return;
+    var on = soundEnabled();
+    b.textContent = on ? '🔔 Son activé' : '🔕 Son coupé';
+    b.classList.toggle('btn--red', on);
+    b.classList.toggle('btn--ghost', !on);
+  }
+
   /* ---------- modale admin ---------- */
   function openModal(html) { el('admModal').innerHTML = html; el('admModalWrap').classList.add('show'); document.body.style.overflow = 'hidden'; }
   function closeModal() { el('admModalWrap').classList.remove('show'); document.body.style.overflow = ''; }
@@ -79,6 +169,11 @@
   function showApp() {
     el('admLogin').classList.add('hidden');
     el('admApp').classList.remove('hidden');
+    updateSoundBtn();
+    startOrderWatch();
+    if (soundEnabled() && 'Notification' in window && Notification.permission === 'default') {
+      try { Notification.requestPermission(); } catch (e) {}
+    }
     render(currentSection);
   }
   function logout() { clearAuthed(); location.reload(); }
@@ -157,6 +252,7 @@
         '<tbody>' + recent + '</tbody></table></div>' +
         '<button class="btn btn--red btn--sm" id="goOrders" style="margin-top:12px">Voir toutes les commandes →</button>' +
       '</div>' +
+      '<div class="adm-card"><h3>🔔 Alerte sonore des commandes</h3><p style="color:var(--muted);margin:0;font-size:14px">Le bouton <b>« Son activé »</b> en haut à droite déclenche un <b>chant d\'oiseau</b> + une notification à chaque nouvelle commande reçue sur cet appareil. Gardez cette page ouverte au comptoir pour être prévenu(e). <i>Astuce : cliquez une fois sur la page pour autoriser le son.</i></p></div>' +
       '<div class="adm-card"><h3>ℹ️ Comment ça marche</h3><p style="color:var(--muted);margin:0;font-size:14px">Toutes vos modifications (prix, produits, emojis, images, sauces, boissons…) sont enregistrées et appliquées immédiatement côté client. Pensez à <b>exporter une sauvegarde</b> depuis <b>Réglages → Données</b> régulièrement.</p></div>';
   }
   function stat(n, l) { return '<div class="stat"><div class="n">' + n + '</div><div class="l">' + esc(l) + '</div></div>'; }
@@ -891,6 +987,20 @@
     Array.prototype.forEach.call(el('admNav').querySelectorAll('button'), function (b) {
       b.addEventListener('click', function () { render(b.getAttribute('data-sec')); });
     });
+    // Bouton alerte sonore (active/coupe + test + demande de notification)
+    var sb = el('admSoundToggle');
+    if (sb) sb.addEventListener('click', function () {
+      var willEnable = !soundEnabled();
+      setSoundEnabled(willEnable);
+      updateSoundBtn();
+      if (willEnable) {
+        getAudio(); playChirp();
+        if ('Notification' in window && Notification.permission === 'default') { try { Notification.requestPermission(); } catch (e) {} }
+        toast('Alerte sonore activée 🔔', 'ok');
+      } else { toast('Alerte sonore coupée 🔕', 'info'); }
+    });
+    // Débloque l'audio dès la première interaction (politique navigateur)
+    document.addEventListener('click', function unlock() { getAudio(); document.removeEventListener('click', unlock); });
     // rafraîchir commandes/clients si modifiés depuis un autre onglet (ex. client qui commande)
     window.addEventListener('storage', function (e) {
       if (!isAuthed()) return;
