@@ -59,7 +59,9 @@
       // Paiement en ligne (Stripe) — activé une fois le compte Stripe branché.
       // Tant que c'est false, seul le paiement sur place valide une commande.
       stripe_enabled: false,
-      stripe_publishableKey: ''
+      stripe_publishableKey: '',
+      // Comptabilité — taux de TVA applicable (modifiable), 10 % par défaut
+      vatRate: 10
     },
 
     categories: [

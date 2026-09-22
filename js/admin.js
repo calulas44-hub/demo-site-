@@ -185,7 +185,8 @@
     dashboard: 'Tableau de bord', orders: 'Commandes', products: 'Produits',
     categories: 'Catégories', drinks: 'Boissons', sauces: 'Sauces',
     crudites: 'Crudités', promos: 'Promotions', customers: 'Clients',
-    newsletter: 'Newsletter', qr: 'QR Code', settings: 'Réglages'
+    newsletter: 'Newsletter', tickets: 'Tickets de caisse', ca: "Chiffre d'affaires",
+    qr: 'QR Code', settings: 'Réglages'
   };
   function render(section) {
     currentSection = section;
@@ -206,6 +207,8 @@
       case 'promos': c.innerHTML = viewPromos(); bindPromos(); break;
       case 'customers': c.innerHTML = viewCustomers(); bindCustomers(); break;
       case 'newsletter': c.innerHTML = viewNewsletter(); bindNewsletter(); break;
+      case 'tickets': c.innerHTML = viewTickets(); bindTickets(); break;
+      case 'ca': c.innerHTML = viewCA(); bindCA(); break;
       case 'qr': c.innerHTML = viewQR(); bindQR(); break;
       case 'settings': c.innerHTML = viewSettings(); bindSettings(); break;
     }
@@ -864,6 +867,218 @@
   }
 
   /* =====================================================================
+     COMPTABILITÉ — Tickets de caisse & Chiffre d'affaires (HT/TVA/TTC)
+     ===================================================================== */
+  var MONTHS = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+  function vatRate() { return num(catalog.settings.vatRate, 10); }
+  function htFromTtc(ttc) { return Number(ttc || 0) / (1 + vatRate() / 100); }
+  function accountingOrders() { return M.getOrders().filter(function (o) { return o.status !== 'Annulée'; }); }
+
+  var accRange = null;
+  function initRange() { if (!accRange) { var n = new Date(); accRange = { mode: 'month', month: n.getMonth(), year: n.getFullYear(), from: '', to: '' }; } }
+  function sod(d) { var x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
+  function eod(d) { var x = new Date(d); x.setHours(23, 59, 59, 999); return x; }
+  function fmtDate(d) { return new Date(d).toLocaleDateString('fr-FR'); }
+  function computeRange() {
+    initRange();
+    var n = new Date(), from, to, label;
+    switch (accRange.mode) {
+      case 'today': from = sod(n); to = eod(n); label = "Aujourd'hui"; break;
+      case 'week': { var w = sod(n); w.setDate(w.getDate() - ((w.getDay() + 6) % 7)); from = w; var e = new Date(w); e.setDate(e.getDate() + 6); to = eod(e); label = 'Cette semaine'; break; }
+      case 'year': from = new Date(n.getFullYear(), 0, 1); to = eod(new Date(n.getFullYear(), 11, 31)); label = 'Année ' + n.getFullYear(); break;
+      case 'pickMonth': from = new Date(accRange.year, accRange.month, 1); to = eod(new Date(accRange.year, accRange.month + 1, 0)); label = MONTHS[accRange.month] + ' ' + accRange.year; break;
+      case 'custom':
+        if (accRange.from && accRange.to) { from = sod(new Date(accRange.from)); to = eod(new Date(accRange.to)); label = 'du ' + fmtDate(from) + ' au ' + fmtDate(to); }
+        else { from = new Date(n.getFullYear(), n.getMonth(), 1); to = eod(new Date(n.getFullYear(), n.getMonth() + 1, 0)); label = 'Ce mois'; }
+        break;
+      default: from = new Date(n.getFullYear(), n.getMonth(), 1); to = eod(new Date(n.getFullYear(), n.getMonth() + 1, 0)); label = 'Ce mois';
+    }
+    return { from: from, to: to, label: label };
+  }
+  function ordersInRange() {
+    var r = computeRange(), f = r.from.getTime(), t = r.to.getTime();
+    return accountingOrders().filter(function (o) { var ts = new Date(o.createdAt).getTime(); return ts >= f && ts <= t; })
+      .sort(function (a, b) { return new Date(a.createdAt) - new Date(b.createdAt); });
+  }
+
+  function rangeFilterHTML() {
+    initRange();
+    var cy = new Date().getFullYear(), yrs = '';
+    for (var y = cy; y >= cy - 3; y--) yrs += '<option value="' + y + '" ' + (accRange.year === y ? 'selected' : '') + '>' + y + '</option>';
+    var mos = MONTHS.map(function (m, i) { return '<option value="' + i + '" ' + (accRange.month === i ? 'selected' : '') + '>' + m + '</option>'; }).join('');
+    function chip(mode, label) { return '<button class="opt-chip ' + (accRange.mode === mode ? 'selected' : '') + '" data-range="' + mode + '">' + label + '</button>'; }
+    return '<div class="adm-card"><h3 style="margin-bottom:10px">📅 Période</h3>' +
+      '<div class="chip-set" style="margin-bottom:12px">' + chip('today', "Aujourd'hui") + chip('week', 'Cette semaine') + chip('month', 'Ce mois') + chip('year', 'Cette année') + '</div>' +
+      '<div class="adm-row" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));align-items:end">' +
+        '<div class="field" style="margin:0"><label>Mois précis</label><div style="display:flex;gap:6px"><select class="mini-input" id="rgMonth">' + mos + '</select><select class="mini-input" id="rgYear" style="max-width:92px">' + yrs + '</select></div></div>' +
+        '<div class="field" style="margin:0"><label>Période — du</label><input class="mini-input" type="date" id="rgFrom" value="' + esc(accRange.from) + '"></div>' +
+        '<div class="field" style="margin:0"><label>au</label><input class="mini-input" type="date" id="rgTo" value="' + esc(accRange.to) + '"></div>' +
+      '</div></div>';
+  }
+  function bindRange(rerender) {
+    var c = el('admContent');
+    Array.prototype.forEach.call(c.querySelectorAll('[data-range]'), function (b) { b.addEventListener('click', function () { accRange.mode = b.getAttribute('data-range'); rerender(); }); });
+    var m = el('rgMonth'), y = el('rgYear'), f = el('rgFrom'), t = el('rgTo');
+    function pick() { accRange.mode = 'pickMonth'; accRange.month = parseInt(m.value, 10); accRange.year = parseInt(y.value, 10); rerender(); }
+    if (m) m.addEventListener('change', pick); if (y) y.addEventListener('change', pick);
+    function cust() { accRange.from = f.value; accRange.to = t.value; if (f.value && t.value) { accRange.mode = 'custom'; rerender(); } }
+    if (f) f.addEventListener('change', cust); if (t) t.addEventListener('change', cust);
+  }
+
+  function csvDownload(name, rows) {
+    var csv = rows.map(function (r) { return r.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(';'); }).join('\n');
+    downloadFile(name, '﻿' + csv, 'text/csv'); // BOM + ';' pour Excel FR
+  }
+
+  /* ---------- TICKETS DE CAISSE ---------- */
+  function viewTickets() {
+    var list = ordersInRange(), r = computeRange(), vr = vatRate();
+    var totTtc = list.reduce(function (s, o) { return s + Number(o.total || 0); }, 0);
+    var totHt = htFromTtc(totTtc), totTva = totTtc - totHt;
+    var rows = list.slice().reverse().map(function (o) {
+      var ttc = Number(o.total || 0), ht = htFromTtc(ttc);
+      return '<tr>' +
+        '<td><b>#' + o.number + '</b></td>' +
+        '<td>' + new Date(o.createdAt).toLocaleString('fr-FR') + '</td>' +
+        '<td>' + esc(o.customer.firstName || '') + '</td>' +
+        '<td>' + esc(o.fulfillment || '') + '</td>' +
+        '<td>' + esc(PAY_LABELS[o.paymentMethod] || '—') + '</td>' +
+        '<td class="num">' + money(ht) + '</td>' +
+        '<td class="num">' + money(ttc - ht) + '</td>' +
+        '<td class="num"><b>' + money(ttc) + '</b></td>' +
+        '<td class="no-print"><button class="btn btn--ghost btn--sm" data-ticket-pdf="' + o.id + '">PDF</button></td>' +
+      '</tr>';
+    }).join('') || '<tr><td colspan="9" style="color:var(--muted)">Aucun ticket sur cette période.</td></tr>';
+    return rangeFilterHTML() +
+      '<div class="stat-grid" style="margin-bottom:14px">' +
+        stat(list.length, 'Tickets') + stat(money(totHt), 'Total HT') + stat(money(totTva), 'TVA (' + vr + '%)') + stat(money(totTtc), 'Total TTC') +
+      '</div>' +
+      '<div class="adm-card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">' +
+        '<div><h3 style="margin:0">Tickets — ' + esc(r.label) + '</h3><p style="color:var(--muted);margin:0;font-size:13px">TVA appliquée : ' + vr + '% · modifiable dans Réglages ou Chiffre d\'affaires</p></div>' +
+        '<div class="img-actions"><button class="btn btn--red btn--sm" id="tkJournal">⬇️ Journal PDF</button><button class="btn btn--ghost btn--sm" id="tkCsv">⬇️ Export CSV</button></div>' +
+      '</div>' +
+      '<div class="adm-card"><div class="table-wrap"><table class="table">' +
+        '<thead><tr><th>N°</th><th>Date</th><th>Client</th><th>Mode</th><th>Paiement</th><th class="num">HT</th><th class="num">TVA</th><th class="num">TTC</th><th></th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table></div></div>';
+  }
+  function bindTickets() {
+    bindRange(function () { render('tickets'); });
+    var j = el('tkJournal'); if (j) j.addEventListener('click', journalPDF);
+    var cs = el('tkCsv'); if (cs) cs.addEventListener('click', ticketsCSV);
+    Array.prototype.forEach.call(el('admContent').querySelectorAll('[data-ticket-pdf]'), function (b) {
+      b.addEventListener('click', function () { ticketPDF(b.getAttribute('data-ticket-pdf')); });
+    });
+  }
+  function ticketsCSV() {
+    var list = ordersInRange();
+    var rows = [['N°', 'Date', 'Heure', 'Client', 'Mode', 'Paiement', 'Statut', 'HT', 'TVA', 'TTC']];
+    list.forEach(function (o) {
+      var ttc = Number(o.total || 0), ht = htFromTtc(ttc), d = new Date(o.createdAt);
+      rows.push([o.number, d.toLocaleDateString('fr-FR'), d.toLocaleTimeString('fr-FR'), o.customer.firstName || '', o.fulfillment || '', PAY_LABELS[o.paymentMethod] || '', payStatus(o), ht.toFixed(2), (ttc - ht).toFixed(2), ttc.toFixed(2)]);
+    });
+    csvDownload('tickets-mykonos.csv', rows);
+  }
+
+  /* ---------- CHIFFRE D'AFFAIRES ---------- */
+  function viewCA() {
+    var list = ordersInRange(), r = computeRange(), vr = vatRate();
+    var totTtc = list.reduce(function (s, o) { return s + Number(o.total || 0); }, 0);
+    var totHt = htFromTtc(totTtc), totTva = totTtc - totHt, nb = list.length, panier = nb ? totTtc / nb : 0;
+    var spanDays = (r.to - r.from) / 86400000, byMonth = spanDays > 92, groups = {};
+    list.forEach(function (o) {
+      var d = new Date(o.createdAt);
+      var key = byMonth ? (d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2)) : d.toISOString().slice(0, 10);
+      groups[key] = (groups[key] || 0) + Number(o.total || 0);
+    });
+    var keys = Object.keys(groups).sort();
+    var maxV = Math.max.apply(null, keys.map(function (k) { return groups[k]; }).concat([1]));
+    var bars = keys.map(function (k) {
+      var ttc = groups[k], ht = htFromTtc(ttc), pct = Math.max(3, ttc / maxV * 100);
+      var lbl = byMonth ? (MONTHS[parseInt(k.slice(5), 10) - 1] + ' ' + k.slice(0, 4)) : new Date(k).toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: '2-digit' });
+      return '<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:13px;gap:8px"><span>' + esc(lbl) + '</span><span><b>' + money(ht) + '</b> HT · ' + money(ttc) + ' TTC</span></div>' +
+        '<div style="height:10px;background:#efe9e2;border-radius:6px;overflow:hidden;margin-top:3px"><div style="height:100%;width:' + pct + '%;background:var(--red)"></div></div></div>';
+    }).join('') || '<p style="color:var(--muted);margin:0">Aucune vente sur cette période.</p>';
+    return rangeFilterHTML() +
+      '<div class="adm-card" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><b>Taux de TVA :</b> <input class="mini-input" style="width:80px" type="number" step="0.1" min="0" id="caVat" value="' + esc(vr) + '"><span style="color:var(--muted)">%</span><button class="btn btn--ghost btn--sm" id="caVatSave">Enregistrer</button><span style="margin-left:auto;color:var(--muted);font-size:13px">Période : <b>' + esc(r.label) + '</b></span></div>' +
+      '<div class="stat-grid" style="margin-bottom:14px">' +
+        stat(money(totHt), 'CA HT') + stat(money(totTva), 'TVA (' + vr + '%)') + stat(money(totTtc), 'CA TTC') + stat(nb, 'Commandes') + stat(money(panier), 'Panier moyen') +
+      '</div>' +
+      '<div class="adm-card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><h3 style="margin:0">Détail par ' + (byMonth ? 'mois' : 'jour') + ' — ' + esc(r.label) + '</h3><button class="btn btn--red btn--sm" id="caCsv">⬇️ Export CSV</button></div>' +
+      '<div class="adm-card">' + bars + '</div>';
+  }
+  function bindCA() {
+    bindRange(function () { render('ca'); });
+    var cs = el('caCsv'); if (cs) cs.addEventListener('click', caCSV);
+    var sv = el('caVatSave'); if (sv) sv.addEventListener('click', function () { catalog.settings.vatRate = num(el('caVat').value, 10); persist(); render('ca'); toast('TVA mise à jour (' + vatRate() + '%)'); });
+  }
+  function caCSV() {
+    var list = ordersInRange(), byDay = {};
+    list.forEach(function (o) { var k = new Date(o.createdAt).toISOString().slice(0, 10); if (!byDay[k]) byDay[k] = { n: 0, ttc: 0 }; byDay[k].n++; byDay[k].ttc += Number(o.total || 0); });
+    var rows = [['Date', 'Commandes', 'CA HT', 'TVA', 'CA TTC']];
+    Object.keys(byDay).sort().forEach(function (k) { var g = byDay[k], ht = htFromTtc(g.ttc); rows.push([k, g.n, ht.toFixed(2), (g.ttc - ht).toFixed(2), g.ttc.toFixed(2)]); });
+    csvDownload('ca-mykonos.csv', rows);
+  }
+
+  /* ---------- PDF (jsPDF embarqué, repli sur impression) ---------- */
+  function jsPDFready() { return !!(window.jspdf && window.jspdf.jsPDF); }
+  function eu(n) { return M.money(n).replace(' €', '').replace(/ /g, ' ') + ' EUR'; }
+  function ticketPDF(id) {
+    var o = M.getOrders().filter(function (x) { return x.id === id; })[0]; if (!o) return;
+    if (!jsPDFready()) { printOrder(id); return; }
+    var s = catalog.settings, vr = vatRate(), W = 80;
+    var doc = new window.jspdf.jsPDF({ unit: 'mm', format: [W, 210] });
+    var x = 6, y = 12;
+    function cen(t, size, bold) { doc.setFont('helvetica', bold ? 'bold' : 'normal'); doc.setFontSize(size); doc.text(String(t), W / 2, y, { align: 'center' }); }
+    cen(s.restaurantName || 'MYKONOS', 15, true); y += 6;
+    cen(s.address || '', 8); y += 4; cen(s.phone || '', 8); y += 6;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(0);
+    doc.text('Ticket #' + o.number, x, y); y += 4;
+    doc.text(new Date(o.createdAt).toLocaleString('fr-FR'), x, y); y += 4;
+    doc.text((o.fulfillment || '') + ' - ' + (PAY_LABELS[o.paymentMethod] || ''), x, y); y += 4;
+    doc.line(x, y, W - x, y); y += 5;
+    (o.items || []).forEach(function (l) {
+      var lt = (Number(l.basePrice) + Number(l.menuUpgrade || 0)) * l.qty;
+      doc.setFontSize(9); doc.setTextColor(0);
+      doc.text((l.qty + 'x ' + l.name).slice(0, 30), x, y); doc.text(eu(lt), W - x, y, { align: 'right' }); y += 4;
+      var det = []; if (l.isMenu && l.drink) det.push('Menu ' + l.drink.name); if (l.bread) det.push(l.bread); if (l.sauces && l.sauces.length) det.push(l.sauces.join(',')); if (l.crudRemoved && l.crudRemoved.length) det.push('sans ' + l.crudRemoved.join(','));
+      if (det.length) { doc.setFontSize(7); doc.setTextColor(120); doc.text(det.join(' - ').slice(0, 44), x + 1, y); y += 3.4; }
+    });
+    doc.setTextColor(0); y += 1; doc.line(x, y, W - x, y); y += 5;
+    var ttc = Number(o.total || 0), ht = htFromTtc(ttc);
+    doc.setFontSize(9);
+    doc.text('Total HT', x, y); doc.text(eu(ht), W - x, y, { align: 'right' }); y += 4;
+    doc.text('TVA ' + vr + '%', x, y); doc.text(eu(ttc - ht), W - x, y, { align: 'right' }); y += 5;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+    doc.text('TOTAL TTC', x, y); doc.text(eu(ttc), W - x, y, { align: 'right' }); y += 7;
+    doc.setFont('helvetica', 'normal'); cen('Merci et a bientot !', 8);
+    doc.save('ticket-' + o.number + '.pdf');
+  }
+  function journalPDF() {
+    if (!jsPDFready()) { toast('Librairie PDF indisponible', 'err'); return; }
+    var list = ordersInRange(), r = computeRange(), s = catalog.settings, vr = vatRate();
+    var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' }), x = 14, y = 18, W = 210;
+    function row(cols, bold, yy) {
+      doc.setFont('helvetica', bold ? 'bold' : 'normal'); doc.setFontSize(9); doc.setTextColor(0);
+      doc.text(cols[0], x, yy); doc.text(cols[1], x + 20, yy); doc.text(cols[2], x + 74, yy);
+      doc.text(cols[3], 150, yy, { align: 'right' }); doc.text(cols[4], 174, yy, { align: 'right' }); doc.text(cols[5], W - x, yy, { align: 'right' });
+    }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(15); doc.text((s.restaurantName || 'MYKONOS') + ' - Journal des ventes', x, y); y += 6;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.text('Periode : ' + r.label + '   -   TVA ' + vr + '%', x, y); y += 8;
+    doc.setFillColor(238); doc.rect(x - 2, y - 4.5, W - 2 * (x - 2), 6.5, 'F');
+    row(['No', 'Date', 'Mode', 'HT', 'TVA', 'TTC'], true, y); y += 7;
+    var totTtc = 0;
+    list.forEach(function (o) {
+      if (y > 282) { doc.addPage(); y = 18; doc.setFillColor(238); doc.rect(x - 2, y - 4.5, W - 2 * (x - 2), 6.5, 'F'); row(['No', 'Date', 'Mode', 'HT', 'TVA', 'TTC'], true, y); y += 7; }
+      var ttc = Number(o.total || 0), ht = htFromTtc(ttc); totTtc += ttc; var d = new Date(o.createdAt);
+      row(['#' + o.number, d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }), (o.fulfillment || '').slice(0, 18), eu(ht), eu(ttc - ht), eu(ttc)], false, y);
+      y += 5.6;
+    });
+    var THt = htFromTtc(totTtc); y += 2; doc.setDrawColor(150); doc.line(x, y, W - x, y); y += 6;
+    row(['TOTAL', '(' + list.length + ' tickets)', '', eu(THt), eu(totTtc - THt), eu(totTtc)], true, y);
+    doc.save('journal-ventes-mykonos.pdf');
+  }
+
+  /* =====================================================================
      QR CODE (généré côté client, imprimable)
      ===================================================================== */
   function siteUrl() {
@@ -986,6 +1201,10 @@
         '<p style="font-size:12px;color:var(--muted)">Exemple : 24 h = la réduction est utilisable 24 heures après la 1ʳᵉ commande.</p>' +
       '</div>' +
 
+      '<div class="adm-card"><h3>🧾 Comptabilité — TVA</h3>' +
+        row2(field('Taux de TVA applicable (%)', 'setVat', s.vatRate, 'number'), '<div class="field"><label>&nbsp;</label><p style="color:var(--muted);font-size:12.5px;margin:6px 0 0">10 % par défaut lorsqu\'il s\'applique. Utilisé pour calculer automatiquement HT / TVA / TTC dans « Tickets de caisse » et « Chiffre d\'affaires ».</p></div>') +
+      '</div>' +
+
       '<div class="adm-card"><h3>🛵 Retrait / Livraison</h3>' +
         row2(field('Modes (séparés par une virgule)', 'setFulfill', (s.fulfillment || []).join(', ')), field('Frais de livraison (€)', 'setDelivery', s.deliveryFee, 'number')) +
       '</div>' +
@@ -1034,6 +1253,7 @@
       s.loyaltyDelayHours = num(el('setLoyDelay').value, 24);
       s.fulfillment = el('setFulfill').value.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
       s.deliveryFee = num(el('setDelivery').value, 0);
+      s.vatRate = num(el('setVat').value, 10);
       s.email_enabled = el('setEmailEnabled').checked;
       s.emailjs_publicKey = el('setEjKey').value.trim();
       s.emailjs_serviceId = el('setEjService').value.trim();

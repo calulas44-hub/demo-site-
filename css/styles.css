@@ -361,6 +361,7 @@ h1, h2, h3, h4 { margin: 0 0 .4em; line-height: 1.05; }
 .table th { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
 .table tr:hover td { background: #faf7f3; }
 .table .actions { display: flex; gap: 6px; }
+.table td.num, .table th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .table-wrap { overflow-x: auto; }
 
 .adm-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 12px; }
