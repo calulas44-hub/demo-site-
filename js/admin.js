@@ -1008,6 +1008,26 @@
       if (e.key === M.KEYS.customers && currentSection === 'customers') render('customers');
       if (e.key === M.KEYS.newsletter && currentSection === 'newsletter') render('newsletter');
     });
+
+    // Synchronisation temps réel (Firebase) : rafraîchit l'écran instantanément
+    // et évite un faux "nouvelle commande" au chargement initial des commandes.
+    window.MYKONOS_syncOrderBaseline = function () { lastOrderCount = M.getOrders().length; };
+    function showLive() { var p = el('admLiveState'); if (p) p.style.display = ''; }
+    if (window.MYKONOS_FB && window.MYKONOS_FB.ready) showLive();
+    window.addEventListener('mykonos:fb-ready', showLive);
+    window.addEventListener('mykonos:orders-updated', function () {
+      if (isAuthed() && (currentSection === 'orders' || currentSection === 'dashboard')) render(currentSection);
+    });
+    window.addEventListener('mykonos:customers-updated', function () {
+      if (isAuthed() && currentSection === 'customers') render('customers');
+    });
+    window.addEventListener('mykonos:newsletter-updated', function () {
+      if (isAuthed() && currentSection === 'newsletter') render('newsletter');
+    });
+    window.addEventListener('mykonos:catalog-updated', function () {
+      catalog = M.getCatalog();
+      if (isAuthed() && !el('admModalWrap').classList.contains('show')) render(currentSection);
+    });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
   }
 

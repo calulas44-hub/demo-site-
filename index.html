@@ -188,9 +188,14 @@
   <!-- ============ Toasts ============ -->
   <div class="toast-wrap" id="toastWrap"></div>
 
+  <!-- Firebase (synchronisation temps réel des commandes / du catalogue) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
   <!-- EmailJS (optionnel : e-mails automatiques si configuré dans l'admin) -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="js/data.js"></script>
+  <script src="js/firebase-sync.js"></script>
   <script src="js/client.js"></script>
 </body>
 </html>

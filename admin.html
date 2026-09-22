@@ -57,6 +57,7 @@
         <button class="btn btn--ghost btn--sm adm-menu-toggle" id="admMenuToggle">☰</button>
         <h1 id="admTitle">Tableau de bord</h1>
         <div class="right">
+          <span class="pill" id="admLiveState" style="display:none;background:rgba(31,157,85,.14);color:var(--ok)" title="Commandes synchronisées en temps réel">🟢 En direct</span>
           <button class="btn btn--red btn--sm" id="admSoundToggle" title="Alerte sonore + notification à chaque nouvelle commande">🔔 Son activé</button>
           <span class="pill pill--ok" id="admSaveState">Enregistré ✓</span>
         </div>
@@ -74,9 +75,14 @@
     <div class="modal" id="admModal"></div>
   </div>
 
+  <!-- Firebase (synchronisation temps réel des commandes / du catalogue) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
   <!-- EmailJS (optionnel : bouton "e-mail de test" dans Réglages) -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="js/data.js"></script>
+  <script src="js/firebase-sync.js"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>
