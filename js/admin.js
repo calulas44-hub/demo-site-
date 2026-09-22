@@ -185,7 +185,7 @@
     dashboard: 'Tableau de bord', orders: 'Commandes', products: 'Produits',
     categories: 'Catégories', drinks: 'Boissons', sauces: 'Sauces',
     crudites: 'Crudités', promos: 'Promotions', customers: 'Clients',
-    newsletter: 'Newsletter', settings: 'Réglages'
+    newsletter: 'Newsletter', qr: 'QR Code', settings: 'Réglages'
   };
   function render(section) {
     currentSection = section;
@@ -206,6 +206,7 @@
       case 'promos': c.innerHTML = viewPromos(); bindPromos(); break;
       case 'customers': c.innerHTML = viewCustomers(); bindCustomers(); break;
       case 'newsletter': c.innerHTML = viewNewsletter(); bindNewsletter(); break;
+      case 'qr': c.innerHTML = viewQR(); bindQR(); break;
       case 'settings': c.innerHTML = viewSettings(); bindSettings(); break;
     }
     el('admSide').classList.remove('show'); el('admOverlay').classList.remove('show');
@@ -839,6 +840,100 @@
       var csv = 'email,nom,date\n' + list.map(function (n) { return '"' + n.email + '","' + (n.name || '') + '","' + n.date + '"'; }).join('\n');
       downloadFile('newsletter-mykonos.csv', csv, 'text/csv');
     });
+  }
+
+  /* =====================================================================
+     QR CODE (généré côté client, imprimable)
+     ===================================================================== */
+  function siteUrl() {
+    try { return location.origin + '/'; } catch (e) { return 'https://storied-concha-372cc7.netlify.app/'; }
+  }
+  function viewQR() {
+    return '' +
+      '<div class="adm-card"><h3>📱 QR Code du site</h3>' +
+        '<p style="color:var(--muted);font-size:14px;margin-top:0">Ce QR code ouvre votre site de commande. Générez-le, téléchargez-le en image, puis imprimez-le pour vos tables, la vitrine, les flyers…</p>' +
+        '<div class="field"><label>Adresse du site (modifiable si vous prenez un nom de domaine)</label><input class="input" id="qrUrl" value="' + esc(siteUrl()) + '"></div>' +
+        '<button class="btn btn--red btn--sm" id="qrGen">🔄 Générer / Actualiser</button>' +
+      '</div>' +
+      '<div class="adm-card" style="text-align:center">' +
+        '<div id="qrPreview" style="min-height:240px;display:grid;place-items:center;color:var(--muted)">Génération…</div>' +
+        '<div class="img-actions" style="justify-content:center;margin-top:14px">' +
+          '<button class="btn btn--red" id="qrDownload">⬇️ Télécharger (PNG)</button>' +
+          '<button class="btn btn--ghost" id="qrPrint">🖨️ Imprimer</button>' +
+        '</div>' +
+      '</div>';
+  }
+  function qrRoundRect(x, rx, ry, rw, rh, r) {
+    x.beginPath(); x.moveTo(rx + r, ry);
+    x.arcTo(rx + rw, ry, rx + rw, ry + rh, r); x.arcTo(rx + rw, ry + rh, rx, ry + rh, r);
+    x.arcTo(rx, ry + rh, rx, ry, r); x.arcTo(rx, ry, rx + rw, ry, r); x.closePath();
+  }
+  function qrTwoTone(x, a, ca, b, cb2, cx, y, font) {
+    x.font = font;
+    var wa = x.measureText(a).width, wb = x.measureText(b).width, startX = cx - (wa + wb) / 2;
+    x.textAlign = 'left';
+    x.fillStyle = ca; x.fillText(a, startX, y);
+    x.fillStyle = cb2; x.fillText(b, startX + wa, y);
+    x.textAlign = 'center';
+  }
+  function buildQRCard(url, cb) {
+    if (typeof QRCode === 'undefined' || !QRCode.toCanvas) { cb(null, 'lib'); return; }
+    var qc = document.createElement('canvas');
+    QRCode.toCanvas(qc, url, { errorCorrectionLevel: 'H', margin: 1, width: 560, color: { dark: '#17110f', light: '#ffffff' } }, function (err) {
+      if (err) { cb(null, 'err'); return; }
+      try {
+        var W = 820, H = 1120, c = document.createElement('canvas'); c.width = W; c.height = H;
+        var x = c.getContext('2d');
+        var g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, '#1b1310'); g.addColorStop(1, '#2a1c18');
+        x.fillStyle = g; x.fillRect(0, 0, W, H);
+        x.textAlign = 'center';
+        x.font = '46px Arial'; x.fillStyle = '#fff'; x.fillText('👑', W / 2, 98);
+        qrTwoTone(x, 'MYKO', '#ffffff', 'NOS', '#E4141B', W / 2, 190, '900 82px Arial, sans-serif');
+        x.fillStyle = '#f5b301'; x.font = '900 30px Arial'; x.fillText('LE KEBAB QUI TE MET KO !', W / 2, 236);
+        x.fillStyle = '#ffffff'; x.font = '900 44px Arial'; x.fillText('📲 SCANNEZ & COMMANDEZ', W / 2, 322);
+        x.fillStyle = '#ffd9d9'; x.font = '22px Arial'; x.fillText('Commande en ligne en 2 minutes', W / 2, 358);
+        var boxW = 520, boxX = (W - boxW) / 2, boxY = 402;
+        qrRoundRect(x, boxX, boxY, boxW, boxW, 36); x.fillStyle = '#E4141B'; x.fill();
+        qrRoundRect(x, boxX + 10, boxY + 10, boxW - 20, boxW - 20, 28); x.fillStyle = '#ffffff'; x.fill();
+        var qs = boxW - 80; x.drawImage(qc, boxX + 40, boxY + 40, qs, qs);
+        x.fillStyle = '#ffffff'; x.font = '800 27px Arial'; x.fillText(String(url).replace(/^https?:\/\//, '').replace(/\/$/, ''), W / 2, boxY + boxW + 54);
+        x.fillStyle = '#e9d9d4'; x.font = '20px Arial'; x.fillText('🥙 Kebabs · 🍔 Burgers · 🍟 Menus +1€ · 🎁 -10%', W / 2, boxY + boxW + 94);
+        x.fillStyle = '#E4141B'; x.fillRect(0, H - 72, W, 72);
+        x.fillStyle = '#ffffff'; x.font = '900 27px Arial'; x.fillText('SCANNEZ • CHOISISSEZ • RÉGALEZ-VOUS', W / 2, H - 28);
+        cb(c.toDataURL('image/png'));
+      } catch (e) { cb(null, 'draw'); }
+    });
+  }
+  function bindQR() {
+    var current = null;
+    function gen() {
+      var url = (el('qrUrl').value || '').trim() || siteUrl();
+      el('qrPreview').textContent = 'Génération…';
+      buildQRCard(url, function (dataUrl, e) {
+        if (!dataUrl) {
+          el('qrPreview').innerHTML = '<span style="color:var(--red)">QR indisponible' + (e === 'lib' ? ' (librairie non chargée)' : '') + '.</span>';
+          return;
+        }
+        current = dataUrl;
+        el('qrPreview').innerHTML = '<img src="' + dataUrl + '" alt="QR MYKONOS" style="max-width:340px;width:100%;border-radius:14px;box-shadow:var(--shadow)">';
+      });
+    }
+    el('qrGen').addEventListener('click', gen);
+    el('qrDownload').addEventListener('click', function () {
+      if (!current) { toast('Patientez, le QR se génère…', 'info'); return; }
+      var a = document.createElement('a'); a.href = current; a.download = 'mykonos-qr-code.png';
+      document.body.appendChild(a); a.click();
+      setTimeout(function () { document.body.removeChild(a); }, 400);
+      toast('QR code téléchargé ✓');
+    });
+    el('qrPrint').addEventListener('click', function () {
+      if (!current) return;
+      var w = window.open('', '_blank');
+      if (!w) { toast('Autorisez les pop-ups pour imprimer', 'err'); return; }
+      w.document.write('<html><head><title>QR MYKONOS</title></head><body style="margin:0;text-align:center"><img src="' + current + '" style="max-width:100%" onload="setTimeout(function(){window.print();},200)"></body></html>');
+      w.document.close();
+    });
+    gen();
   }
 
   /* =====================================================================
