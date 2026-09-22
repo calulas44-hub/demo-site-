@@ -424,10 +424,12 @@
       if (modalState.isMenu && !modalState.drinkId) { toast('Choisis ta boisson pour le menu', 'info'); return; }
       if (needsAgeCheck() && !modalState.ageOk) { toast('Confirme que tu as 18 ans ou plus', 'err'); return; }
       addToCartFromState();
-      var name = modalState.product.name;
-      closeModal();
-      toast(name + ' ajouté au panier');
-      openCart();
+      var p = modalState.product;
+      var hadMenuDrink = !!(modalState.isMenu && modalState.drinkId);
+      toast(p.name + ' ajouté au panier');
+      // Après un plat principal : proposer boisson → accompagnement → dessert
+      if (isMainDish(p)) { startUpsell(hadMenuDrink); }
+      else { closeModal(); openCart(); }
     });
   }
 
@@ -503,6 +505,120 @@
       isMenu: false, menuUpgrade: 0, drink: null, kind: 'drink', alcohol: !!d.alcohol
     });
     M.saveCart(cart);
+  }
+
+  /* ---------- Produits simples ajoutés en extra (accompagnement / dessert) ---------- */
+  function pushProductLine(p) {
+    var cart = M.getCart();
+    cart.push({
+      uid: M.uid('line'), productId: p.id, name: p.name, emoji: p.emoji || '🍽️', image: p.image || '',
+      basePrice: Number(p.price), qty: 1, bread: null, sauces: [], crudRemoved: [], crudKept: [],
+      isMenu: false, menuUpgrade: 0, drink: null, kind: 'extra'
+    });
+    M.saveCart(cart);
+  }
+  function productsInCat(catId) { return catalog.products.filter(function (p) { return p.categoryId === catId && p.available; }); }
+  function isMainDish(p) { return !!p && p.categoryId !== 'sides' && p.categoryId !== 'desserts'; }
+
+  /* =========================================================================
+     Parcours de propositions complémentaires : boisson → accompagnement → dessert
+     Chaque étape est facultative (Ajouter ou Passer). Fin → retour au panier.
+     ========================================================================= */
+  var upsellState = null;
+  var UPSELL_CFG = {
+    drink:   { emoji: '🥤', title: 'Boisson',        q: 'Souhaitez-vous ajouter une boisson ?',      kind: 'drink' },
+    side:    { emoji: '🍟', title: 'Accompagnement', q: 'Souhaitez-vous ajouter un accompagnement ?', kind: 'product' },
+    dessert: { emoji: '🍰', title: 'Dessert',        q: 'Souhaitez-vous ajouter un dessert ?',        kind: 'product' }
+  };
+  function startUpsell(skipDrink) {
+    var steps = [];
+    if (!skipDrink && availableDrinks().length) steps.push('drink');
+    if (productsInCat('sides').length) steps.push('side');
+    if (productsInCat('desserts').length) steps.push('dessert');
+    if (!steps.length) { closeModal(); openCart(); return; }
+    upsellState = { steps: steps, i: 0, pending: null };
+    renderUpsellStep();
+  }
+  function upsellItems(key) {
+    if (key === 'drink') return availableDrinks().map(function (d) {
+      return { id: d.id, name: d.name, price: d.price, emoji: d.alcohol ? '🍺' : '🥤', image: '', alcohol: !!d.alcohol };
+    });
+    var cat = key === 'side' ? 'sides' : 'desserts';
+    return productsInCat(cat).map(function (p) {
+      return { id: p.id, name: p.name, price: p.price, emoji: p.emoji || (key === 'side' ? '🍟' : '🍰'), image: p.image || '', alcohol: false };
+    });
+  }
+  function renderUpsellStep() {
+    var st = upsellState, key = st.steps[st.i], cfg = UPSELL_CFG[key], items = upsellItems(key);
+    var prog = st.steps.map(function (s, idx) {
+      var lbl = UPSELL_CFG[s].emoji + ' ' + UPSELL_CFG[s].title;
+      if (idx === st.i) return '<b>' + esc(lbl) + '</b>';
+      if (idx < st.i) return '<span style="opacity:.5;text-decoration:line-through">' + esc(lbl) + '</span>';
+      return '<span style="opacity:.6">' + esc(lbl) + '</span>';
+    }).join(' <span style="opacity:.4">›</span> ');
+
+    var body;
+    if (st.pending) {
+      body = '<div class="alcohol-note">🔞 <b>' + esc(st.pending.name) + '</b> — boisson alcoolisée, vente interdite aux moins de 18 ans.' +
+        '<label style="margin-top:8px"><input type="checkbox" id="upsAge"> Je certifie avoir 18 ans ou plus.</label></div>';
+    } else {
+      body = items.map(function (it) {
+        var media = it.image ? '<img src="' + esc(it.image) + '" alt="">' : esc(it.emoji);
+        return '<div class="ups-row">' +
+          '<span class="ups-emoji">' + media + '</span>' +
+          '<span class="ups-name">' + esc(it.name) + (it.alcohol ? ' <span class="pill pill--gold" style="font-size:10px">18+</span>' : '') + '</span>' +
+          '<span class="ups-price">' + money(it.price) + '</span>' +
+          '<button class="btn btn--red btn--sm" data-ups-add="' + esc(it.id) + '">+ Ajouter</button>' +
+        '</div>';
+      }).join('');
+    }
+    var lastStep = st.i >= st.steps.length - 1;
+    var html = '' +
+      '<div class="modal-head"><div class="modal-hero" style="height:76px;font-size:36px">' + cfg.emoji + '</div><button class="modal-close" data-ups-close>✕</button></div>' +
+      '<div class="modal-body">' +
+        '<div class="ups-progress">' + prog + '</div>' +
+        '<h3>' + esc(cfg.q) + '</h3>' +
+        '<p class="m-desc">C\'est facultatif — ajoutez si vous voulez, sinon passez à la suite.</p>' +
+        body +
+      '</div>' +
+      '<div class="modal-foot">' +
+        (st.pending
+          ? '<button class="btn btn--ghost" id="upsAgeCancel">Annuler</button><button class="btn btn--red btn--block" id="upsAgeOk" disabled>Ajouter</button>'
+          : '<button class="btn btn--ghost btn--block" data-ups-skip>' + (lastStep ? 'Non merci → voir le panier' : 'Non merci / Passer →') + '</button>') +
+      '</div>';
+    openModal(html);
+    var modal = el('modal');
+    Array.prototype.forEach.call(modal.querySelectorAll('[data-ups-close]'), function (b) { b.addEventListener('click', finishUpsell); });
+    var skip = modal.querySelector('[data-ups-skip]'); if (skip) skip.addEventListener('click', advanceUpsell);
+    Array.prototype.forEach.call(modal.querySelectorAll('[data-ups-add]'), function (b) {
+      b.addEventListener('click', function () {
+        var it = items.filter(function (x) { return x.id === b.getAttribute('data-ups-add'); })[0];
+        if (!it) return;
+        if (it.alcohol) { st.pending = it; renderUpsellStep(); return; }
+        addUpsellItem(it, cfg.kind); advanceUpsell();
+      });
+    });
+    var age = el('upsAge'), ok = el('upsAgeOk'), cancel = el('upsAgeCancel');
+    if (age && ok) age.addEventListener('change', function () { ok.disabled = !this.checked; });
+    if (ok) ok.addEventListener('click', function () { var it = st.pending; st.pending = null; addUpsellItem(it, 'drink'); advanceUpsell(); });
+    if (cancel) cancel.addEventListener('click', function () { st.pending = null; renderUpsellStep(); });
+  }
+  function addUpsellItem(it, kind) {
+    if (kind === 'drink') { var d = findDrink(it.id); if (d) pushDrinkLine(d); }
+    else { var p = findProduct(it.id); if (p) pushProductLine(p); }
+    toast(it.name + ' ajouté ✓');
+  }
+  function advanceUpsell() {
+    if (!upsellState) { finishUpsell(); return; }
+    upsellState.pending = null;
+    upsellState.i++;
+    if (upsellState.i >= upsellState.steps.length) finishUpsell();
+    else renderUpsellStep();
+  }
+  function finishUpsell() {
+    upsellState = null;
+    closeModal();
+    openCart();
   }
 
   /* ---------- PANIER ---------- */
