@@ -12,6 +12,16 @@
   var modalState = null;   // config produit en cours dans la modale
   var checkoutState = null;
 
+  /* ---------- moyens de paiement ---------- */
+  var PAYMENTS = [
+    { id: 'sur_place',  emoji: '💶', label: 'Paiement sur place', desc: 'Vous réglez au retrait / sur place' },
+    { id: 'card',       emoji: '💳', label: 'Carte bancaire',     desc: 'Visa, Mastercard, CB' },
+    { id: 'apple_pay',  emoji: '🍎', label: 'Apple Pay',          desc: 'iPhone / Mac' },
+    { id: 'google_pay', emoji: '📲', label: 'Google Pay',         desc: 'Android' }
+  ];
+  function isOnlinePay(id) { return id === 'card' || id === 'apple_pay' || id === 'google_pay'; }
+  function onlineReady() { var s = catalog.settings; return !!(s.stripe_enabled && s.stripe_publishableKey); }
+
   /* ---------- utilitaires ---------- */
   function $(sel, root) { return (root || document).querySelector(sel); }
   function el(id) { return document.getElementById(id); }
@@ -737,16 +747,16 @@
           '<div class="field"><label>Nom</label><input class="input" id="coLast" value="' + esc(cust ? cust.lastName : '') + '" placeholder="Nom"></div>' +
         '</div>' +
         '<div class="grid-2">' +
-          '<div class="field"><label>Téléphone *</label><input class="input" id="coPhone" value="' + esc(cust ? cust.phone : '') + '" placeholder="06 12 34 56 78"></div>' +
-          '<div class="field"><label>E-mail ' + (M.getSession() ? '' : '(pour la confirmation)') + '</label><input class="input" id="coEmail" value="' + esc(cust ? cust.email : '') + '" placeholder="ton@email.fr"></div>' +
+          '<div class="field"><label id="coPhoneLabel">Téléphone (facultatif)</label><input class="input" id="coPhone" value="' + esc(cust ? cust.phone : '') + '" placeholder="06 12 34 56 78"></div>' +
+          '<div class="field"><label>E-mail (pour la confirmation)</label><input class="input" id="coEmail" value="' + esc(cust ? cust.email : '') + '" placeholder="ton@email.fr"></div>' +
         '</div>' +
         '<div class="field" id="addrField" style="display:none"><label>Adresse de livraison *</label><input class="input" id="coAddr" placeholder="N°, rue, code postal, ville"></div>' +
-        '<div class="grid-2">' +
-          '<div class="field"><label>Date</label><input class="input" type="date" id="coDate"></div>' +
-          '<div class="field"><label>Heure</label><input class="input" type="time" id="coTime"></div>' +
-        '</div>' +
+        '<div class="field"><label>Date et heure de la commande</label>' +
+          '<input class="input" id="coWhen" readonly tabindex="-1" style="background:#f3efe9;cursor:not-allowed;color:var(--muted)">' +
+          '<div style="font-size:11.5px;color:var(--muted);margin-top:4px">⏱️ Renseignées automatiquement (non modifiables)</div></div>' +
         '<div class="field"><label>Note (facultatif)</label><textarea class="textarea" id="coNote" placeholder="Allergies, précisions…"></textarea></div>' +
         '<div id="coLoyalty"></div>' +
+        '<div class="opt-group" style="margin:6px 0 0"><h5>💳 Moyen de paiement</h5><div id="payMethods" style="display:grid;gap:8px"></div><div id="payNote" style="margin-top:6px"></div></div>' +
         '<div class="adm-card" style="box-shadow:none;background:#fff;border:1px solid var(--line);margin:0">' +
           '<div class="summary-row"><span>Sous-total</span><span>' + money(t.subtotal) + '</span></div>' +
           '<div id="coDiscountRow"></div>' +
@@ -760,15 +770,24 @@
     var modal = el('modal');
     Array.prototype.forEach.call(modal.querySelectorAll('[data-close]'), function (b) { b.addEventListener('click', function () { closeModal(); openCart(); }); });
 
-    // date/heure par défaut = +25 min
-    var now = new Date(Date.now() + 25 * 60000);
-    el('coDate').value = now.toISOString().slice(0, 10);
-    el('coTime').value = now.toTimeString().slice(0, 5);
+    // Date et heure automatiques (non modifiables par le client)
+    var now = new Date();
+    checkoutState.wantedDate = now.toISOString().slice(0, 10);
+    checkoutState.wantedTime = now.toTimeString().slice(0, 5);
+    el('coWhen').value = now.toLocaleDateString('fr-FR', { weekday: 'long', day: '2-digit', month: 'long' }) + ' à ' + checkoutState.wantedTime;
+
+    // Paiement : un seul moyen sélectionné
+    if (!checkoutState.payment) checkoutState.payment = 'sur_place';
+    renderPayMethods();
 
     function setFulfill(m) {
       checkoutState.fulfillment = m;
       Array.prototype.forEach.call(modal.querySelectorAll('[data-fulfill]'), function (x) { x.classList.toggle('selected', x.getAttribute('data-fulfill') === m); });
-      el('addrField').style.display = (m === 'Livraison') ? 'block' : 'none';
+      var livr = (m === 'Livraison');
+      el('addrField').style.display = livr ? 'block' : 'none';
+      // Téléphone obligatoire uniquement en livraison ; facultatif sinon
+      var lbl = el('coPhoneLabel');
+      if (lbl) lbl.innerHTML = livr ? 'Téléphone <b style="color:var(--red)">*</b> (pour la livraison)' : 'Téléphone (facultatif)';
       refreshCheckoutTotals();
     }
     Array.prototype.forEach.call(modal.querySelectorAll('[data-fulfill]'), function (b) {
@@ -804,14 +823,45 @@
     el('coTotal').textContent = money(t.total);
   }
 
+  function renderPayMethods() {
+    var wrap = el('payMethods'); if (!wrap) return;
+    var sel = checkoutState.payment || 'sur_place';
+    wrap.innerHTML = PAYMENTS.map(function (p) {
+      var ready = (p.id === 'sur_place') || onlineReady();
+      return '<button type="button" class="opt-chip ' + (sel === p.id ? 'selected' : '') + '" data-pay="' + p.id + '" style="justify-content:flex-start;width:100%;padding:12px 14px;border-radius:12px;text-align:left">' +
+        '<span style="font-size:20px">' + p.emoji + '</span> <b>' + esc(p.label) + '</b>' +
+        '<span style="color:var(--muted);font-weight:500;font-size:12px;margin-left:6px">' + esc(p.desc) + '</span>' +
+        (ready ? '' : '<span class="pill pill--gold" style="margin-left:auto">Bientôt</span>') +
+        '</button>';
+    }).join('');
+    Array.prototype.forEach.call(wrap.querySelectorAll('[data-pay]'), function (b) {
+      b.addEventListener('click', function () { checkoutState.payment = b.getAttribute('data-pay'); renderPayMethods(); });
+    });
+    var online = isOnlinePay(sel), blocked = online && !onlineReady();
+    var note = el('payNote');
+    if (note) note.innerHTML = blocked
+      ? '<div class="alcohol-note" style="background:rgba(217,119,6,.1);border-color:rgba(217,119,6,.35)">💳 Le paiement en ligne (CB / Apple Pay / Google Pay) arrive très bientôt. En attendant, choisissez <b>« Paiement sur place »</b> pour valider votre commande.</div>'
+      : '';
+    var btn = el('placeOrderBtn');
+    if (btn) {
+      btn.disabled = blocked;
+      btn.textContent = blocked ? 'Paiement en ligne bientôt disponible'
+        : (sel === 'sur_place' ? 'Commander (payer sur place)' : 'Payer et commander');
+    }
+  }
+
   function placeOrder() {
     var first = el('coFirst').value.trim();
     var phone = el('coPhone').value.trim();
     var email = el('coEmail').value.trim();
     var mode = checkoutState.fulfillment;
+    var pay = checkoutState.payment || 'sur_place';
     if (!first) { toast('Indique ton prénom', 'err'); return; }
-    if (!phone) { toast('Indique ton téléphone', 'err'); return; }
-    if (mode === 'Livraison' && !el('coAddr').value.trim()) { toast('Indique ton adresse de livraison', 'err'); return; }
+    if (mode === 'Livraison') {
+      if (!phone) { toast('Le téléphone est obligatoire pour la livraison', 'err'); return; }
+      if (!el('coAddr').value.trim()) { toast('Indique ton adresse de livraison', 'err'); return; }
+    }
+    if (isOnlinePay(pay) && !onlineReady()) { toast('Paiement en ligne bientôt disponible — choisissez « Paiement sur place »', 'info'); return; }
 
     var cart = M.getCart();
     var t = cartTotals();
@@ -823,8 +873,8 @@
       customer: { firstName: first, lastName: el('coLast').value.trim(), phone: phone, email: email },
       fulfillment: mode,
       address: mode === 'Livraison' ? el('coAddr').value.trim() : '',
-      wantedDate: el('coDate').value,
-      wantedTime: el('coTime').value,
+      wantedDate: checkoutState.wantedDate,
+      wantedTime: checkoutState.wantedTime,
       note: el('coNote').value.trim(),
       items: cart,
       subtotal: t.subtotal,
@@ -832,7 +882,10 @@
       discount: t.discount,
       discountLabel: t.discountLabel,
       total: t.total,
-      loyaltyApplied: !!(checkoutState && checkoutState.loyaltyApplied)
+      loyaltyApplied: !!(checkoutState && checkoutState.loyaltyApplied),
+      paymentMethod: pay,
+      paymentStatus: (pay === 'sur_place') ? 'À payer sur place' : 'Payée',
+      paidAt: (pay === 'sur_place') ? null : new Date().toISOString()
     };
 
     M.addOrder(order);
@@ -890,7 +943,12 @@
         '<div class="adm-card" style="box-shadow:none;border:1px solid var(--line);margin:0 0 8px">' +
           itemsHTML +
           '<div class="summary-row total" style="margin-top:8px"><span>Total</span><span>' + money(order.total) + '</span></div>' +
-          '<div class="u-sub" style="margin-top:6px">' + esc(order.fulfillment) + ' · ' + esc(order.wantedDate) + ' ' + esc(order.wantedTime) + '</div>' +
+          '<div class="u-sub" style="margin-top:6px">' + esc(order.fulfillment) + ' · ' + esc(order.wantedTime) + '</div>' +
+          '<div style="margin-top:8px">' +
+            (order.paymentStatus === 'À payer sur place'
+              ? '<span class="pill pill--gold">💶 À payer sur place</span>'
+              : '<span class="pill pill--ok">✅ Payé</span>') +
+          '</div>' +
         '</div>' +
         accountBlock +
       '</div>' +

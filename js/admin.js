@@ -226,16 +226,17 @@
     var activeProducts = catalog.products.filter(function (p) { return p.available; }).length;
     var newOrders = orders.filter(function (o) { return o.status === 'Nouvelle'; }).length;
 
-    var recent = orders.slice(0, 6).map(function (o) {
+    var recent = orders.filter(within24h).map(function (o) {
       return '<tr>' +
         '<td><b>#' + o.number + '</b></td>' +
         '<td>' + esc(o.customer.firstName) + '</td>' +
         '<td>' + o.items.length + ' art.</td>' +
         '<td><b>' + money(o.total) + '</b></td>' +
+        '<td>' + payPill(o) + '</td>' +
         '<td>' + statusPill(o.status) + '</td>' +
         '<td class="no-print"><button class="btn btn--ghost btn--sm" data-open-order="' + o.id + '">Voir</button></td>' +
       '</tr>';
-    }).join('') || '<tr><td colspan="6" style="color:var(--muted)">Aucune commande pour le moment.</td></tr>';
+    }).join('') || '<tr><td colspan="7" style="color:var(--muted)">Aucune commande sur les dernières 24 h.</td></tr>';
 
     return '' +
       '<div class="stat-grid">' +
@@ -248,8 +249,10 @@
         stat(activeProducts, 'Produits actifs') +
         stat(orders.length, 'Commandes totales') +
       '</div>' +
-      '<div class="adm-card"><h3>Dernières commandes</h3><div class="table-wrap"><table class="table">' +
-        '<thead><tr><th>N°</th><th>Client</th><th>Articles</th><th>Total</th><th>Statut</th><th></th></tr></thead>' +
+      '<div class="adm-card"><h3>Dernières commandes (24 h)</h3>' +
+        '<p style="color:var(--muted);font-size:13px;margin-top:0">Conservées 24 h — restent visibles même après rafraîchissement, fermeture ou reconnexion.</p>' +
+        '<div class="table-wrap"><table class="table">' +
+        '<thead><tr><th>N°</th><th>Client</th><th>Articles</th><th>Total</th><th>Paiement</th><th>Statut</th><th></th></tr></thead>' +
         '<tbody>' + recent + '</tbody></table></div>' +
         '<button class="btn btn--red btn--sm" id="goOrders" style="margin-top:12px">Voir toutes les commandes →</button>' +
       '</div>' +
@@ -261,6 +264,16 @@
     var map = { 'Nouvelle': 'pill--red', 'En préparation': 'pill--gold', 'Prête': 'pill--gold', 'Terminée': 'pill--ok', 'Annulée': 'pill--muted' };
     return '<span class="pill ' + (map[s] || 'pill--muted') + '">' + esc(s) + '</span>';
   }
+  var PAY_LABELS = { sur_place: 'Sur place', card: 'CB', apple_pay: 'Apple Pay', google_pay: 'Google Pay' };
+  function payStatus(o) { return o.paymentStatus || (o.paidAt ? 'Payée' : (o.paymentMethod === 'sur_place' ? 'À payer sur place' : '—')); }
+  function payPill(o) {
+    var ps = payStatus(o), meth = PAY_LABELS[o.paymentMethod] || '';
+    if (ps === 'À payer sur place') return '<span class="pill pill--gold">💶 À payer sur place</span>';
+    if (ps === 'Payée') return '<span class="pill pill--ok">✅ Payé' + (meth ? ' · ' + esc(meth) : '') + '</span>';
+    return '<span class="pill pill--muted">' + esc(ps) + '</span>';
+  }
+  var DAY_MS = 24 * 3600 * 1000;
+  function within24h(o) { return (Date.now() - new Date(o.createdAt).getTime()) < DAY_MS; }
   function bindDashboard() {
     var g = el('goOrders'); if (g) g.addEventListener('click', function () { render('orders'); });
     Array.prototype.forEach.call(el('admContent').querySelectorAll('[data-open-order]'), function (b) {
@@ -307,11 +320,13 @@
         '</div>' +
         '<div class="oc-items">' + items + '</div>' +
         (o.discount > 0 ? '<div class="sub" style="color:var(--ok)">Réduction ' + esc(o.discountLabel) + ' : -' + money(o.discount) + '</div>' : '') +
+        '<div class="sub" style="margin-top:4px">💳 ' + payPill(o) + (o.paymentMethod && PAY_LABELS[o.paymentMethod] ? ' <span style="color:var(--muted)">(' + esc(PAY_LABELS[o.paymentMethod]) + ')</span>' : '') + '</div>' +
         (o.address ? '<div class="sub">📍 ' + esc(o.address) + '</div>' : '') +
-        '<div class="sub">📞 ' + esc(o.customer.phone) + (o.customer.email ? ' · ✉️ ' + esc(o.customer.email) : '') + '</div>' +
+        '<div class="sub">📞 ' + esc(o.customer.phone || '—') + (o.customer.email ? ' · ✉️ ' + esc(o.customer.email) : '') + '</div>' +
         (o.note ? '<div class="sub">📝 ' + esc(o.note) + '</div>' : '') +
         '<div class="ci-actions no-print" style="margin-top:10px;gap:8px;flex-wrap:wrap">' +
           '<select class="mini-input" style="width:auto" data-status="' + o.id + '">' + options + '</select>' +
+          (payStatus(o) === 'À payer sur place' ? '<button class="btn btn--gold btn--sm" data-mark-paid="' + o.id + '">💶 Marquer payé</button>' : '') +
           '<button class="btn btn--ghost btn--sm" data-print="' + o.id + '">🖨️ Ticket</button>' +
           '<button class="link-danger" data-del-order="' + o.id + '">Supprimer</button>' +
         '</div>' +
@@ -337,6 +352,12 @@
     });
     Array.prototype.forEach.call(el('admContent').querySelectorAll('[data-print]'), function (b) {
       b.addEventListener('click', function () { printOrder(b.getAttribute('data-print')); });
+    });
+    Array.prototype.forEach.call(el('admContent').querySelectorAll('[data-mark-paid]'), function (b) {
+      b.addEventListener('click', function () {
+        M.updateOrder(b.getAttribute('data-mark-paid'), { paymentStatus: 'Payée', paidAt: new Date().toISOString() });
+        toast('Commande marquée comme payée ✓'); render(currentSection);
+      });
     });
   }
   function openOrderModal(id) {

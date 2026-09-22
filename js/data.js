@@ -55,7 +55,11 @@
       emailjs_serviceId: 'service_djinnos',
       emailjs_templateClient: 'template_dz7ksew',
       emailjs_templateAdmin: 'template_lbk1c7z',
-      admin_notify_email: 'calulas44@gmail.com'
+      admin_notify_email: 'calulas44@gmail.com',
+      // Paiement en ligne (Stripe) — activé une fois le compte Stripe branché.
+      // Tant que c'est false, seul le paiement sur place valide une commande.
+      stripe_enabled: false,
+      stripe_publishableKey: ''
     },
 
     categories: [
