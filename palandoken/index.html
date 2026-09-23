@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>PALANDÖKEN 25 — Le kebab qui te met KO !</title>
+  <meta name="description" content="PALANDÖKEN 25 — kebabs, burgers et assiettes généreux. Commandez en ligne, personnalisez votre sandwich et passez en menu pour 1 € de plus !" />
+  <meta name="theme-color" content="#17110f" />
+  <meta property="og:title" content="PALANDÖKEN 25 — Le kebab qui te met KO !" />
+  <meta property="og:description" content="Commandez vos kebabs, burgers et assiettes en ligne. Personnalisation, menu +1 €, -10 % sur votre 2ᵉ commande." />
+  <meta property="og:image" content="assets/hero.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23E4141B'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3EP%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="container">
+      <a href="#top" class="brand" aria-label="PALANDÖKEN 25 accueil">
+        <span class="crown">♛</span> PALANDÖKEN 25
+      </a>
+      <nav class="nav">
+        <div class="nav-links">
+          <a href="#menu" class="link">Menu</a>
+          <a href="#offre" class="link">Offre Menu +1€</a>
+          <a href="#compte" class="link">Mon compte</a>
+          <a href="#infos" class="link">Infos</a>
+        </div>
+        <button class="cart-btn" id="openCart" aria-label="Ouvrir le panier">
+          🛒 Panier <span class="count" id="cartCount">0</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <a id="top"></a>
+
+  <!-- ============ BANDEAU PROMO ============ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="track" id="marqueeTrack">
+      <span>🔥 MENU pour 1 € de plus</span><span>👑 LE KEBAB QUI TE MET KO</span>
+      <span>🥙 Personnalise ton sandwich</span><span>🎁 -10 % sur ta 2ᵉ commande</span>
+      <span>🔥 MENU pour 1 € de plus</span><span>👑 LE KEBAB QUI TE MET KO</span>
+      <span>🥙 Personnalise ton sandwich</span><span>🎁 -10 % sur ta 2ᵉ commande</span>
+    </div>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-copy">
+        <span class="kicker">👑 Street-food · Fait maison</span>
+        <h1 class="hero-title">PALANDÖKEN 25<br /><span class="ko">KO&nbsp;!</span></h1>
+        <p class="hero-slogan display">Le kebab qui te met KO !</p>
+        <p class="hero-sub">Kebabs, burgers et assiettes ultra généreux. Commande en ligne, personnalise ton sandwich et régale-toi.</p>
+        <div class="hero-cta">
+          <a href="#menu" class="btn btn--red btn--lg">🍽️ Commander maintenant</a>
+          <a href="#offre" class="btn btn--ghost btn--lg" style="color:#fff;border-color:rgba(255,255,255,.35)">Voir l'offre Menu +1€</a>
+        </div>
+        <div class="hero-meta">
+          <span>⚡ Prêt en 10-15 min</span>
+          <span id="heroHours">🕒 Tous les jours 11h30-23h</span>
+          <span>📍 <a href="#infos" style="color:#ffd9d9;text-decoration:underline">Nous trouver</a></span>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <img src="assets/hero.webp" alt="Kebab PALANDÖKEN 25 généreux tenu par le chef — Le kebab qui te met KO" />
+        <div class="hero-badge">👑 XXL</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ OFFRE MENU +1€ ============ -->
+  <section class="section" id="offre" style="padding-bottom:10px">
+    <div class="container">
+      <div class="perk-card" style="display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:center">
+        <div>
+          <span class="pill pill--gold">OFFRE MENU</span>
+          <h3 style="margin-top:10px">Passe en MENU pour <span class="text-red" style="color:var(--gold)">1 € de plus</span> !</h3>
+          <p style="color:#e9d9d4;margin:0 0 8px">À chaque sandwich ajouté au panier, on te propose le menu : <b>+1 boisson au choix</b> pour seulement 1 €. Coca, Oasis, Ayran, Fanta, Eau… et même une Heineken 🍺 (18+).</p>
+          <a href="#menu" class="btn btn--gold">Composer mon menu</a>
+        </div>
+        <div style="text-align:center;font-size:64px">🥤🍟</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MENU ============ -->
+  <section class="section" id="menu" style="padding-top:22px">
+    <div class="container">
+      <div class="section-head">
+        <h2>Notre carte</h2>
+        <p>Choisis, personnalise, régale-toi. Tout est fait maison. 👇</p>
+      </div>
+    </div>
+    <div class="cat-bar">
+      <div class="container">
+        <div class="scroller" id="catBar"><!-- chips catégories injectées --></div>
+      </div>
+    </div>
+    <div class="container" id="menuContainer" style="margin-top:18px">
+      <!-- catégories + produits injectés par client.js -->
+    </div>
+  </section>
+
+  <!-- ============ AVANTAGE COMPTE ============ -->
+  <section class="section" id="compte">
+    <div class="container">
+      <div class="perk-card" style="display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center">
+        <div>
+          <span class="pill pill--red" style="background:rgba(255,255,255,.15);color:#fff">FIDÉLITÉ</span>
+          <h3 style="margin-top:10px">Crée ton compte, gagne <span class="big-discount">-10%</span></h3>
+          <p style="color:#e9d9d4">Après ta première commande, crée ton compte et profite de <b>-10 % sur ta prochaine commande</b>. Réduction activée automatiquement <b>24 h après</b> ta 1ʳᵉ commande. 🎁</p>
+          <button class="btn btn--gold" id="openAccountBtn">Créer mon compte</button>
+          <div id="loyaltyStatusBox" style="margin-top:12px"></div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:74px">🎁</div>
+          <p style="color:#e9d9d4;font-size:13px;margin:0">Sans engagement · e-mail de confirmation à chaque commande</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INFOS ============ -->
+  <section class="section" id="infos" style="padding-top:6px">
+    <div class="container">
+      <div class="menu-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+        <div class="adm-card" style="margin:0"><h3>📍 Adresse</h3><p id="infoAddress" style="color:var(--muted);margin:0"></p></div>
+        <div class="adm-card" style="margin:0"><h3>🕒 Horaires</h3><p id="infoHours" style="color:var(--muted);margin:0"></p></div>
+        <div class="adm-card" style="margin:0"><h3>📞 Contact</h3><p id="infoContact" style="color:var(--muted);margin:0"></p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="display">👑 PALANDÖKEN 25</div>
+          <p>Le kebab qui te met KO ! Kebabs, burgers &amp; assiettes généreux, faits maison avec amour.</p>
+        </div>
+        <div>
+          <h4>Le resto</h4>
+          <p><a href="#menu">Notre carte</a><br /><a href="#offre">Offre Menu +1€</a><br /><a href="#compte">Fidélité -10%</a></p>
+        </div>
+        <div>
+          <h4>Infos</h4>
+          <p id="footerInfos"></p>
+          <p><a href="admin.html">Espace administrateur</a></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> PALANDÖKEN 25. Tous droits réservés.</span>
+        <span>L'abus d'alcool est dangereux pour la santé. Vente d'alcool interdite aux mineurs (-18 ans).</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ PANIER (drawer) ============ -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="cartDrawer" aria-label="Panier">
+    <div class="drawer-head">
+      <h3>🛒 Mon panier</h3>
+      <button class="icon-btn" id="closeCart" aria-label="Fermer">✕</button>
+    </div>
+    <div class="drawer-body" id="cartBody"><!-- lignes panier --></div>
+    <div class="drawer-foot" id="cartFoot"><!-- résumé + valider --></div>
+  </aside>
+
+  <!-- ============ MODALE (personnalisation / compte / checkout / confirmation) ============ -->
+  <div class="modal-wrap" id="modalWrap">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal" id="modal" role="dialog" aria-modal="true"><!-- contenu injecté --></div>
+  </div>
+
+  <!-- ============ Barre panier mobile ============ -->
+  <div class="mobile-cart-bar" id="mobileCartBar">
+    <span id="mobileCartText">0 article</span>
+    <span>Voir le panier →</span>
+  </div>
+
+  <!-- ============ Toasts ============ -->
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <!-- Firebase (synchronisation temps réel des commandes / du catalogue) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <!-- EmailJS (optionnel : e-mails automatiques si configuré dans l'admin) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/firebase-sync.js"></script>
+  <script src="js/client.js"></script>
+</body>
+</html>
