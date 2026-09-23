@@ -48,16 +48,16 @@
       // Modes de retrait
       fulfillment: ['À emporter', 'Sur place', 'Livraison'],
       deliveryFee: 2.50,
-      // Paramètres e-mail (EmailJS) — À CONFIGURER pour Palandöken 25.
-      // Site autonome : on ne réutilise PAS le compte EmailJS de MYKONOS.
-      // Renseignez ci-dessous les identifiants d'un compte EmailJS propre à
-      // Palandöken 25 (depuis l'espace admin › Réglages), puis activez l'envoi.
-      email_enabled: false,
-      emailjs_publicKey: '',
-      emailjs_serviceId: '',
-      emailjs_templateClient: '',
-      emailjs_templateAdmin: '',
-      admin_notify_email: '',
+      // Paramètres e-mail (EmailJS) — compte PARTAGÉ avec MYKONOS.
+      // Les e-mails envoient {{restaurant_name}} en variable : le même modèle
+      // affiche « Palandöken 25 » ici et « MYKONOS » là-bas. Quota 200/mois
+      // partagé entre les deux restaurants. Modifiable depuis l'admin › Réglages.
+      email_enabled: true,
+      emailjs_publicKey: 'BxBYmURytGUsgurdI',
+      emailjs_serviceId: 'service_djinnos',
+      emailjs_templateClient: 'template_dz7ksew',
+      emailjs_templateAdmin: 'template_lbk1c7z',
+      admin_notify_email: 'calulas44@gmail.com',
       // Paiement en ligne (Stripe) — activé une fois le compte Stripe branché.
       // Tant que c'est false, seul le paiement sur place valide une commande.
       stripe_enabled: false,
