@@ -1,24 +1,22 @@
 /* ============================================================================
    PALANDÖKEN 25 – Configuration Firebase
    ----------------------------------------------------------------------------
-   Ce site fonctionne de façon AUTONOME en localStorage (sur cet appareil).
+   Ce site partage le MÊME projet Firebase que MYKONOS, mais toutes ses données
+   (commandes, menu, clients, newsletter) sont rangées sous un préfixe séparé
+   « palandoken/ » dans la base de données. Résultat : les deux restaurants
+   utilisent le même compte Firebase SANS JAMAIS mélanger leurs données —
+   une commande Palandöken ne s'affiche pas chez Mykonos, et inversement.
+   (Le préfixe est appliqué automatiquement dans firebase-sync.js.)
 
-   Pour activer la synchronisation temps réel multi-appareils (réception des
-   commandes en direct sur l'ordinateur / le téléphone, comme sur MYKONOS) :
-     1. Créez un projet Firebase PROPRE à Palandöken 25 (console.firebase.google.com)
-     2. Ajoutez une "Realtime Database"
-     3. Recopiez ci-dessous la configuration de VOTRE projet, puis rechargez la page.
-
-   ⚠️  On garde volontairement une configuration VIDE ici : ainsi ce site ne
-   partage AUCUNE donnée avec le projet Firebase de MYKONOS (les deux
-   restaurants restent totalement indépendants).
+   Valeurs PUBLIQUES (prévues par Firebase pour être exposées côté client).
    ==========================================================================*/
 window.PALANDOKEN_FIREBASE = {
-  // apiKey: "…",
-  // authDomain: "votre-projet.firebaseapp.com",
-  // databaseURL: "https://votre-projet-default-rtdb.firebaseio.com",
-  // projectId: "votre-projet",
-  // storageBucket: "votre-projet.firebasestorage.app",
-  // messagingSenderId: "…",
-  // appId: "…"
+  apiKey: "AIzaSyBo9hpHKMAUb9A4sR1oBE1KieH1DEJMJK4",
+  authDomain: "mykonos-5a78c.firebaseapp.com",
+  databaseURL: "https://mykonos-5a78c-default-rtdb.firebaseio.com",
+  projectId: "mykonos-5a78c",
+  storageBucket: "mykonos-5a78c.firebasestorage.app",
+  messagingSenderId: "450430965713",
+  appId: "1:450430965713:web:fe1cd3fb23416ed0c832f0",
+  measurementId: "G-2LHD613GPS"
 };
