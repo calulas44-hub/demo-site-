@@ -1082,7 +1082,7 @@
      QR CODE (généré côté client, imprimable)
      ===================================================================== */
   function siteUrl() {
-    try { return location.origin + '/'; } catch (e) { return 'https://storied-concha-372cc7.netlify.app/'; }
+    try { return location.origin + '/'; } catch (e) { return ''; }
   }
   function viewQR() {
     return '' +
@@ -1124,7 +1124,7 @@
         x.fillStyle = g; x.fillRect(0, 0, W, H);
         x.textAlign = 'center';
         x.font = '46px Arial'; x.fillStyle = '#fff'; x.fillText('👑', W / 2, 98);
-        qrTwoTone(x, 'MYKO', '#ffffff', 'NOS', '#E4141B', W / 2, 190, '900 82px Arial, sans-serif');
+        qrTwoTone(x, 'PALANDÖKEN', '#ffffff', ' 25', '#E4141B', W / 2, 182, '900 60px Arial, sans-serif');
         x.fillStyle = '#f5b301'; x.font = '900 30px Arial'; x.fillText('LE KEBAB QUI TE MET KO !', W / 2, 236);
         x.fillStyle = '#ffffff'; x.font = '900 44px Arial'; x.fillText('📲 SCANNEZ & COMMANDEZ', W / 2, 322);
         x.fillStyle = '#ffd9d9'; x.font = '22px Arial'; x.fillText('Commande en ligne en 2 minutes', W / 2, 358);
