@@ -75,6 +75,13 @@ mozaik/
 | Contenus du site | Annonce, bandeau, accueil, affiche, promesses, café turc, histoire, ateliers |
 | Réglages | Établissement, horaires, pause des commandes, modes, code d'accès, TVA, e-mails, sauvegarde/import |
 
+**🇹🇷 Interface en turc** : bouton « Türkçe » (écran de connexion et barre du haut).
+Toute l'interface du gérant passe en turc : menus, boutons, tableaux, messages,
+confirmations, bon de préparation imprimé. Le choix est mémorisé sur l'appareil.
+Les données ne changent pas (statuts et paiements enregistrés à l'identique) ; la
+carte, les contenus et le site client restent en français ; tickets PDF et exports
+CSV restent en français (comptabilité). Traductions : `js/admin-i18n.js`.
+
 **Règles comptables** : une commande annulée sort du CA ; un remboursement est
 déduit du CA de la commande et des encaissements du jour où il est fait ; les
 encaissements sont datés du jour du paiement. Les mêmes fonctions de calcul

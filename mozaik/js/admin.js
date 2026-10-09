@@ -26,6 +26,7 @@
   function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
   function money(n) { return M.money(n); }
+  function L(s) { return window.MOZAIK_I18N ? window.MOZAIK_I18N.t(s) : s; } // libellé traduit (FR/TR)
   function num(v, d) { var x = parseFloat(String(v).replace(',', '.')); return isNaN(x) ? (d === undefined ? 0 : d) : x; }
   function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
   function S() { return catalog.settings; }
@@ -198,7 +199,7 @@
   function notifyDesktop(o) {
     try {
       if (!('Notification' in window) || Notification.permission !== 'granted') return;
-      new Notification('☕ Nouvelle commande Mozaïk', { body: '#' + o.number + (o.table ? ' · ' + o.table.label : ' · ' + o.fulfillment) + ' · ' + M.money(o.total), tag: 'mozaik-order' });
+      new Notification(L('☕ Nouvelle commande Mozaïk'), { body: '#' + o.number + (o.table ? ' · ' + o.table.label : ' · ' + o.fulfillment) + ' · ' + M.money(o.total), tag: 'mozaik-order' });
     } catch (e) {}
   }
   function flashTitle(n) {
@@ -467,6 +468,7 @@
       '<div style="text-align:right">' + (o.paidAt ? 'Payée (' + esc(M.paymentLabel(o)) + ')' : 'À ENCAISSER') + '</div>' +
       '<hr><div style="text-align:center">Teşekkürler ! ♡</div><script>window.onload=function(){window.print();}<\/script></body></html>');
     w.document.close();
+    if (window.MOZAIK_I18N) window.MOZAIK_I18N.apply(w.document.body); // bon de préparation dans la langue de l'admin
   }
 
   /* =========================================================================

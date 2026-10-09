@@ -26,6 +26,7 @@
       <button class="btn btn--block btn--lg" id="admLoginBtn" type="submit">Entrer</button>
       <p id="admLoginErr" style="color:var(--danger);font-weight:600;min-height:22px;margin:10px 0 0"></p>
       <p style="font-size:12.5px;margin-top:10px"><a href="index.html">← Retour au site</a></p>
+      <button class="btn btn--ghost btn--sm" id="admLangLogin" type="button" data-notr style="margin-top:4px">🇹🇷 Türkçe</button>
     </form>
   </div>
 
@@ -66,6 +67,7 @@
         <button class="btn btn--ghost btn--sm adm-menu-toggle" id="admMenuToggle" type="button" aria-label="Menu">☰</button>
         <h1 id="admTitle">Tableau de bord</h1>
         <div class="right">
+          <button class="btn btn--ghost btn--sm" id="admLang" type="button" data-notr>🇹🇷 Türkçe</button>
           <span class="pill pill--muted" id="admLiveState" title="Synchronisation temps réel">⚪ Local</span>
           <button class="btn btn--sm" id="admSoundToggle" type="button" title="Alerte sonore + notification à chaque nouvelle commande">🔔 Son activé</button>
           <span class="pill pill--ok" id="admSaveState">Enregistré ✓</span>
@@ -86,6 +88,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
+  <script src="js/admin-i18n.js"></script>
   <script src="js/visuals.js"></script>
   <script src="js/data.js"></script>
   <script src="js/firebase-sync.js"></script>
