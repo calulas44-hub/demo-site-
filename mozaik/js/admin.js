@@ -936,10 +936,22 @@
      TABLES & QR CODES
      ========================================================================= */
   var posterImg = null, qrCache = {};
-  function siteBase() {
-    if (S().siteUrl) return S().siteUrl.trim();
-    try { return location.href.replace(/[#?].*$/, '').replace(/admin\.html$/, ''); } catch (e) { return ''; }
+  // Adresse de l'ESPACE CLIENT pour les QR codes. Ne pointe jamais vers l'admin, même si
+  // l'hébergeur sert la page sans « .html » (Netlify : …/admin) ou si une mauvaise adresse a été enregistrée.
+  function clientUrl(raw) {
+    var u = String(raw || '').trim().replace(/[#?].*$/, '');
+    if (!u) return '';
+    if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
+    try {
+      var x = new URL(u), path = x.pathname.replace(/\/(admin(\.html)?|index\.html)\/?$/i, '/');
+      if (!/\/$/.test(path) && !/\.[a-z0-9]{2,5}$/i.test(path.split('/').pop())) path += '/';
+      return x.origin + path;
+    } catch (e) { return ''; }
   }
+  function defaultBase() {
+    try { return clientUrl(new URL('./', location.href).href); } catch (e) { return ''; }
+  }
+  function siteBase() { return clientUrl(S().siteUrl) || defaultBase(); }
   function tableUrl(t) { var b = siteBase(); return t ? b + (b.indexOf('?') >= 0 ? '&' : '?') + 'table=' + encodeURIComponent(t.id) : b; }
   function loadPoster(cb) {
     if (posterImg) { cb(posterImg); return; }
@@ -1041,7 +1053,7 @@
       $$('[data-tdel]').forEach(function (b) { b.addEventListener('click', function () { var t = catalog.tables[+b.getAttribute('data-tdel')]; if (!confirm('Supprimer ' + t.label + ' ? Son QR code ne fonctionnera plus.')) return; catalog.tables.splice(+b.getAttribute('data-tdel'), 1); persist(); render('tables'); }); });
       $$('[data-tdl]').forEach(function (b) { b.addEventListener('click', function () { var t = catalog.tables[+b.getAttribute('data-tdl')]; cardFor(t, function (d) { if (d) { downloadData('mozaik-qr-' + slug(t.label) + '.png', d); toast('QR téléchargé ✓'); } }); }); });
       $$('[data-tpr]').forEach(function (b) { b.addEventListener('click', function () { printCards([catalog.tables[+b.getAttribute('data-tpr')]]); }); });
-      el('qrSaveBase').addEventListener('click', function () { var v = el('qrBase').value.trim(); S().siteUrl = (v === location.href.replace(/[#?].*$/, '').replace(/admin\.html$/, '')) ? '' : v; qrCache = {}; persist(); render('tables'); toast('Adresse enregistrée'); });
+      el('qrSaveBase').addEventListener('click', function () { var v = clientUrl(el('qrBase').value); S().siteUrl = (!v || v === defaultBase()) ? '' : v; qrCache = {}; persist(); render('tables'); toast('Adresse enregistrée'); });
       el('qrPoster').addEventListener('change', function () { S().qrPoster = this.checked; qrCache = {}; persist(); render('tables'); });
       el('qrPrintAll').addEventListener('click', function () { printCards(catalog.tables.filter(function (t) { return t.active !== false; })); });
       el('qrGeneral').addEventListener('click', function () { cardFor(null, function (d) { if (d) downloadData('mozaik-qr-general.png', d); }); });
