@@ -1380,7 +1380,7 @@
         '<div class="adm-card"><h3>☀️ Accueil (haut de page)</h3>' + field('Accroche', 'ctKicker', c.heroKicker) +
           field('Titre (chaque phrase terminée par un point prend une couleur : vert matcha, latte, espresso)', 'ctTitle', c.heroTitle) + area('Texte', 'ctText', c.heroText, 3) +
           field('Pastille tournante (vide = masquée)', 'ctBadge', c.heroBadge) +
-          '<div class="field"><label>Grande photo de l\'accueil</label><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="pill pill--sage">' + (c.heroImage ? 'Photo personnalisée' : 'Matchas de Mimo (par défaut)') + '</span>' +
+          '<div class="field"><label>Grande photo de l\'accueil</label><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="pill pill--sage">' + (c.heroImage ? 'Photo personnalisée' : 'Illustration barista (par défaut)') + '</span>' +
             '<label class="btn btn--ghost btn--sm">📷 Remplacer<input type="file" id="ctHeroImg" accept="image/*" hidden></label>' + (c.heroImage ? '<button class="btn btn--ghost btn--sm" type="button" id="ctHeroReset">Revenir à la photo par défaut</button>' : '') + '</div></div></div>' +
         '<div class="adm-card"><h3>⭐ Incontournables & carte</h3><p class="hint">Les produits « incontournables » se choisissent dans Produits (★ Signature). Les blocs éditoriaux de la carte se modifient dans Catégories (✏️ Chapitre).</p>' +
           '<div class="grid-2">' + field('Titre des incontournables', 'ctFeatTitle', c.featuredTitle) + field('Titre de la carte', 'ctMenuTitle', c.menuTitle) + '</div>' +

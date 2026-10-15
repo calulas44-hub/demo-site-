@@ -209,12 +209,11 @@ p { margin: 0 0 1em; }
 .dot { width: 9px; height: 9px; border-radius: 99px; background: #4f9a32; box-shadow: 0 0 0 4px rgba(79, 154, 50, .18); display: inline-block; }
 .dot--off { background: #c0592f; box-shadow: 0 0 0 4px rgba(192, 89, 47, .16); }
 
-.hero-visual { position: relative; margin: 0; width: 100%; max-width: 520px; justify-self: center; aspect-ratio: 5 / 6; }
-.hv-main { position: absolute; left: 6%; top: 0; width: 70%; height: 86%; border-radius: 999px 999px 26px 26px; overflow: hidden; box-shadow: var(--shadow-lg); border: 6px solid var(--paper); background: var(--cream-2); }
-.hv-main img, .hv-second img { width: 100%; height: 100%; object-fit: cover; }
-.hv-second { position: absolute; right: 0; bottom: 0; width: 46%; aspect-ratio: 4 / 5; border-radius: 26px; overflow: hidden; border: 6px solid var(--paper); box-shadow: var(--shadow-lg); transform: rotate(4deg); background: var(--cream-2); }
-.hv-tiles { position: absolute; left: 0; bottom: 4%; width: 34%; aspect-ratio: 1; background: var(--tiles); border-radius: 22px; transform: rotate(-6deg); z-index: -1; }
-.hv-badge { position: absolute; right: 4%; top: 6%; width: 118px; height: 118px; z-index: 2; }
+.hero-visual { position: relative; margin: 0; width: 100%; max-width: 500px; justify-self: center; aspect-ratio: 4 / 5; }
+.hv-main { position: absolute; left: 5%; top: 0; width: 90%; height: 97%; border-radius: 999px 999px 30px 30px; overflow: hidden; box-shadow: var(--shadow-lg); border: 6px solid var(--paper); background: var(--cream-2); }
+.hv-main img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
+.hv-tiles { position: absolute; left: -3%; bottom: -3%; width: 38%; aspect-ratio: 1; background: var(--tiles); border-radius: 22px; transform: rotate(-6deg); z-index: -1; }
+.hv-badge { position: absolute; right: -2%; top: 8%; width: 118px; height: 118px; z-index: 2; }
 .hv-badge > svg { width: 100%; height: 100%; animation: miSpin 22s linear infinite; }
 .hv-badge .core { position: absolute; inset: 30px; border-radius: 50%; background: var(--ink); display: grid; place-items: center; }
 .hv-badge .core .mi-mark { width: 34px; height: 34px; }

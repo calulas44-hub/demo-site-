@@ -46,7 +46,7 @@ Adresse confirmée par le créateur du site et le registre : **62 rue Boulegon**
 
 | Principe Sunbeam | Traduction Mimo |
 |---|---|
-| Héros immersif, typographie géante | « Matcha. Latte. Cookie. » en 3 couleurs de boissons + photos réelles en arche |
+| Héros immersif, typographie géante | « Matcha. Latte. Cookie. » en 3 couleurs de boissons + illustration barista en arche (image fournie, générée : ne pas la présenter comme une personne de l'équipe) |
 | Bandeau horaires en haut | Bandeau « Ouvert aujourd'hui jusqu'à 18h · Mer–Lun 10h–18h » **en direct** |
 | Listes d'ingrédients qui défilent | Bandeau défilant des **ingrédients de la carte** (vanille de Madagascar, fleur de sel…) |
 | Catégories éditoriales alternées photo / texte | « Chapitres » de la carte (Les classiques, Coffee, Matcha, Gâteaux), éditables |
