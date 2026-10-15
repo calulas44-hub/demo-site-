@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mimo — Espace gérant</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#f6c33b" />
+  <link rel="stylesheet" href="css/mimo.css" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+</head>
+<body class="adm-body">
+
+  <!-- ============ CONNEXION ============ -->
+  <div class="adm-login" id="admLogin">
+    <form class="card" id="admLoginForm" autocomplete="off">
+      <div id="loginBadge"></div>
+      <p class="muted" style="margin:6px 0 16px">Espace gérant</p>
+      <div class="field">
+        <label class="sr-only" for="admCode">Code d'accès</label>
+        <input class="input code-input" id="admCode" type="password" inputmode="numeric" maxlength="32" placeholder="••••" autocomplete="off" />
+      </div>
+      <button class="btn btn--block btn--lg" id="admLoginBtn" type="submit">Entrer</button>
+      <p id="admLoginErr" style="color:var(--danger);font-weight:600;min-height:22px;margin:10px 0 0"></p>
+      <p style="font-size:12.5px;margin-top:10px"><a href="index.html">← Retour au site</a></p>
+      <button class="btn btn--ghost btn--sm hidden" id="admLangLogin" type="button" data-notr style="margin-top:4px">🇹🇷 Türkçe</button>
+    </form>
+  </div>
+
+  <!-- ============ APPLICATION ============ -->
+  <div class="adm-shell hidden" id="admApp">
+    <aside class="adm-side" id="admSide">
+      <span class="brand"><span id="sideMark"></span><span><span class="brand-name">Mimo</span><span class="brand-sub">ESPACE GÉRANT</span></span></span>
+      <nav class="adm-nav" id="admNav">
+        <div class="grp">Service</div>
+        <button data-sec="dashboard" type="button"><span class="em">📊</span> Tableau de bord</button>
+        <button data-sec="orders" type="button"><span class="em">🧾</span> Commandes en cours <span class="badge hidden" id="navNewBadge">0</span></button>
+        <button data-sec="history" type="button"><span class="em">🗂️</span> Historique</button>
+        <div class="grp">Carte</div>
+        <button data-sec="products" type="button"><span class="em">🍵</span> Produits</button>
+        <button data-sec="categories" type="button"><span class="em">📚</span> Catégories</button>
+        <button data-sec="options" type="button"><span class="em">🧩</span> Options &amp; suppléments</button>
+        <button data-sec="suggestions" type="button"><span class="em">✨</span> Suggestions panier</button>
+        <div class="grp">Salle &amp; clients</div>
+        <button data-sec="tables" type="button"><span class="em">📱</span> Tables &amp; QR codes</button>
+        <button data-sec="promos" type="button"><span class="em">🏷️</span> Offres &amp; codes promo</button>
+        <button data-sec="customers" type="button"><span class="em">👥</span> Clients</button>
+        <button data-sec="newsletter" type="button"><span class="em">📧</span> Newsletter</button>
+        <div class="grp">Gestion</div>
+        <button data-sec="compta" type="button"><span class="em">📈</span> Comptabilité</button>
+        <button data-sec="tickets" type="button"><span class="em">🧮</span> Tickets de caisse</button>
+        <div class="grp">Site</div>
+        <button data-sec="content" type="button"><span class="em">🖼️</span> Contenus du site</button>
+        <button data-sec="settings" type="button"><span class="em">⚙️</span> Réglages</button>
+      </nav>
+      <div style="padding:14px 6px;margin-top:10px;border-top:1px solid rgba(255,255,255,.1);display:grid;gap:8px">
+        <a href="index.html" class="btn btn--sage btn--sm btn--block" target="_blank" rel="noopener">Voir le site ↗</a>
+        <button class="btn btn--ghost btn--sm btn--block" id="admLogout" type="button" style="color:#f3d9a0;border-color:rgba(255,255,255,.2)">Déconnexion</button>
+      </div>
+    </aside>
+
+    <main class="adm-main">
+      <div class="adm-topbar no-print">
+        <button class="btn btn--ghost btn--sm adm-menu-toggle" id="admMenuToggle" type="button" aria-label="Menu">☰</button>
+        <h1 id="admTitle">Tableau de bord</h1>
+        <div class="right">
+          <button class="btn btn--ghost btn--sm hidden" id="admLang" type="button" data-notr>🇹🇷 Türkçe</button>
+          <span class="pill pill--muted" id="admLiveState" title="Synchronisation temps réel">⚪ Local</span>
+          <button class="btn btn--sm" id="admSoundToggle" type="button" title="Alerte sonore + notification à chaque nouvelle commande">🔔 Son activé</button>
+          <span class="pill pill--ok" id="admSaveState">Enregistré ✓</span>
+        </div>
+      </div>
+      <div id="admContent"></div>
+    </main>
+  </div>
+
+  <div class="overlay" id="admOverlay"></div>
+  <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+  <div class="modal-wrap" id="admModalWrap">
+    <div class="modal-backdrop" id="admModalBackdrop"></div>
+    <div class="modal" id="admModal" role="dialog" aria-modal="true"></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
+  <script src="js/admin-i18n.js"></script>
+  <script src="js/visuals.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/firebase-sync.js"></script>
+  <script src="js/vendor/qrcode.min.js"></script>
+  <script src="js/vendor/jspdf.min.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

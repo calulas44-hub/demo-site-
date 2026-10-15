@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mentions légales — Mimo, coffee shop à Aix-en-Provence</title>
+  <meta name="description" content="Mentions légales du site de Mimo, coffee shop à Aix-en-Provence : éditeur, hébergeur, propriété intellectuelle." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#f6c33b" />
+  <link rel="stylesheet" href="css/mimo.css" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand" aria-label="Mimo — accueil">
+        <span id="brandMark"></span>
+        <span><span class="brand-name">Mimo</span><span class="brand-sub">Coffee shop · Aix</span></span>
+      </a>
+      <nav class="nav"><a class="btn btn--ghost btn--sm" href="index.html">← Retour au site</a></nav>
+    </div>
+  </header>
+
+  <main class="legal-page">
+    <div class="container">
+      <span class="eyebrow">Informations légales</span>
+      <h1>Mentions légales</h1>
+      <p>Conformément à l'article 6 de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique (LCEN), voici les informations relatives à l'éditeur et à l'hébergeur de ce site.</p>
+
+      <h2>Éditeur du site</h2>
+      <div class="box">
+        <p style="margin:0">
+          <b data-legal="companyName" data-todo="Raison sociale à compléter"></b> — exploitant du coffee shop <span data-legal="restaurantName"></span><br />
+          Forme juridique : <span data-legal="legalForm"></span><span data-optional="capital"> · capital social : <span data-legal="capital"></span></span><br />
+          SIRET : <span data-legal="siret"></span> · RCS / RNE : <span data-legal="rcs"></span><br />
+          <span data-optional="vatNumber">N° de TVA intracommunautaire : <span data-legal="vatNumber"></span><br /></span>
+          Siège social : <span data-legal="headOffice"></span><br />
+          Établissement : <span data-legal="restaurantName"></span>, <span data-legal="address"></span><br />
+          Contact : <span data-legal="contactEmail" data-todo="e-mail à compléter"></span><span data-optional="contactPhone"> · <span data-legal="contactPhone"></span></span><br />
+          Directeur·rice de la publication : <span data-legal="director"></span>
+        </p>
+      </div>
+
+      <h2>Hébergement</h2>
+      <p>Le site est hébergé par <b>Netlify, Inc.</b>, 101 2nd Street, San Francisco, CA 94105, États-Unis — <a href="https://www.netlify.com" target="_blank" rel="noopener">netlify.com</a>.<br />
+      Les commandes, la carte et les comptes clients sont enregistrés dans une base <b>Firebase Realtime Database</b> (Google). Les e-mails de confirmation sont envoyés via <b>EmailJS</b> (EmailJS Pte. Ltd., Singapour). Détails dans la <a href="confidentialite.html">politique de confidentialité</a>.</p>
+
+      <h2>Commandes et prix</h2>
+      <p>Les prix affichés sont ceux de la carte de <span data-legal="restaurantName"></span>, en euros toutes taxes comprises. Une commande passée sur le site est transmise au comptoir et se règle sur place ; aucun paiement n'est demandé en ligne tant que le paiement en ligne n'est pas proposé. Les produits indiqués « au comptoir · voir l'ardoise » ne sont pas commandables en ligne.</p>
+      <p><b>Allergènes :</b> renseignez-vous au comptoir avant de commander. Vous pouvez aussi signaler une allergie dans la note de votre commande.</p>
+
+      <h2>Médiation de la consommation</h2>
+      <p>Conformément aux articles L.612-1 et suivants du Code de la consommation, le client peut recourir gratuitement à un médiateur de la consommation en cas de litige non résolu : <span data-legal="mediator" data-todo="médiateur à compléter par l'exploitant"></span>.</p>
+
+      <h2>Propriété intellectuelle</h2>
+      <p>Le nom et le logo <span data-legal="restaurantName"></span>, les photographies (issues du compte Instagram <span data-legal="instagram"></span>) et les textes de ce site appartiennent à leur auteur ou à l'exploitant. Toute reproduction sans autorisation est interdite. Les polices Fraunces et Montserrat sont utilisées sous licence SIL Open Font License et sont hébergées sur le site.</p>
+
+      <h2>Données personnelles</h2>
+      <p>Les données collectées lors d'une commande ou de la création d'un compte sont traitées conformément au RGPD : voir la <a href="confidentialite.html">politique de confidentialité</a>. Le site n'utilise ni cookie publicitaire ni outil de mesure d'audience.</p>
+
+      <p class="muted" style="margin-top:30px;font-size:13px">Dernière mise à jour : octobre 2026.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="margin-top:0;border-top:0;padding-top:0">
+        <span>© <span id="year"></span> Mimo · Coffee shop à Aix-en-Provence</span>
+        <span><a href="index.html">Accueil</a> · <a href="confidentialite.html">Confidentialité</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/visuals.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/firebase-sync.js"></script>
+  <script src="js/legal.js"></script>
+</body>
+</html>

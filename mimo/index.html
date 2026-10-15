@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mimo — Coffee shop à Aix-en-Provence · Matcha, lattes &amp; gâteaux faits maison</title>
+  <meta name="description" content="Mimo, coffee shop à Aix-en-Provence : matchas cérémonie aux purées de fruits, lattes gourmands, citronnade maison et gâteaux faits maison. Carte et prix en ligne, commande depuis votre table ou à emporter." />
+  <meta name="theme-color" content="#f6c33b" />
+  <meta name="geo.region" content="FR-13" />
+  <meta name="geo.placename" content="Aix-en-Provence" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:site_name" content="Mimo" />
+  <meta property="og:title" content="Mimo — Coffee shop à Aix-en-Provence" />
+  <meta property="og:description" content="Matchas cérémonie aux fruits, lattes gourmands et gâteaux faits maison. Commandez depuis votre table ou à emporter." />
+  <meta property="og:image" content="assets/og-mimo.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Banana matcha, banana bread latte et peach matcha sur un plateau en inox chez Mimo" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mimo — Coffee shop à Aix-en-Provence" />
+  <meta name="twitter:description" content="Matchas cérémonie aux fruits, lattes gourmands et gâteaux faits maison." />
+  <meta name="twitter:image" content="assets/og-mimo.jpg" />
+  <link rel="preload" as="font" type="font/woff2" href="fonts/fraunces-normal-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="fonts/montserrat-normal-latin.woff2" crossorigin />
+  <link rel="preload" as="image" href="assets/photos/s-trio-matcha.webp" fetchpriority="high" />
+  <script>document.documentElement.className += ' js';</script>
+  <link rel="stylesheet" href="css/mimo.css" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <script type="application/ld+json" id="jsonld">
+  {
+    "@context": "https://schema.org",
+    "@type": "CafeOrCoffeeShop",
+    "name": "Mimo",
+    "description": "Coffee shop à Aix-en-Provence : matchas cérémonie, lattes gourmands et gâteaux faits maison.",
+    "image": ["assets/og-mimo.jpg"],
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "5 rue Château de l'Horloge",
+      "postalCode": "13090",
+      "addressLocality": "Aix-en-Provence",
+      "addressRegion": "Provence-Alpes-Côte d'Azur",
+      "addressCountry": "FR"
+    },
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "10:00", "closes": "18:00" }
+    ],
+    "servesCuisine": ["Café", "Matcha", "Pâtisseries faites maison"],
+    "priceRange": "€",
+    "currenciesAccepted": "EUR",
+    "hasMenu": "#carte",
+    "sameAs": ["https://www.instagram.com/mimo.aix/"]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#carte">Aller à la carte</a>
+
+  <!-- ============ BANDEAU INFO ============ -->
+  <div class="topbar">
+    <div class="container">
+      <span id="topOpen">☀️ Mimo, coffee shop à Aix-en-Provence</span>
+      <span class="sep" aria-hidden="true">·</span>
+      <span id="topHours"></span>
+      <span class="sep" aria-hidden="true">·</span>
+      <a id="topInsta" href="https://www.instagram.com/mimo.aix/" target="_blank" rel="noopener">@mimo.aix</a>
+    </div>
+  </div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="container">
+      <a href="#top" class="brand" aria-label="Mimo — accueil">
+        <span id="brandMark"></span>
+        <span><span class="brand-name">Mimo</span><span class="brand-sub">Coffee shop · Aix</span></span>
+      </a>
+      <nav class="nav" aria-label="Navigation principale">
+        <div class="nav-links">
+          <a href="#carte">La carte</a>
+          <a href="#experience">L'expérience</a>
+          <a href="#univers">Univers</a>
+          <a href="#infos">Infos</a>
+        </div>
+        <button class="table-chip hidden" id="tableChip" type="button" aria-label="Table identifiée"></button>
+        <button class="icon-btn" id="accountBtn" type="button" aria-label="Mon compte et mes commandes" title="Mes commandes">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+        </button>
+        <button class="cart-btn" id="openCart" type="button" aria-label="Ouvrir le panier">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+          <span class="label">Panier</span> <span class="count" id="cartCount">0</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+  <a id="top"></a>
+
+  <div class="announce hidden" id="announce"></div>
+
+  <!-- ============ TABLE (QR code) ============ -->
+  <div class="table-banner hidden" id="tableBanner">
+    <div class="container">
+      <div class="tb-icon" id="tbIcon">1</div>
+      <p><b id="tbTitle">Vous êtes à la table 1</b><br /><span id="tbText">Commandez ici : on vous sert directement à table.</span></p>
+      <a href="#menu" class="btn btn--sm">Commander</a>
+    </div>
+  </div>
+  <div class="closed-banner hidden" id="closedBanner"></div>
+
+  <main id="main">
+  <!-- ============ 1. HERO ============ -->
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="container">
+      <div class="hero-copy">
+        <span class="kicker"><i></i><span id="heroKicker">Coffee shop · Aix-en-Provence</span></span>
+        <h1 class="hero-title" id="heroTitle"><span class="sr-only">Mimo, coffee shop à Aix-en-Provence : </span><span class="w w1">Matcha.</span> <span class="w w2">Latte.</span> <span class="w w3">Cookie.</span></h1>
+        <p class="hero-text" id="heroText">Des matchas cérémonie aux purées de fruits, des lattes gourmands et des gâteaux faits maison. Commandez depuis votre table, ou à emporter.</p>
+        <div class="hero-cta">
+          <a href="#menu" class="btn btn--sun btn--lg" id="heroOrderBtn">Commander <span class="arr" aria-hidden="true">↗</span></a>
+          <a href="#carte" class="btn btn--ghost btn--lg">Découvrir la carte</a>
+        </div>
+        <div class="hero-meta">
+          <span id="openNow"><i class="dot"></i> Ouvert</span>
+          <span>📍 <a href="#infos" id="heroAddress">Aix-en-Provence</a></span>
+        </div>
+      </div>
+      <figure class="hero-visual">
+        <div class="hv-tiles" aria-hidden="true"></div>
+        <div class="hv-main">
+          <img id="heroImg" src="assets/photos/s-trio-matcha.webp" width="807" height="900" alt="Banana matcha, banana bread latte et peach matcha glacés sur un plateau en inox chez Mimo" fetchpriority="high" />
+        </div>
+        <div class="hv-second">
+          <img src="assets/photos/s-duo-lattes.webp" width="807" height="1000" alt="Raspberry latte et peanut butter latte glacés, cookie matcha au chocolat blanc" loading="lazy" />
+        </div>
+        <div class="hv-badge" aria-hidden="true">
+          <svg viewBox="0 0 120 120"><defs><path id="badgeCircle" d="M60,60 m-45,0 a45,45 0 1,1 90,0 a45,45 0 1,1 -90,0"/></defs>
+            <circle cx="60" cy="60" r="59" fill="#f6c33b"/>
+            <text font-family="Montserrat, Arial, sans-serif" font-size="11" font-weight="800" fill="#2b1d14"><textPath href="#badgeCircle" textLength="280" lengthAdjust="spacingAndGlyphs" id="heroBadgeText">GÂTEAUX FAITS MAISON · GÂTEAUX FAITS MAISON ·</textPath></text>
+          </svg>
+          <span class="core" id="badgeMark"></span>
+        </div>
+        <div class="hv-mascot" id="heroMascot" aria-hidden="true"></div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ BANDEAU DÉFILANT (ingrédients de la carte) ============ -->
+  <div class="marquee" aria-hidden="true"><div class="track" id="marqueeTrack"></div></div>
+
+  <!-- ============ 2. LES INCONTOURNABLES ============ -->
+  <section class="section" id="incontournables">
+    <div class="container">
+      <div class="section-head section-head--row">
+        <div>
+          <span class="eyebrow">À ne pas manquer</span>
+          <h2 id="featuredTitle">Les incontournables</h2>
+          <p id="featuredText">Les boissons et douceurs que Mimo met à l'honneur.</p>
+        </div>
+        <div class="rail-nav" aria-hidden="true"><button type="button" id="railPrev" tabindex="-1">←</button><button type="button" id="railNext" tabindex="-1">→</button></div>
+      </div>
+      <div class="rail" id="featuredRail"></div>
+    </div>
+  </section>
+
+  <!-- ============ 3. LA CARTE ============ -->
+  <section class="section" id="carte" style="padding-top:20px">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">La carte</span>
+        <h2 id="menuTitle">La carte</h2>
+        <p id="menuText">Les prix sont ceux de la carte affichée chez Mimo.</p>
+      </div>
+
+      <!-- Offres (affichées uniquement si activées dans l'espace gérant) -->
+      <div class="offers" id="offres">
+        <div class="offer offer--student" id="studentOffer">
+          <span class="eyebrow" style="color:var(--sun)">Offre étudiante</span>
+          <div class="big" id="studentPct">−10 %</div>
+          <h3>pour les étudiants</h3>
+          <p id="studentText"></p>
+          <a href="#menu" class="btn btn--sun btn--sm">J'en profite</a>
+        </div>
+        <div class="offer offer--loyalty" id="loyaltyOffer">
+          <span class="eyebrow">Fidélité</span>
+          <h3>Créez votre compte, gagnez <span id="loyaltyPct">−10 %</span></h3>
+          <p>Après votre première commande, créez votre compte : <b>−<span id="loyaltyPct2">10</span> % sur la suivante</b>, activés automatiquement <span id="loyaltyDelay">24 h</span> après.</p>
+          <button class="btn btn--sm" id="openAccountBtn" type="button">Créer mon compte</button>
+          <div id="loyaltyStatusBox" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <div class="chapters" id="chapters"></div>
+
+      <div class="section-head menu-head" id="menu">
+        <span class="eyebrow">Commander</span>
+        <h2>Toute la carte</h2>
+        <p>Personnalisez votre boisson en un geste, puis validez : la commande part directement au comptoir.</p>
+      </div>
+    </div>
+    <div class="menu-tools">
+      <div class="container">
+        <label class="search">
+          <span class="sr-only">Rechercher sur la carte</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input type="search" id="menuSearch" placeholder="Rechercher : matcha, framboise, cookie…" autocomplete="off" />
+        </label>
+        <div class="scroller" id="catBar"></div>
+      </div>
+    </div>
+    <div class="container" id="menuContainer"></div>
+    <div class="container">
+      <div class="menu-notes">
+        <button class="menu-photo-btn" id="menuPhotoBtn" type="button">
+          <img src="assets/carte-mimo.webp" alt="" loading="lazy" width="74" height="74" />
+          <span><b>Voir la carte affichée chez Mimo</b><br /><span class="muted" style="font-size:13.5px">La carte officielle, en photo.</span></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. L'EXPÉRIENCE MIMO ============ -->
+  <section class="section experience" id="experience">
+    <div class="container">
+      <div class="exp-grid">
+        <div class="exp-card reveal">
+          <span class="eyebrow" id="experienceKicker">L'expérience Mimo</span>
+          <h2 id="storyTitle">Derrière la façade jaune</h2>
+          <p class="story" id="storyText"></p>
+          <div class="pillars" id="pillars"></div>
+          <div class="events hidden" id="eventsBox"><h3 id="eventsTitle"></h3><p id="eventsText" class="muted" style="margin:0"></p></div>
+        </div>
+        <div class="exp-side">
+          <div class="how-card reveal">
+            <span class="eyebrow" style="color:var(--sun)">Commande à table</span>
+            <h3 id="stepsTitle">Commander à table, en 1 minute</h3>
+            <ol class="steps" id="steps"></ol>
+            <a href="#menu" class="btn btn--sun btn--block">Voir la carte et commander</a>
+          </div>
+          <div class="mascot-card reveal">
+            <span id="expMascot" aria-hidden="true"></span>
+            <p id="storySlogan">Matcha, lattes &amp; gâteaux faits maison.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. UNIVERS VISUEL ============ -->
+  <section class="section" id="univers">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">En images</span>
+        <h2 id="galleryTitle">Univers Mimo</h2>
+        <p id="galleryText"></p>
+      </div>
+      <div class="gallery" id="gallery">
+        <button type="button" class="g-item g-1 reveal" data-zoom="assets/photos/s-trio-matcha.webp" data-alt="Banana matcha, banana bread latte et peach matcha"><img src="assets/photos/s-trio-matcha.webp" alt="Banana matcha, banana bread latte et peach matcha sur un plateau en inox" loading="lazy" width="807" height="900" /><span class="cap"><span>Banana matcha · Banana bread latte · Peach matcha</span></span></button>
+        <button type="button" class="g-item g-2 reveal" data-zoom="assets/photos/s-banana-bread.webp" data-alt="Parts de banana bread"><img src="assets/photos/s-banana-bread.webp" alt="Parts de banana bread aux pépites de chocolat, assiettes en inox" loading="lazy" width="807" height="1100" /><span class="cap"><span>Banana bread fait maison</span></span></button>
+        <button type="button" class="g-item g-3 reveal" data-zoom="assets/photos/s-duo-matcha.webp" data-alt="Strawberry matcha et peach matcha"><img src="assets/photos/s-duo-matcha.webp" alt="Strawberry matcha et peach matcha en trois couches" loading="lazy" width="807" height="820" /><span class="cap"><span>Strawberry &amp; peach matcha</span></span></button>
+        <button type="button" class="g-item g-4 reveal" data-zoom="assets/photos/s-duo-lattes.webp" data-alt="Raspberry latte et peanut butter latte"><img src="assets/photos/s-duo-lattes.webp" alt="Raspberry latte, peanut butter latte et cookie matcha au chocolat blanc" loading="lazy" width="807" height="1000" /><span class="cap"><span>Raspberry &amp; peanut butter latte</span></span></button>
+        <button type="button" class="g-item g-5 reveal" data-zoom="assets/photos/s-iced-trio.webp" data-alt="Iced latte, citronnade et cold brew"><img src="assets/photos/s-iced-trio.webp" alt="Iced latte, citronnade maison et cold brew avec un cookie" loading="lazy" width="807" height="900" /><span class="cap"><span>Iced latte · Citronnade · Cold brew</span></span></button>
+        <div class="g-item g-6 reveal"><div><b>@<span id="galleryHandle">mimo.aix</span></b><br /><a class="btn btn--sm" id="galleryInsta" href="https://www.instagram.com/mimo.aix/" target="_blank" rel="noopener" style="margin-top:10px">Suivre sur Instagram ↗</a></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6. INFOS PRATIQUES ============ -->
+  <section class="section" id="infos" style="padding-top:10px">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Nous trouver</span><h2>Infos pratiques</h2></div>
+      <div class="info-grid">
+        <div class="info-card reveal"><h3>Adresse</h3><p id="infoAddress"></p><p style="margin-top:12px"><a class="btn btn--sm btn--ghost" id="mapsLink" href="#" target="_blank" rel="noopener">Itinéraire ↗</a></p></div>
+        <div class="info-card reveal"><h3>Horaires</h3><div class="open-now" id="infoOpen"></div><table class="hours-table" id="hoursTable"></table></div>
+        <div class="info-card reveal"><h3>Contact</h3><p id="infoContact"></p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7. APPEL À L'ACTION FINAL ============ -->
+  <section class="final-cta" id="commander">
+    <div class="container">
+      <div class="final-box">
+        <h2 id="ctaTitle">Un matcha vous attend.</h2>
+        <p id="ctaText">Commandez en ligne depuis votre table, ou passez simplement nous voir.</p>
+        <div class="hero-cta">
+          <a href="#menu" class="btn btn--sun btn--lg">Commander <span class="arr" aria-hidden="true">↗</span></a>
+          <a href="#" class="btn btn--ghost btn--lg" id="ctaMaps" target="_blank" rel="noopener">Itinéraire</a>
+        </div>
+        <span id="ctaMascot" aria-hidden="true"></span>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <span class="brand"><span id="footerMark"></span><span><span class="brand-name">Mimo</span><span class="brand-sub">Coffee shop · Aix-en-Provence</span></span></span>
+          <p class="footer-tag" id="footerSlogan">Matcha, lattes &amp; gâteaux faits maison.</p>
+        </div>
+        <div><h4>Le café</h4><p><a href="#menu">La carte &amp; commande</a><br /><a href="#incontournables">Les incontournables</a><br /><a href="#experience">L'expérience Mimo</a><br /><a href="#" id="footerTrack">Suivre ma commande</a></p></div>
+        <div><h4>Infos</h4><p id="footerInfos"></p></div>
+        <div><h4>Suivre Mimo</h4><p><a id="footerInsta" href="https://www.instagram.com/mimo.aix/" target="_blank" rel="noopener">Instagram @mimo.aix</a><br /><a href="mentions-legales.html">Mentions légales</a><br /><a href="confidentialite.html">Confidentialité</a></p></div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Mimo · Coffee shop à Aix-en-Provence</span>
+        <span><a href="mentions-legales.html">Mentions légales</a> · <a href="confidentialite.html">Confidentialité</a> · <a href="admin.html" rel="nofollow">Espace gérant</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ PANIER ============ -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="cartDrawer" aria-label="Panier" aria-hidden="true">
+    <div class="drawer-head">
+      <h3>Mon panier</h3>
+      <button class="icon-btn" id="closeCart" type="button" aria-label="Fermer le panier">✕</button>
+    </div>
+    <div class="drawer-body" id="cartBody"></div>
+    <div class="drawer-foot" id="cartFoot"></div>
+  </aside>
+
+  <!-- ============ MODALE ============ -->
+  <div class="modal-wrap" id="modalWrap">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+  </div>
+
+  <button class="mobile-cart-bar" id="mobileCartBar" type="button">
+    <span><span class="mcb-count" id="mobileCartCount">0</span><span id="mobileCartText">Voir le panier</span></span>
+    <span id="mobileCartTotal">0,00 €</span>
+  </button>
+  <button class="track-pill" id="trackPill" type="button"></button>
+  <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+  <!-- Firebase (commandes en temps réel, carte synchronisée) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <!-- EmailJS (e-mails de confirmation, si activés dans l'admin) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
+  <script src="js/visuals.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/firebase-sync.js"></script>
+  <script src="js/client.js"></script>
+</body>
+</html>
