@@ -50,7 +50,7 @@ Adresse confirmée par le créateur du site et le registre : **62 rue Boulegon**
 | Bandeau horaires en haut | Bandeau « Ouvert aujourd'hui jusqu'à 18h · Mer–Lun 10h–18h » **en direct** |
 | Listes d'ingrédients qui défilent | Bandeau défilant des **ingrédients de la carte** (vanille de Madagascar, fleur de sel…) |
 | Catégories éditoriales alternées photo / texte | « Chapitres » de la carte (Les classiques, Coffee, Matcha, Gâteaux), éditables |
-| Galerie / mur de photos, réseaux sociaux | « Univers Mimo » : mosaïque cliquable des stories + lien Instagram |
+| Galerie / mur de photos, réseaux sociaux | « Univers Mimo » : mosaïque cliquable des stories + lien Instagram ; **vignette Instagram** dans l'en-tête (toujours visible, ouvre @mimo.aix dans un nouvel onglet) |
 | CTA visibles, infos pratiques, appel final | Boutons jaunes « Commander », infos (adresse, horaires du jour en surbrillance), bloc final carrelé |
 | Stickers ludiques | Pastille tournante « Gâteaux faits maison » + mascotte cookie (dessin original) |
 
@@ -185,7 +185,7 @@ confidentialité éditables, données structurées (référencement local), imag
 
 ## 10. Tests réalisés
 
-Parcours automatisé (Playwright, base temps réel simulée, 4 téléphones + comptoir) — **85 vérifications OK** :
+Parcours automatisé (Playwright, base temps réel simulée, 4 téléphones + comptoir) — **87 vérifications OK** :
 connexion (bon/mauvais code), amorçage sous `mimo/` uniquement, liste « À compléter », prix saisi →
 visible client, code promo + offre étudiante activés, QR table 4, sections de l'accueil, données
 structurées, produits « voir ardoise » non commandables, Cold Brew masqué, options et prix en direct

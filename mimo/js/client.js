@@ -117,6 +117,7 @@
     // Bandeau info
     el('topHours').textContent = M.hoursSummary(s);
     el('topInsta').href = insta; el('topInsta').textContent = '@' + handle;
+    el('instaBtn').href = insta; el('instaBtn').setAttribute('aria-label', 'Instagram @' + handle + ' (nouvel onglet)'); el('instaBtn').title = 'Suivre @' + handle + ' sur Instagram';
 
     // Héros
     el('heroKicker').textContent = c.heroKicker || '';

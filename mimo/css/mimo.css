@@ -150,6 +150,15 @@ p { margin: 0 0 1em; }
   background: var(--paper); color: var(--ink); font-size: 18px; position: relative;
 }
 .icon-btn:hover { background: var(--sun-soft); }
+/* Vignette Instagram (en-tête) */
+.insta-btn {
+  display: inline-flex; align-items: center; gap: 7px; height: 42px; padding: 0 14px 0 11px; border-radius: 999px; flex: none;
+  color: #fff; text-decoration: none; font-weight: 700; font-size: 13.5px;
+  background: radial-gradient(circle at 30% 110%, #fdd36b 0%, #f9844a 28%, #e1306c 58%, #a63bbd 82%, #6b4fd8 100%);
+  box-shadow: 0 6px 14px rgba(225, 48, 108, .25); transition: transform .15s ease, box-shadow .2s;
+}
+.insta-btn:hover { transform: translateY(-1px) rotate(-2deg); box-shadow: 0 8px 18px rgba(225, 48, 108, .35); }
+.insta-btn svg { flex: none; }
 .cart-btn {
   position: relative; background: var(--ink); color: var(--cream); border: 0; border-radius: 999px;
   padding: 10px 16px 10px 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; min-height: 44px;
@@ -556,6 +565,10 @@ body:not(.has-mobile-bar) .track-pill { bottom: calc(16px + env(safe-area-inset-
   .container { padding: 0 16px; }
   .brand-name { font-size: 24px; }
   .brand .mi-mark { width: 30px; height: 30px; }
+  .insta-btn { width: 42px; padding: 0; justify-content: center; }
+  .insta-label { display: none; }
+  .site-header .container { gap: 8px; }
+  .nav { gap: 5px; }
   .section { padding: 52px 0; }
   .offers { grid-template-columns: 1fr; }
   .hv-badge { width: 92px; height: 92px; }
@@ -681,4 +694,11 @@ body:not(.has-mobile-bar) .track-pill { bottom: calc(16px + env(safe-area-inset-
 }
 @media print {
   .no-print, .adm-side, .adm-topbar, .site-header, .topbar { display: none !important; }
+}
+
+/* Petits écrans : on garde l'en-tête sur une ligne (vignette Instagram + table + compte + panier) */
+@media (max-width: 480px) {
+  .site-header .brand-sub { display: none; }
+  .site-header .icon-btn, .site-header .insta-btn { width: 40px; height: 40px; }
+  .table-chip { padding: 7px 10px; font-size: 12.5px; }
 }
