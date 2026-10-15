@@ -1,6 +1,6 @@
 # ☀️ MIMO — Coffee shop · Aix-en-Provence · site vitrine + commande + espace gérant
 
-Site commercial complet pour **Mimo** (coffee shop de Chloé à Aix-en-Provence, Instagram
+Site commercial complet pour **Mimo** (coffee shop de Chloé, **62 rue Boulegon, 13100 Aix-en-Provence**, Instagram
 [@mimo.aix](https://www.instagram.com/mimo.aix/)) : page d'accueil éditoriale, carte officielle
 avec les vrais prix, commande à table par QR code ou à emporter, suivi en direct, et **toutes les
 fonctions de l'espace gérant de Mozaïk Coffee**.
@@ -21,11 +21,12 @@ Projet **distinct** (dossier `mimo/`) : Mozaïk et MYKONOS ne sont pas modifiés
 | Source | Ce qu'on en tire |
 |---|---|
 | **PDF fourni** (`IMG_8049.pdf`) : photo de la carte + 5 stories « Carte » de @mimo.aix | Carte complète et prix (lus ligne par ligne, recadrages à l'appui), logo « M » moutarde, mascotte cookie au trait, carreaux jaunes du comptoir, plateaux inox, verres en couches, « Open 10‑18h ». Les 5 photos de stories servent de visuels du site. |
-| [Love Spots Aix](https://aix-en-provence.love-spots.com/en/spots/eating-out/cafe-en/30126-mimo.html) (6 oct. 2026) | Chloé, façade jaune, « réconfortant, sans chichis, gourmand », adresse **5 rue Château de l'Horloge 13090**, **mer.–lun. 10h–18h, fermé le mardi**, prix (espresso 2 €, latte 5,50 €, matcha 6 €, gâteaux 3,50 €) cohérents avec la carte. |
+| [Love Spots Aix](https://aix-en-provence.love-spots.com/en/spots/eating-out/cafe-en/30126-mimo.html) (6 oct. 2026) | Chloé, façade jaune, « réconfortant, sans chichis, gourmand », **mer.–lun. 10h–18h, fermé le mardi**, prix (espresso 2 €, latte 5,50 €, matcha 6 €, gâteaux 3,50 €) cohérents avec la carte. |
+| [societe.com](https://www.societe.com/societe/mimo-103217048.html) (RNE / Insee, 13/10/2026) | **MIMO**, SARL au capital de 5 000 €, SIRET 103 217 048 00018, TVA FR93103217048, siège **62 rue Boulegon, 13100 Aix-en-Provence**, gérante Chloé Serre, immatriculée le 2 avril 2026, activité « coffee shop… sur place et à emporter ». |
 | Instagram @mimo.aix | **Non consultable depuis l'outil** (accès bloqué). Rien n'a été inventé à sa place. |
 | [Sunbeam Bagels](https://sunbeambagels.com/) | Niveau de conception uniquement (voir §3). Aucun logo, texte, graphisme ni photo repris. |
 
-⚠️ Une autre source (non vérifiée) situe Mimo rue Boulegon : l'adresse est donc **à confirmer**.
+Adresse confirmée par le créateur du site et le registre : **62 rue Boulegon** (Love Spots indiquait une autre adresse, remplacée automatiquement si elle avait déjà été enregistrée).
 
 ## 2. Direction artistique
 
@@ -127,8 +128,8 @@ codes promo (%, €, minimum, expiration, utilisations) · clients & newsletter 
 comptabilité (CA TTC/HT/TVA net des remboursements, annulations, remboursements, encaissements
 par moyen de paiement, par jour/mois, par mode, meilleures ventes, exports) · tickets de caisse
 (PDF, journal PDF, CSV) · contenus du site · réglages (établissement, horaires, pause, modes,
-code, TVA, e‑mails, sauvegarde / import / réinitialisation) · synchro temps réel + son ·
-**interface en turc** (reprise de Mozaïk, désactivée par défaut : Réglages → Langue).
+code, TVA, e‑mails, sauvegarde / import / réinitialisation) · synchro temps réel + son.
+**Retiré à la demande** : l'interface en turc de Mozaïk (sans objet pour Mimo).
 
 **Adaptations (et pourquoi)** : la section « café turc sur sable » et les « ateliers » de Mozaïk
 étaient des contenus propres à Mozaïk ; chez Mimo, la même mécanique de contenus éditables sert
@@ -139,8 +140,7 @@ confidentialité éditables, données structurées (référencement local), imag
 
 ## 7. À faire valider par Mimo (rien n'a été inventé)
 
-1. **Adresse** (Love Spots : 5 rue Château de l'Horloge, 13090 — une autre source évoque la rue
-   Boulegon) et **horaires** (mer.–lun. 10h–18h, fermé le mardi). → Admin → Réglages, puis « C'est vérifié ».
+1. **Horaires** (Love Spots : mer.–lun. 10h–18h, fermé le mardi). → Admin → Réglages, puis « C'est vérifié ».
 2. **Prix** du cookie sans gluten et du gâteau du jour (« voir ardoise ») ; **Cold Brew** proposé ou non, et à quel prix.
 3. **Parfums de sirop** (la carte indique seulement « Sirops +0,5 ») ; latte signature / matcha
    servis aussi chauds ? (seul le latte est indiqué chaud ou glacé).
@@ -148,11 +148,12 @@ confidentialité éditables, données structurées (référencement local), imag
 5. **Photos** : celles du site viennent des stories @mimo.aix (basse définition, étiquettes
    incrustées). Autorisation d'usage + photos HD (façade jaune, salle, comptoir, Chloé si elle le souhaite).
    La photo de la carte a été repostée par un autre compte (studio_mld_) : fournir une photo / un PDF propre de la carte.
-6. **Textes** : prénom « Chloé » cité (source publique), « sur place ou à emporter », service à table.
+6. **Textes** : prénom « Chloé » cité (source publique), service à table (la vente sur place et à emporter figure dans l'activité déclarée au RNE).
 7. **Nombre de tables** (4 en salle + 2 en terrasse par défaut ; Love Spots mentionne une terrasse).
 8. **Téléphone / e‑mail** publics, **e‑mail qui reçoit les commandes** (actuellement celui du créateur du site).
-9. **Mentions légales** : raison sociale, forme, SIRET, RCS/RNE, TVA, directeur de publication,
-   médiateur de la consommation, e‑mail de contact (Admin → Réglages → Mentions légales). Durées de conservation RGPD proposées à confirmer.
+9. **Mentions légales** : identité de la société remplie d'après le registre (societe.com). Restent
+   l'**e‑mail de contact** (obligatoire) et le **médiateur de la consommation** (Admin → Réglages → Mentions légales).
+   Durées de conservation RGPD proposées à confirmer.
 10. **Offres** : aucune (étudiant / fidélité désactivés, aucun code promo). À activer seulement si Mimo le décide.
 11. **Allergènes** : liste à préparer (le site renvoie vers le comptoir).
 12. **Code d'accès** `6466` à changer.
@@ -184,7 +185,7 @@ confidentialité éditables, données structurées (référencement local), imag
 
 ## 10. Tests réalisés
 
-Parcours automatisé (Playwright, base temps réel simulée, 4 téléphones + comptoir) — **84 vérifications OK** :
+Parcours automatisé (Playwright, base temps réel simulée, 4 téléphones + comptoir) — **85 vérifications OK** :
 connexion (bon/mauvais code), amorçage sous `mimo/` uniquement, liste « À compléter », prix saisi →
 visible client, code promo + offre étudiante activés, QR table 4, sections de l'accueil, données
 structurées, produits « voir ardoise » non commandables, Cold Brew masqué, options et prix en direct
@@ -194,7 +195,7 @@ encaissement, 2ᵉ appareil #1002 (code promo 5,40 €) puis annulation, 3ᵉ ap
 encaissement + remboursement partiel, comptabilité au centime (CA 20,35 €, panier moyen 10,18 €,
 CB 19,35 € / espèces 1,00 €), tickets, historique et filtres, contenus/chapitres/catégories/épuisé en
 direct, 6 QR codes vers l'espace client, aperçu des suggestions, mes commandes, photo produit
-stockée à part, pause des commandes, mentions légales alimentées par l'admin, interface turque,
+stockée à part, pause des commandes, mentions légales (registre) alimentées par l'admin, adresse rue Boulegon,
 16 ancres internes et fichiers (pages légales, images, robots) valides. Captures mobile (390 px) et bureau (1440 px) vérifiées.
 
 ## 🚀 Déploiement

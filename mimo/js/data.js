@@ -247,6 +247,7 @@
   /* ----------------------------------------------------------------------
      Catalogue par défaut
      ---------------------------------------------------------------------- */
+  var OLD_ADDRESS = '5 rue Château de l\'Horloge, 13090 Aix-en-Provence';
   var DEFAULT_CATALOG = {
     version: VERSION,
     settings: {
@@ -254,9 +255,9 @@
       tagline: 'Coffee shop',
       slogan: 'Matcha, lattes & gâteaux faits maison.',
       phone: '',
-      // Adresse publiée par Love Spots (6 octobre 2026) — À CONFIRMER par Mimo
-      address: '5 rue Château de l\'Horloge, 13090 Aix-en-Provence',
-      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Mimo+coffee+shop+5+rue+Ch%C3%A2teau+de+l%27Horloge+13090+Aix-en-Provence',
+      // Adresse confirmée (siège et établissement, RNE)
+      address: '62 rue Boulegon, 13100 Aix-en-Provence',
+      mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Mimo+coffee+shop+62+rue+Boulegon+13100+Aix-en-Provence',
       email: '',
       instagram: 'mimo.aix',
       // 0 = dimanche … 6 = samedi — Love Spots : du mercredi au lundi 10h–18h, fermé le mardi
@@ -296,12 +297,13 @@
       stripe_enabled: false,
       stripe_publishableKey: '',
       vatRate: 10,
-      // Interface de l'espace gérant en turc (fonction reprise de Mozaïk, masquée par défaut)
-      showTurkish: false,
-      // Mentions légales (à compléter par l'exploitant — affichées sur mentions-legales.html)
+      // Mentions légales (affichées sur mentions-legales.html) — source : RNE / Insee
+      // via societe.com (mise à jour du 13/10/2026). E-mail et médiateur : à compléter.
       legal: {
-        companyName: '', legalForm: '', capital: '', siret: '', rcs: '', vatNumber: '',
-        headOffice: '', director: '', contactEmail: '', contactPhone: '', mediator: ''
+        companyName: 'MIMO', legalForm: 'Société à responsabilité limitée (SARL)', capital: '5 000 €',
+        siret: '103 217 048 00018', rcs: 'SIREN 103 217 048 — immatriculée au RNE le 2 avril 2026',
+        vatNumber: 'FR93103217048', headOffice: '62 rue Boulegon, 13100 Aix-en-Provence',
+        director: 'Chloé Serre, gérante', contactEmail: '', contactPhone: '', mediator: ''
       }
     },
 
@@ -416,8 +418,14 @@
     });
     if (!stored.settings.legal || typeof stored.settings.legal !== 'object') stored.settings.legal = {};
     for (k in DEFAULT_CATALOG.settings.legal) {
-      if (!Object.prototype.hasOwnProperty.call(stored.settings.legal, k)) stored.settings.legal[k] = '';
+      if (!stored.settings.legal[k]) stored.settings.legal[k] = DEFAULT_CATALOG.settings.legal[k];
     }
+    // Ancienne adresse provisoire (Love Spots) → adresse confirmée
+    if (stored.settings.address === OLD_ADDRESS) {
+      stored.settings.address = DEFAULT_CATALOG.settings.address;
+      stored.settings.mapsUrl = DEFAULT_CATALOG.settings.mapsUrl;
+    }
+    delete stored.settings.showTurkish;
     stored.categories.forEach(function (c) { ['kicker', 'image', 'imageAlt', 'story', 'description'].forEach(function (f) { if (c[f] === undefined || c[f] === null) c[f] = ''; }); });
     if (!Array.isArray(stored.settings.openingHours) || stored.settings.openingHours.length !== 7) stored.settings.openingHours = clone(DEFAULT_CATALOG.settings.openingHours);
     if (!Array.isArray(stored.settings.fulfillment) || !stored.settings.fulfillment.length) stored.settings.fulfillment = clone(DEFAULT_CATALOG.settings.fulfillment);

@@ -9,7 +9,7 @@
    Tout est branché sur la MÊME source de données que le site client.
    Ajouts Mimo : chapitres éditoriaux des catégories, contenus de l'accueil
    (incontournables, expérience, univers, appel final), mentions légales
-   éditables, affiches QR aux couleurs de Mimo, interface turque optionnelle.
+   éditables, affiches QR aux couleurs de Mimo.
    ==========================================================================*/
 (function () {
   'use strict';
@@ -30,7 +30,7 @@
   function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
   function money(n) { return M.money(n); }
-  function L(s) { return window.MIMO_I18N ? window.MIMO_I18N.t(s) : s; } // libellé traduit (FR/TR)
+  function L(s) { return s; } // libellé affiché (interface en français)
   function num(v, d) { var x = parseFloat(String(v).replace(',', '.')); return isNaN(x) ? (d === undefined ? 0 : d) : x; }
   function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
   function S() { return catalog.settings; }
@@ -472,7 +472,6 @@
       '<div style="text-align:right">' + (o.paidAt ? 'Payée (' + esc(M.paymentLabel(o)) + ')' : 'À ENCAISSER') + '</div>' +
       '<hr><div style="text-align:center">Teşekkürler ! ♡</div><script>window.onload=function(){window.print();}<\/script></body></html>');
     w.document.close();
-    if (window.MIMO_I18N) window.MIMO_I18N.apply(w.document.body); // bon de préparation dans la langue de l'admin
   }
 
   /* =========================================================================
@@ -484,9 +483,10 @@
     if (noPrice.length) out.push('<b>' + noPrice.length + ' produit(s) sans prix</b> (« voir ardoise » sur la carte) — visibles mais non commandables : ' + noPrice.map(function (p) { return esc(p.name); }).join(', ') + '. <button class="link-btn" type="button" data-go="products">Saisir les prix</button>');
     var cb = findProduct('p_cold_brew');
     if (cb && cb.active === false && !M.hasPrice(cb)) out.push('« Cold Brew » apparaît dans les stories mais pas sur la carte : il est masqué. Ajoutez son prix et rendez-le visible s\'il est proposé. <button class="link-btn" type="button" data-go="products">Produits</button>');
-    if (!s.infoChecked) out.push('<b>Adresse et horaires à confirmer</b> : repris de Love Spots (6 oct. 2026 : 5 rue Château de l\'Horloge, 13090 · mer.–lun. 10h–18h, fermé le mardi). Une autre source évoque la rue Boulegon. <button class="link-btn" type="button" data-go="settings">Corriger</button> <button class="link-btn" type="button" id="infoChecked">C\'est vérifié ✓</button>');
+    if (!s.infoChecked) out.push('<b>Horaires à confirmer</b> : repris de Love Spots (6 oct. 2026 : mer.–lun. 10h–18h, fermé le mardi). <button class="link-btn" type="button" data-go="settings">Corriger</button> <button class="link-btn" type="button" id="infoChecked">C\'est vérifié ✓</button>');
     if (!s.phone || !s.email) out.push('Téléphone et/ou e-mail de contact non publiés : à renseigner si Mimo le souhaite. <button class="link-btn" type="button" data-go="settings">Réglages</button>');
     if (!lg.companyName || !lg.siret || !lg.director) out.push('<b>Mentions légales incomplètes</b> (raison sociale, SIRET, directeur de publication…) : obligatoires avant la mise en ligne. <button class="link-btn" type="button" data-go="settings">Compléter</button>');
+    if (!(lg.contactEmail || s.email) || !lg.mediator) out.push('Mentions légales : ' + [!(lg.contactEmail || s.email) ? 'e-mail de contact' : '', !lg.mediator ? 'médiateur de la consommation' : ''].filter(Boolean).join(' et ') + ' à renseigner. <button class="link-btn" type="button" data-go="settings">Compléter</button>');
     var noPhoto = catalog.products.filter(function (p) { return p.active !== false && !p.image; }).length;
     if (noPhoto) out.push(noPhoto + ' produit(s) affichés avec une illustration : ajoutez vos vraies photos (Produits → Modifier → Photo). Les photos actuelles viennent des stories @mimo.aix.');
     out.push('Logo : le « M » est redessiné d\'après la carte. Fournissez le fichier officiel (SVG ou PNG) pour le remplacer. Nombre de tables (4 en salle + 2 en terrasse) à ajuster. <button class="link-btn" type="button" data-go="tables">Tables</button>');
@@ -1445,7 +1445,6 @@
           field('Siège social (si différent du café)', 'lgOffice', lg.headOffice) + field('Directeur·rice de la publication', 'lgDirector', lg.director) +
           field('E-mail de contact (données personnelles)', 'lgEmail', lg.contactEmail, 'email') + field('Téléphone (facultatif)', 'lgPhone', lg.contactPhone) + '</div>' +
           field('Médiateur de la consommation (nom + site)', 'lgMediator', lg.mediator) + '</div>' +
-        '<div class="adm-card"><h3>🌐 Langue de l\'espace gérant</h3>' + sw('id="setTr"', s.showTurkish, 'Proposer l\'interface en turc (bouton « Türkçe »)') + '<p class="hint" style="margin:8px 0 0">Fonction reprise de Mozaïk. Les textes propres à Mimo ajoutés ensuite peuvent rester en français.</p></div>' +
         '<div class="adm-card"><h3>🔐 Code d\'accès</h3><p class="hint">Le code est stocké sous forme chiffrée (empreinte SHA-256). Préférez 6 caractères ou plus.</p><div class="grid-2">' +
           field('Code actuel', 'setCodeOld', '', 'password', 'autocomplete="off"') + field('Nouveau code', 'setCodeNew', '', 'password', 'autocomplete="new-password"') + '</div>' +
           '<button class="btn btn--sm" type="button" id="setCodeBtn">Changer le code</button></div>' +
@@ -1478,7 +1477,6 @@
         s.legal = { companyName: el('lgCompany').value.trim(), legalForm: el('lgForm').value.trim(), capital: el('lgCapital').value.trim(), siret: el('lgSiret').value.trim(),
           rcs: el('lgRcs').value.trim(), vatNumber: el('lgVat').value.trim(), headOffice: el('lgOffice').value.trim(), director: el('lgDirector').value.trim(),
           contactEmail: el('lgEmail').value.trim(), contactPhone: el('lgPhone').value.trim(), mediator: el('lgMediator').value.trim() };
-        s.showTurkish = el('setTr').checked; syncLangButtons();
         persist(); render('settings'); toast('Réglages enregistrés ✓');
       });
       el('setCodeBtn').addEventListener('click', function () {
@@ -1530,14 +1528,9 @@
     else if (state === 'off') { p.textContent = '🟠 Reconnexion…'; p.className = 'pill pill--warn'; }
     else { p.textContent = '⚪ Local'; p.className = 'pill pill--muted'; }
   }
-  function syncLangButtons() {
-    var show = !!S().showTurkish || !!(window.MIMO_I18N && window.MIMO_I18N.lang === 'tr');
-    ['admLang', 'admLangLogin'].forEach(function (id) { var b = el(id); if (b) b.classList.toggle('hidden', !show); });
-  }
   function bindGlobal() {
     el('loginBadge').innerHTML = ART.logoBadge();
     el('sideMark').innerHTML = ART.logoMark(ART.SUN);
-    syncLangButtons();
     el('admLoginForm').addEventListener('submit', tryLogin);
     el('admLogout').addEventListener('click', logout);
     el('admMenuToggle').addEventListener('click', function () { el('admSide').classList.toggle('show'); el('admOverlay').classList.toggle('show'); });
