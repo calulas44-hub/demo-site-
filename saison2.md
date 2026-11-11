@@ -1,44 +1,47 @@
-# Passion MD — Saison 2 : « 契約 — Le Contrat »
+# Passion MD — Saison 2 : « 義賊 — Les Hors-la-loi »
 
-> *On voulait juste un contrat. On ne savait pas ce qu'on signait.*
+> *On ne veut plus qu'on nous ouvre la porte. On veut la défoncer, pour tout le monde.*
 
 Document de direction scénaristique pour la saison 2. Il fait suite à `passation.md` et à
 l'épisode 5 (final de la saison 1, https://youtu.be/H3lzrbQmwjM).
+
+**Cap de la saison :** on abandonne complètement l'alternance, les contrats, CDD et CDI. Le but
+des héros est désormais de **sauver le pays de la misère** en vivant comme des **anti-héros** :
+hors-la-loi, recherchés, aimés par la rue et haïs par le pouvoir.
 
 ---
 
 ## 0. Sources et limites de l'analyse
 
-- **Transcription japonaise intégrale** de l'épisode 5 (dialogues, rires, cris, musique),
-  traduite ci-dessous.
+- **Transcription japonaise intégrale** de l'épisode 5, traduite ci-dessous.
 - **`passation.md`** : déroulé scène par scène de l'épisode final, personnages, règles de production.
 - Les images de la vidéo n'ont pas pu être vues : le réseau de l'environnement bloque YouTube.
-  L'analyse visuelle s'appuie donc sur le déroulé de la passation.
-- Deux erreurs de la reconnaissance vocale ont été corrigées : 「現象」 = 「原初」 (L'Origine),
+- Deux erreurs de reconnaissance vocale ont été corrigées : 「現象」 = 「原初」 (L'Origine) et
   「倒れる男」 = très probablement 「倒せない男」 (l'homme qu'on ne peut pas abattre).
 
-### Les répliques clés de l'épisode 5 (traduction)
+### Les répliques clés de l'épisode 5
 
 | Scène | Japonais | Traduction |
 |---|---|---|
 | Feu de camp | ようこそ大統領。座ってろ。 | Bienvenue, Monsieur le Président. Reste assis. |
-| Feu de camp | 本当に勝てるのか。 | On peut vraiment gagner ? |
 | Feu de camp | 1人だけ倒せない男がいる。負けたことのない男だ。 | Il existe un seul homme qu'on ne peut pas abattre. Un homme qui n'a jamais perdu. |
 | Feu de camp | 俺たちなら勝てるって。さあ、食おうぜ。 | Je te dis qu'on peut gagner. Allez, on mange. |
 | Rançon | 我々はこの国の資源の公平な分配を要求する。 | Nous exigeons une répartition équitable des ressources de ce pays. |
-| Rançon | わかった。なんでもする。／これは最後の警告だ。 | D'accord, je ferai n'importe quoi. / C'est le dernier avertissement. |
-| Conseil | 許しがたい。奴らを止めろ。ふざけるな。 | Impardonnable. Arrêtez-les. Vous vous foutez de moi ! |
+| Rançon | これは最後の警告だ。 | C'est le dernier avertissement. |
+| Conseil | 許しがたい。奴らを止めろ。 | Impardonnable. Arrêtez-les. |
 | Soleiman / Gita | もう一度チャンスを。／いや。 | Donnez-moi une autre chance. / Non. |
-| Territoire de Gita | ここどこだ。／黙れ。ここが終わりだ。 | On est où ? / Ta gueule. C'est ici que tout se termine. |
+| Territoire de Gita | 黙れ。ここが終わりだ。 | Ta gueule. C'est ici que tout se termine. |
 | Souvenir de Riyad | あいつは負けない。 | Lui, il ne perd jamais. |
-| Arrivée de Kudo | 通さない。／先にチャディを治療させてくれ。 | Tu ne passeras pas. / Laisse-moi d'abord soigner Chady. |
+| Arrivée de Kudo | 先にチャディを治療させてくれ。 | Laisse-moi d'abord soigner Chady. |
 | Duel | 領域展開・原初。／もはや死ね。 | Extension du territoire : L'Origine. / Maintenant, meurs. |
 | Flamme noire | 卑怯者。 | Lâche. |
 | Teaser (Ulas au téléphone) | ねえ、面白くなってきた。 | Hé… ça devient intéressant. |
 
-**Le détail qui change tout :** la dernière réplique de la saison reprend 「面白い」, le tic de
-langage de Gita. Elle est prononcée **après la mort de Gita**, pendant le teaser où Ulas est au
-téléphone. Quelqu'un parle désormais comme lui.
+**Le détail qui change tout :** la dernière réplique reprend 「面白い」, le tic de Gita, après
+sa mort. Quelqu'un parle désormais comme lui.
+
+**La réplique qui devient le cap de la saison :** la rançon. « Nous exigeons une répartition
+équitable des ressources de ce pays. » La saison 2 prend cette phrase au sérieux.
 
 ---
 
@@ -48,344 +51,285 @@ téléphone. Quelqu'un parle désormais comme lui.
 
 | Personnage | État à la fin de l'épisode 5 |
 |---|---|
-| **Riyad** | Il a porté l'espoir (« on peut gagner »), mais c'est le souvenir de Kudo qui a sauvé tout le monde. Il connaît Kudo depuis avant la série, et rien n'explique encore comment. |
-| **Chady** | Empalé, sauvé de justesse par Elyes. Seul membre du trio **sans pouvoir surnaturel**. Il a été la première victime. |
-| **Naël** | Transformé en Titan Bestial par la rage, puis dominé par Gita et presque achevé. Il ne contrôle pas sa transformation. |
-| **Kudo** | Invaincu. Il vient de **tuer** Gita, qui le connaissait (« Pourquoi… toi… »). Son silence pendant les retrouvailles en dit long. |
-| **Elyes** | Arrivé avec Kudo, il a refermé une blessure mortelle. On ignore tout de son origine et du prix de ses soins. |
-| **Macron** | Otage ligoté, objet d'une rançon. Son gag de fin n'a pas encore été tourné. |
-| **Le Conseil** | Humilié. Le Directeur (Ribeirax) est hors de lui. Augustin, le « Grand Maître », n'a encore rien montré. |
-| **Soleiman** | Battu par Ulas, puis jeté par Gita après lui avoir demandé « une autre chance ». Vivant, au fond du port. |
-| **Ulas** | Disparu depuis le palais. Réapparaît au téléphone et utilise le tic de Gita. |
+| **Riyad** | Il a porté l'espoir, mais c'est Kudo qui a sauvé tout le monde. Il connaît Kudo depuis avant la série, et rien n'explique comment. |
+| **Chady** | Empalé, sauvé de justesse. Seul du trio sans pouvoir surnaturel. |
+| **Naël** | Transformé en titan par la rage, puis dominé et presque achevé. Il ne contrôle rien. |
+| **Kudo** | Invaincu, mais il vient de tuer Gita, qui le connaissait (« Pourquoi… toi… »). |
+| **Elyes** | Il a refermé une blessure mortelle. On ignore tout de lui. |
+| **Le Président** | Otage ligoté. Son gag de fin n'a pas encore été tourné. |
+| **Le Conseil** | Humilié. Le Directeur est hors de lui. Augustin, le Grand Maître, n'a rien montré. |
+| **Soleiman** | Battu par Ulas, jeté par Gita après avoir demandé une seconde chance. Vivant, au fond du port. |
+| **Ulas** | Disparu depuis le palais. Réapparaît au téléphone avec le tic de Gita. |
 
 ### Conséquences
 
-1. **Une mort a été donnée.** Les garçons voulaient une alternance, et ils se retrouvent
-   complices d'une prise d'otage et témoins d'une mise à mort. Le jeu est fini.
-2. **La rançon a changé de nature.** Ils ne réclament plus un contrat : ils exigent « la répartition
-   équitable des ressources du pays ». C'est devenu une révolution.
-3. **Le monstre a été montré.** En se transformant, Naël s'est exposé. Le Conseil sait maintenant ce qu'il est.
-4. **L'invincible est entré en scène.** Le Conseil connaît désormais le nom de Kudo, et Kudo a tué l'un des siens.
+1. **Il y a eu un mort.** Aux yeux du pays, la bande du hangar a enlevé le Président et tué un homme.
+2. **Ils ont exigé publiquement la « répartition équitable des ressources ».** Ils ont parlé au
+   nom du pays. On ne peut plus faire marche arrière.
+3. **Le titan a été vu.** Le Conseil sait ce qu'est Naël.
+4. **L'invincible s'est montré.** Kudo est désormais une cible.
 
 ### Intrigues ouvertes
 
-- Qui a envoyé Gita ? Quel lien entre Kudo et Gita (« Pourquoi… toi… ») ?
-- Où est Ulas, et à qui parle-t-il au téléphone ?
-- Soleiman : vengeance contre qui, maintenant que Gita est mort ?
-- Comment Riyad connaît-il Kudo ? D'où vient son démon ?
+- Qui a envoyé Gita ? Quel lien avec Kudo ?
+- Où est Ulas, et à qui parle-t-il ?
+- Contre qui Soleiman va-t-il se venger ?
+- Comment Riyad connaît-il Kudo ?
 - Qui est Elyes ?
-- Le Conseil des « Cinq Sages » : on n'en a vraiment vu agir que trois.
-- Le Président ligoté : la conclusion de son gag.
-- **La question d'origine, jamais résolue : pourquoi le Conseil bloque-t-il les alternances ?**
-
-### Ce que la fin laisse entrevoir
-
-Le teaser oppose deux silhouettes : un ennemi rejeté qui survit (Soleiman) et un allié disparu
-qui parle comme l'ennemi (Ulas). La saison 2 doit s'emparer de ce renversement : **les lignes
-entre alliés et ennemis vont bouger**.
+- Les deux Sages jamais montrés.
+- La scène de fin du Président.
+- **Les ressources du pays : où sont-elles, et qui les garde ?**
 
 ---
 
-## 2. Le parti pris : la direction retenue
+## 2. Le concept : des anti-héros contre la misère
 
-### Concept général
+Le pays est à genoux : coupures de courant, files d'attente pour manger, hôpitaux sans
+médicaments. Les quartiers de Marseille en sont la vitrine. Ce n'est pas une fatalité. Le
+**Conseil des Sages** stocke les richesses du pays dans **La Réserve** : nourriture,
+médicaments, énergie, argent. Il maintient le peuple dans le manque pour le tenir.
 
-La saison 1 posait une question qu'elle n'a jamais résolue : **pourquoi le Conseil des Sages
-bloque-t-il les contrats d'alternance ?** La saison 2 y répond, et cette réponse redéfinit
-tout l'univers sans contredire un seul événement :
+Riyad, Chady, Naël et ceux qui les rejoignent deviennent des **義賊 (gizoku), des voleurs
+justes**. Ils attaquent les convois de la Réserve escortés par la Marine et redistribuent tout
+dans les quartiers. **Ce ne sont pas des héros.** Ils ont pris un otage, un homme est mort à
+cause d'eux, leurs combats détruisent des rues. Le pouvoir les appelle terroristes. La rue les
+protège.
 
-> **Dans ce monde, un contrat signé avec le Conseil est un pacte. Il donne un pouvoir en échange
-> de clauses de loyauté.** Les amiraux, Gita et Kudo tiennent tous leur force d'un contrat.
-> Le démon de Riyad et le titan de Naël sont des **pouvoirs sauvages, nés sans contrat**,
-> c'est-à-dire ce que le Conseil redoute le plus.
-> Leurs candidatures n'ont jamais été refusées. **Elles ont été mises sous surveillance.**
+**La question de la saison :** *peut-on sauver un pays sans devenir ce qu'on combat ?*
 
-On reste dans l'esprit de Passion MD : la bureaucratie de l'alternance (convention tripartite,
-période d'essai, préavis, CDD, CDI) devient un système magique traité **avec un sérieux absolu**.
-Le décalage produit l'humour, et les enjeux restent réels.
+### Pourquoi cette direction est la plus forte
 
-### Pourquoi c'est la direction la plus forte
-
-- **Elle part de l'ADN de la série** (l'alternance, le Conseil) au lieu d'importer une menace extérieure.
-- **Elle explique les mystères existants avec une seule mécanique** : Gita, Kudo, Ulas, Soleiman et le tic 「面白い」.
-- **Elle règle le problème du personnage invincible.** Un Kudo tout-puissant tue la tension.
-  Le contrat lui impose un compte à rebours au lieu de l'affaiblir arbitrairement.
-- **Elle boucle avec la rançon.** Les héros exigeaient « la répartition équitable des
-  ressources ». À la fin de la saison 2, ils l'obtiennent, au prix fort.
-
-Ce qu'on écarte : un tournoi, un nouveau grand méchant venu de nulle part, un saut dans le temps.
-On écarte aussi définitivement le volet fiscal (URSSAF, impôts), déjà abandonné.
+- **Elle sort directement de la saison 1.** La rançon exigeait déjà la répartition équitable
+  des ressources : la saison 2 la rend concrète.
+- **Elle donne un vrai statut d'anti-héros.** Les héros gagnent parfois au prix d'innocents, et
+  doivent l'assumer.
+- **Elle donne un rôle au peuple.** Les quartiers deviennent un personnage collectif qui peut
+  les protéger ou les livrer.
+- **Elle garde le ton de la série :** le sérieux épique, le « Ta gueule », le Président en otage.
 
 ---
 
 ## 3. Le point de départ
 
-### Première image de la saison (cold open)
-
-On est sous l'eau, dans le silence. Soleiman retient son souffle au fond du Vieux-Port. On entend
-en écho : 「もう一度チャンスを」 / 「いや」. Il remonte et s'effondre sur le quai à l'aube, avec
-Notre-Dame-de-la-Garde au loin. Ses épaulettes dorées **tombent en poussière**, et la broderie
-« riffi_slmn » dans son dos s'efface. Il comprend.
-
-> 「…解約、か。」 — « …Résilié, alors. »
-
-Gita ne l'a pas seulement jeté par la fenêtre. **Il l'a licencié.** Soleiman devient la première
-démonstration de ce que signifie perdre son contrat.
+### Ouverture : Soleiman découvre la misère
+On est sous l'eau. Soleiman entend en écho : 「もう一度チャンスを」 / 「いや」. Il s'échoue sur le
+Vieux-Port à l'aube. Personne de son camp ne vient le chercher. C'est une **famille pauvre du
+port** qui le traîne chez elle, le soigne avec presque rien et partage avec lui le peu de pain
+qu'elle a. Pour la première fois, l'amiral qui escortait les richesses du pays voit ce qu'il
+protégeait vraiment.
 
 ### Le matin d'après, au hangar
+- **Kudo** brûle le corps de Gita à l'aube et garde ses lunettes dorées. À Riyad, il dit :
+  「…兄弟だ。」 « …C'était mon frère. » Ils ne sont pas frères de sang : ils ont été formés
+  ensemble par Augustin.
+- **Le gag du Président.** La télé diffuse un discours du Président… alors qu'il est ligoté
+  au hangar. **C'est un double.** Silence. Le vrai Président, ligoté, fixe l'écran : 「…あれ、誰？」
+  « …C'est qui, lui ? » Il tombe de sa chaise. Pour la bande, l'otage ne vaut plus rien, et le
+  pouvoir n'est qu'une façade.
+- **Le départ de Kudo.** Riyad veut aller plus loin et sauver le pays entier. Kudo refuse :
+  > Kudo : 「俺は国を救わない。愛する者を守るだけだ。」
+  > « Je ne sauve pas un pays. Je protège ceux que j'aime. »
+  > Riyad : 「なら、俺たちが救う。」 « Alors c'est nous qui le sauverons. »
 
-- **Kudo** est seul à l'aube et brûle le corps de Gita. Il garde ses lunettes cerclées d'or.
-  Riyad le rejoint : 「誰だったんだ。」 « C'était qui ? » Kudo : 「…兄弟だ。」 « …Mon frère. »
-  (Ils ne sont pas frères de sang.)
-- **Elyes** change un bandage en cachette : il porte sur son propre ventre la blessure de Chady.
-  Ses soins ne guérissent pas, ils **transfèrent**.
-- **Le gag Macron** (la conclusion qui manquait) : le Conseil répond enfin à la rançon. Le
-  communiqué est lu à la télé : 「大統領は優先資源ではない。」 « Le Président n'est pas une
-  ressource prioritaire. » Silence au hangar. Macron, ligoté : 「…私は有期契約なんだ。」
-  « …Je suis en CDD. » Il tombe de sa chaise. Ce gag dit aussi que **le Président n'a jamais
-  dirigé le Conseil**.
-- **Kudo**, seul, retire son gant. Un sceau vert est gravé dans sa paume, avec un chiffre : **30**.
+  Kudo s'en va seul. **Elyes reste avec les garçons**, parce qu'il a vu les quartiers et veut y
+  soigner les gens. C'est la première séparation douloureuse de la série.
 
 ### Dernière scène de l'épisode 1
-
-C'est la première vraie apparition d'**Augustin, le Grand Maître**, dans la salle du Conseil.
-On revoit l'appel du teaser, cette fois du côté d'Augustin :
-
+Première vraie apparition d'**Augustin, le Grand Maître**. On revoit l'appel du teaser, de son
+côté :
 > Ulas : 「ねえ、面白くなってきた。」 — « Hé… ça devient intéressant. »
 > Augustin : 「あいつの口癖がうつったな。」 — « Tu as attrapé son tic. »
 
-Augustin raccroche, se tourne vers le Directeur et livre la révélation :
+Il raccroche et regarde un écran où passe le portrait de Gita, présenté comme un **héros tué
+par des terroristes**. La bannière annonce l'état d'urgence et des rations réduites « à cause
+de la menace terroriste ».
+> Augustin : 「ギタは勝つために送ったのではない。殉教者になるために送ったのだ。」
+> « Je n'ai pas envoyé Gita pour gagner. Je l'ai envoyé pour devenir un martyr. »
 
-> 「ギタは勝つために送ったのではない。死ぬために送ったのだ。」
-> « Je n'ai pas envoyé Gita pour gagner. Je l'ai envoyé pour mourir. »
-
-Le plan suivant montre la paume de Kudo : **29**. Carton « À SUIVRE ».
+Carton « À SUIVRE ».
 
 ---
 
 ## 4. L'intrigue principale
 
-### Le fil conducteur : le préavis de Kudo
+### Le fil conducteur : ouvrir la Réserve
+Le but de la saison est simple et clair : **trouver la Réserve et la vider dans les rues**.
+Pour y arriver, la bande doit :
+1. Attaquer les convois pour survivre et nourrir les quartiers.
+2. Trouver où se cache la Réserve. Un seul homme le sait : Soleiman, l'ancien amiral qui
+   escortait les convois.
+3. Gagner le peuple, alors que le Conseil le retourne contre eux.
 
-Kudo et Gita étaient **les deux disciples d'Augustin**. Kudo a reçu le contrat suprême, un
-**CDI**, qui lui donne une puissance sans limite de durée. Gita n'a jamais eu qu'un contrat
-précaire et a toujours été le second.
-
-Le CDI de Kudo contient une clause : **« Le titulaire ne lèvera jamais la main sur un membre de
-la Maison. »** Augustin ne pouvait pas battre Kudo. Il a donc envoyé Gita, avec l'ordre de forcer
-Kudo à le tuer. La flamme noire « en traître » de l'épisode 5 n'était pas une lâcheté : c'était
-un sacrifice commandé.
-
-- Les derniers mots de Gita, « Pourquoi… toi… », prennent tout leur poids : *pourquoi c'est
-  toujours toi qui es choisi, et pourquoi c'est toi qui me tues.*
-- Riyad avait dit « Lui, il ne perd jamais ». C'est vrai, et **c'est en gagnant qu'il a perdu**.
-- Le contrat de Kudo est entré en **préavis de résiliation (解約予告)** : 30 jours. **Chaque
-  déploiement de L'Origine consomme des jours.** Le chiffre gravé dans sa paume est le compte à
-  rebours de la saison.
-
-La saison 2 a donc une horloge. Les héros ne peuvent plus compter sur le sauveur. Il faut
-qu'ils deviennent assez forts avant que Kudo s'éteigne.
-
-### Les intrigues secondaires, qui convergent
-
-1. **La chasse à Naël.** Le Conseil veut le Titan Bestial, le pouvoir sauvage le plus puissant
-   de la ville, et le faire **signer**.
-2. **Le double jeu d'Ulas.** Il a signé avec Augustin. Le public le sait depuis le teaser, les
-   héros non. C'est l'ironie dramatique de la saison.
-3. **La vengeance de Soleiman**, détourné de Gita (mort) vers Ulas (celui qui l'a battu).
-4. **La tentation de Chady** : le Conseil lui offre ce qu'il a toujours voulu.
-5. **Les Archives** : sous le Palais, une salle contient tous les contrats jamais signés.
-   Les brûler annulerait tout.
+### Le piège d'Augustin
+La mort de Gita était voulue. Augustin a sacrifié son disciple pour obtenir **un martyr**, et
+avec lui l'état d'urgence, la répression et le rationnement durci. Chaque victoire des héros
+lui sert de prétexte pour serrer davantage la vis : **plus ils volent, plus le pays a faim.**
+C'est le dilemme moral de la saison.
 
 ### Découpage en 6 épisodes
 
-| Ép. | Titre | Ce qui s'y passe | Sceau de Kudo |
-|---|---|---|---|
-| 1 | 「解約予告」 *Préavis* | Soleiman licencié, le corps de Gita brûlé, la blessure cachée d'Elyes, le gag « Je suis en CDD », Augustin : « envoyé pour mourir ». | 30 → 29 |
-| 2 | 「残された者たち」 *Ceux qu'on a laissés* | Abdé, promu Amiral en chef, lance une traque dans Marseille. Chady, hanté par l'empalement, reçoit l'offre du Directeur : « une alternance, un pouvoir, signe ». Soleiman piste Ulas et le voit sortir d'un rendez-vous avec les hommes d'Augustin. **Fin : Ulas frappe à la porte du hangar. « Vous m'avez manqué. »** | 29 → 26 |
-| 3 | 「帰還」 *Retour* | Le feu de camp de la saison 1, rejoué à cinq. Joie des retrouvailles. Soleiman fait irruption pour tuer Ulas : « Il a signé ! Il parle comme Gita ! » Les héros **défendent Ulas contre celui qui dit la vérité**. Kudo arrête Soleiman avec L'Origine, ce qui lui coûte cher. Naël remarque un mot, 「面白い」, qu'Ulas laisse échapper. **Fin : Ulas regarde la photo de sa petite sœur à l'hôpital, puis reçoit un SMS : « Le titan. Demain. »** | 26 → 19 |
-| 4 | 「裏切り」 *Trahison* | Ulas attire Naël dans un piège. Combat Ulas contre Riyad, de l'ami contre l'ami, avec le Black Flash contre le démon. Naël est capturé. Ulas : 「ごめん。」 « Pardon. » Kudo arrive trop tard et son aura vacille. **Fin : Soleiman, blessé, à Riyad : 「これで信じるか。」 « Maintenant tu me crois ? »** | 19 → 7 |
-| 5 | 「三者協定」 *Convention tripartite* | Assaut de l'ISEC pour libérer Naël. Le Directeur Ribeirax déploie son territoire, qui suspend tous les pouvoirs. **Le moment de Chady** (voir rebondissements). Naël se transforme sans rage pour la première fois. **Fin : le préavis de Kudo expire à l'aube. Les Archives sont sous le Palais.** | 7 → 1 |
-| 6 | 「全部燃やせ」 *Brûle tout* | Les Archives, Augustin, le dernier jour de Kudo, le retour d'Ulas, le choix de Riyad, puis le ciel étoilé et le teaser de la saison 3. | 1 → 0 |
+| Ép. | Titre | Ce qui s'y passe |
+|---|---|---|
+| 1 | 「偽物」 *Le Double* | Soleiman recueilli par une famille pauvre. Kudo brûle le corps de Gita. Le faux Président à la télé. Kudo s'en va, Elyes reste. Augustin : « Je l'ai envoyé pour devenir un martyr. » |
+| 2 | 「義賊」 *Les Voleurs justes* | Premier braquage : un convoi de la Réserve escorté par Abdé, devenu Amiral en chef. Nourriture et médicaments distribués dans les quartiers, Elyes soigne dans la rue, les murs se couvrent de tags « MD ». **Prix à payer :** le titan fait s'effondrer un immeuble, et il y a des blessés. **Fin : Ulas frappe à la porte du hangar. « Vous m'avez manqué. »** |
+| 3 | 「帰還」 *Retour* | Le feu de camp de la saison 1, rejoué avec Ulas. Soleiman débarque : il sait où est la Réserve, mais il veut la tête d'Ulas. « Il travaille pour Augustin ! Il parle comme Gita ! » Les héros **défendent Ulas contre celui qui dit la vérité**. **Fin : Ulas regarde la photo de sa petite sœur à l'hôpital. SMS d'Augustin : « Le titan. Demain. »** |
+| 4 | 「裏切り」 *Trahison* | Ulas mène la bande dans un faux convoi piégé. Combat Ulas contre Riyad. Naël est capturé : le Conseil veut faire du titan une arme contre les quartiers. Ulas : 「ごめん。」 « Pardon. » Riyad va supplier Kudo, qui refuse : 「もう誰も殺さない。」 « Je ne tuerai plus personne. » **Fin : Soleiman à Riyad : 「これで信じるか。」 « Maintenant tu me crois ? »** |
+| 5 | 「試験会場」 *La Salle d'examen* | Assaut de l'ISEC où Naël est retenu. Le territoire du Directeur suspend tous les pouvoirs. **Le moment de Chady.** Naël se transforme sans rage pour la première fois. **Fin :** le Directeur vaincu ricane : « Vous croyez que le peuple vous aime ? » Le Conseil offre aux quartiers un mois de rations complètes s'ils livrent la bande. |
+| 6 | 「解放」 *Libération* | Le peuple choisit, puis l'assaut de la Réserve sous le Palais. Voir la conclusion. |
 
 ---
 
-## 5. Les personnages : comment chacun évolue
+## 5. Les personnages
 
-### Riyad : celui qui vendait l'espoir doit devenir le rempart
-Dans la saison 1, son « on peut gagner » reposait sur un autre : Kudo.
-- **Révélation douce (ép. 1-2) :** Kudo vient du même quartier de Marseille. C'était le grand
-  qui s'en était sorti, celui qui avait « signé » à 18 ans puis disparu, la légende du quartier.
-  Riyad a grandi avec cette image. Kudo veille sur eux depuis le début parce que le Conseil
-  surveille les pouvoirs sauvages.
-- **Arc :** apprendre à protéger au lieu de promettre. Il porte le poids de la trahison d'Ulas,
-  son ami.
-- **Accomplissement (ép. 6) :** c'est son démon de lave qui brûle les Archives. Il choisit de
-  détruire ce que les trois garçons voulaient obtenir : 「俺たちは契約が欲しかった。…全部燃やしてやる。」
-  « On voulait un contrat. … Je vais tous les brûler. »
+### Riyad : le chef des hors-la-loi
+- **Révélation (ép. 1-2) :** Kudo vient du même quartier. C'était le grand qui protégeait les
+  petits avant de disparaître, la légende de la rue. Riyad a grandi avec cette image.
+- **Arc :** il voulait juste qu'on s'en sorte, et il se retrouve à porter l'espoir de tout un
+  quartier. Il doit assumer les dégâts (l'immeuble effondré, la trahison d'Ulas) et apprendre
+  où s'arrête un anti-héros.
+- **Choix final (ép. 6) :** il tient Augustin à sa merci. Il ne le tue pas :
+  「俺たちは英雄じゃない。でも、お前とは違う。」 « On n'est pas des héros. Mais on n'est pas toi. »
 
-### Chady : le seul sans pouvoir devient indispensable
-- **Point de départ :** il a frôlé la mort, il est le seul humain « normal » du groupe et se sent
-  inutile.
-- **Tentation (ép. 2) :** Ribeirax lui propose une alternance et un pouvoir s'il signe. Chady
-  garde longtemps la convention dans sa poche sans la signer.
-- **Accomplissement (ép. 5) :** dans le territoire qui suspend tous les pouvoirs, il est **le
-  seul qui peut encore se battre**. Et parce que son dossier n'a jamais existé, aucune clause ne
-  peut le lier. Il déchire la convention qu'il n'a jamais signée.
+### Chady : le seul humain devient le plus fort
+- **Point de départ :** il a frôlé la mort et se sent inutile parmi les monstres.
+- **Accomplissement (ép. 5) :** voir la scène de la Salle d'examen. Il est le seul qui peut
+  encore se battre quand tous les pouvoirs sont interdits.
 
 ### Naël : de la rage au contrôle
-- **Point de départ :** le titan n'est sorti que dans la fureur, et il a été dominé.
-- **Arc :** capturé (ép. 4), enchaîné, sommé de signer. Il refuse, même quand on essaie de lui
-  faire apposer l'empreinte de la main du titan. Ce gag sec est filmé très sérieusement.
-- **Accomplissement (ép. 5) :** sa première transformation **calme**, déclenchée pour protéger
-  Chady et non par colère. Les éclairs restent jaunes, mais les yeux du titan sont lucides. On
-  pose une règle nouvelle : la colère donne le titan, la volonté lui donne une conscience.
+- **Le prix (ép. 2) :** c'est son titan qui fait s'effondrer l'immeuble. Il porte cette
+  culpabilité.
+- **Capturé (ép. 4) :** le Conseil veut le retourner contre les quartiers.
+- **Accomplissement (ép. 5) :** sa première transformation **calme**, pour protéger et non par
+  colère. Les yeux du titan restent lucides.
 
-### Kudo : l'invincible apprend qu'il est mortel
-- **Arc :** le deuil d'un frère qu'il a tué, un compte à rebours qu'il cache, et la tentation de
-  tout régler seul.
-- **Scène clé (ép. 4) :** Elyes découvre le sceau. Kudo : 「知っていた。」 « Je le savais. » Il
-  savait, en sauvant Naël dans l'épisode 5, que tuer Gita déclencherait la clause. Il l'a fait
-  quand même.
-- **Accomplissement (ép. 6) :** son dernier déploiement de L'Origine retient Augustin le temps
-  que Riyad agisse. Les Archives brûlent et le CDI disparaît avec elles. Kudo **survit, mais
-  sans pouvoir** : ses mèches blanches redeviennent noires et ses yeux perdent leur vert. Sur le
-  toit du hangar : 「初めて負けた。…悪くない。」 « Ma première défaite. … C'est pas mal. »
+### Kudo : le protecteur qui refuse la révolution
+- **Ce qui le hante :** il a tué son frère, et le Conseil a fait de cette mort une arme contre
+  les garçons. Il se sent responsable.
+- **Sa ligne :** protéger ceux qu'il aime, ne plus jamais tuer, ne pas devenir l'arme d'une
+  guerre. C'est l'opposé moral de Riyad. Ils ont tous les deux raison, et c'est ce qui fait mal.
+- **Pourquoi son absence compte :** sans Kudo, les garçons doivent gagner seuls. C'est ce qui
+  résout le problème de l'invincible.
+- **Retour (ép. 6) :** il revient au pire moment et retient Augustin **sans le tuer**. Sur le
+  toit, à la fin : 「俺は愛する者を守る。…お前たちも、その中にいる。」
+  « Je protège ceux que j'aime. … Vous en faites partie. »
 
-### Elyes : le soin a un prix
-- **Révélation (ép. 1) :** ses soins **transfèrent** les blessures sur lui. Il porte celle de
-  Chady.
-- Le Conseil a le monopole des soins par contrat. Elyes soigne **gratuitement, sans contrat**.
-  C'est le « partage équitable des ressources » en personne, et donc une cible.
-- **Accomplissement (ép. 6) :** il va seul à l'hôpital soigner la petite sœur d'Ulas et s'effondre
-  en prenant sa maladie. C'est ce geste qui fait basculer Ulas.
+### Elyes : le médecin des rues
+- Il choisit les garçons plutôt que Kudo. Il soigne gratuitement dans les quartiers et devient
+  vite le visage le plus aimé de la bande.
+- **Accomplissement (ép. 6) :** il va seul à l'hôpital sauver la sœur d'Ulas, celle que le
+  Conseil privait de soins. C'est ce geste qui fait basculer Ulas.
 
 ### Ulas : le traître par amour
-- **Ce qu'il s'est passé :** après le palais, épuisé, il a été trouvé par Augustin. Sa petite
-  sœur est hospitalisée, et seuls les soigneurs sous contrat du Conseil peuvent la sauver. Il a
-  signé.
-- **La signature cachée :** tous ceux qui signent avec Augustin finissent par dire 「面白い」.
-  **Le tic n'était pas celui de Gita, c'était celui de leur maître.** Le contrat parle à travers
-  eux, et c'est ce qui rend le teaser de la saison 1 glaçant.
-- **Arc :** il revient au hangar (ép. 2-3), aime sincèrement ses amis et les trahit quand même
-  (ép. 4). Il fait la même chose que Kudo, mais dans l'autre sens.
-- **Accomplissement (ép. 6) :** sa sœur sauvée par Elyes et son contrat brûlé, il change de camp
-  en plein combat. Le tic disparaît avec le contrat.
+- **Ce qui s'est passé :** après le palais, sa petite sœur hospitalisée ne recevait plus de
+  médicaments. Augustin lui a promis le traitement en échange du titan.
+- **Le tic :** 「面白い」 n'était pas celui de Gita, mais celui d'Augustin. Ses disciples finissent
+  tous par parler comme lui. Ulas a passé trop de temps à ses côtés.
+- **Arc :** il revient, aime sincèrement ses amis et les trahit quand même. C'est la misère qui
+  l'a acheté, et c'est exactement ce que la bande combat.
+- **Accomplissement (ép. 6) :** quand sa sœur est sauvée sans le Conseil, il change de camp.
 
-### Soleiman : le rejeté, miroir des héros
-- Il a eu le contrat, a échoué une fois, a demandé une seconde chance et on la lui a refusée.
-  C'est exactement l'histoire des trois garçons, vue de l'autre côté.
-- **Arc :** sa vengeance se détourne de Gita (mort) vers Ulas. Il dit la vérité et personne ne
-  le croit (ép. 3). Il a raison (ép. 4) et rejoint les héros par intérêt (ép. 5).
-- **Fin de saison :** face à Ulas libéré, il ne frappe pas. Les deux trahis se tiennent côte à
-  côte. Il n'y a pas de rédemption totale : il reste en réserve pour la saison 3.
+### Soleiman : l'amiral qui a vu la misère
+- Le Conseil l'a jeté. Ce sont des pauvres qui l'ont sauvé.
+- **Son atout :** il connaît les routes des convois et l'emplacement de la Réserve.
+- **Arc :** sa vengeance contre Ulas le pousse vers la bande. La famille du port le pousse
+  vers la cause. Il dit la vérité et personne ne le croit (ép. 3), puis il a raison (ép. 4).
+- **Fin :** il ne frappe pas Ulas. Les deux hommes qui ont tout perdu se tiennent côte à côte.
 
-### Macron : le gag qui révèle tout
-- Ép. 1 : « Je suis en CDD. » Il n'a jamais dirigé le Conseil.
-- En cours de saison, oublié par son propre camp, il finit par faire la vaisselle au hangar et
-  s'assoit au feu de camp sans qu'on le lui demande : 「座ってろ。」 — 「もう座ってる。」
-  « Reste assis. » / « Je suis déjà assis. »
-- Ép. 6 : quand les Archives brûlent, son contrat de Président brûle aussi. 「…私は、自由？」
-  « …Je suis… libre ? » Il tombe de sa chaise.
+### Le Président : le gag qui révèle tout
+- Ép. 1 : il découvre son double à la télé et tombe de sa chaise.
+- En cours de saison, oublié par son camp, il finit par aider au hangar et s'assoit au feu de
+  camp sans qu'on le lui demande : 「座ってろ。」 — 「もう座ってる。」 « Reste assis. » /
+  « Je suis déjà assis. »
+- Ép. 6 : on lui ouvre enfin la porte. Il refuse de partir : 「私はここに残る。ここなら、飯が食える。」
+  « Je reste. Ici, au moins, on mange. »
 
 ---
 
 ## 6. Les antagonistes
 
-On ne crée pas de grand méchant inutile : on **développe ceux qui existent déjà**.
-
 ### Augustin, le Grand Maître (existant, enfin révélé)
-- **Rôle :** le véritable chef du Conseil, inventeur du système des contrats et maître de Gita
-  et de Kudo. Le Président n'est qu'un employé.
-- **Design :** très grand vieillard, longs cheveux blancs, **toge universitaire noire**, médaillon
-  de **sceau de cire doré** sur la poitrine. Il porte un **stylo-plume** comme un sceptre.
-- **Pouvoir :** l'encre. Les signatures deviennent des chaînes noires et dorées. Territoire :
-  **「永遠の署名」 Signature Éternelle**. Quiconque voit son nom écrit par Augustin est lié.
-- **Tic d'origine :** 「面白い」.
-- Il **survit** à la saison 2, et c'est lui qui en tire la conclusion finale.
+- **Rôle :** le vrai chef du Conseil. C'est lui qui organise la misère, maître de Gita et de
+  Kudo. Le Président n'est qu'une façade, et elle est même remplaçable.
+- **Design :** très grand vieillard, longs cheveux blancs, toge noire, médaillon doré, une pipe
+  (celle de Gita venait de lui).
+- **Méthode :** il ne gagne pas par la force mais par le récit. Martyrs, état d'urgence,
+  rationnement : il retourne chaque victoire des héros contre eux.
+- **Pouvoir :** ombres dorées et gravité, la version « mère » de ce que Gita maîtrisait.
+  Territoire : 「黄金の夜」 *La Nuit dorée*.
+- **Tic d'origine :** 「面白い」. Il survit à la saison.
 
-### Léonel Ribeirax, le Directeur (existant, enfin dangereux)
-- Dans la saison 1, il se contentait de s'énerver. Ici, il est **celui qui scelle les
-  conventions** : c'est le directeur d'école qui signe les contrats d'alternance.
-- **Territoire : 「三者協定」 Convention Tripartite.** Toute personne présente devient signataire
-  et doit respecter les articles qu'il énonce :
-  - 「第一条：この領域内において、全ての能力を停止する。」
-    « Article 1 : dans ce territoire, tout pouvoir est suspendu. »
-  - 「第二条：何人も、校長に拳を上げてはならない。」
-    « Article 2 : nul ne lèvera le poing sur le Directeur. »
-- C'est un combat **de règles, pas de force** : les héros doivent trouver la faille dans les
-  petites lignes.
+### Léonel Ribeirax, le Directeur (existant)
+- Il mène la propagande : affiches « RECHERCHÉS », primes, discours sur les terroristes.
+- **Territoire : 「試験会場」 La Salle d'examen.** Toute aide extérieure est de la triche :
+  démon, titan, aura, soins, tout est annulé.
+  > 「試験中だ。外部の力は不正とみなす。」
+  > « L'examen commence. Toute aide extérieure est considérée comme de la triche. »
 
 ### Abdé, nouvel Amiral en chef (existant)
-Il est promu à la place de Soleiman et mène la traque dans Marseille (ép. 2). C'est la menace de
-terrain qui oblige les héros à bouger.
+Il escorte les convois de la Réserve et traque la bande dans Marseille.
 
 ### Les deux sièges dans l'ombre
-Le Conseil des **Cinq** Sages n'en a montré que trois. Les deux sièges voilés restent pour la
-saison 3, sans être expliqués.
+Les deux Sages qu'on n'a jamais montrés restent pour la saison 3.
 
-### Seul nouvel élément : la petite sœur d'Ulas
-Elle n'est presque pas à l'écran : une photo, un lit d'hôpital, une respiration. Elle justifie
-la trahison d'Ulas et donne sa portée au geste d'Elyes. C'est une présence légère, simple à
-produire.
+### Seul nouvel élément : la petite sœur d'Ulas et la famille du port
+Ce sont des présences légères : une photo, un lit d'hôpital, une table pauvre. Elles donnent un
+visage à la misère, et c'est ce qui rend la cause des héros concrète.
 
 ---
 
 ## 7. Les rebondissements
 
-1. **« Je suis en CDD »** (ép. 1). Le Président n'est rien, et la prise d'otage ne sert à rien.
-   Il faut un autre plan.
-2. **« Je l'ai envoyé pour mourir »** (ép. 1). La mort de Gita était un piège, et la victoire de
-   Kudo est sa défaite.
-3. **Les pouvoirs sauvages** (ép. 2). Le Conseil n'a jamais refusé leurs alternances : il les
-   surveillait.
-4. **Le tic est une signature** (ép. 3). Tous les signataires d'Augustin parlent comme lui, et
-   Ulas a signé.
-5. **La trahison d'Ulas** (ép. 4). Le public l'a vue venir, les personnages non : c'est une
-   tragédie, pas une surprise.
-6. **« Ton dossier n'existe pas »** (ép. 5). Le moment de Chady :
-   > Ribeirax : 「お前の書類は存在しない！」 — « Ton dossier n'existe pas ! »
-   > Chady : 「だから、縛れない。」 — « Alors tu ne peux pas me lier. »
-   > Ribeirax : 「第二条！拳を上げてはならない！」 — « Article 2 ! Interdit de lever le poing ! »
+1. **Le Président a un double** (ép. 1). L'otage ne vaut plus rien.
+2. **Gita a été sacrifié pour devenir un martyr** (ép. 1). Sa mort justifie la répression.
+3. **Kudo refuse de les suivre** (ép. 1). L'invincible n'est plus là.
+4. **Le titan écrase un immeuble** (ép. 2). Les anti-héros font aussi des victimes.
+5. **Ulas a trahi** (ép. 4). Le public l'a vu venir, les héros non.
+6. **Le moment de Chady** (ép. 5) :
+   > Ribeirax : 「外部の力は不正だ！」 — « Toute aide extérieure est de la triche ! »
+   > Chady : 「ズルする力なんて、最初からない。」 — « J'ai jamais rien eu pour tricher. »
+   > Ribeirax : 「試験官に触れるな！」 — « Interdiction de toucher le surveillant ! »
    > Chady : 「殴らない。極めるだけだ。」 — « Je ne frappe pas. Je soumets. »
-   Il le prend en triangle, et le territoire se brise quand le Directeur tape.
-7. **Brûler les Archives** (ép. 6). Tous les contrats de la ville sont annulés : Ulas est libre,
-   Soleiman n'est plus rien, Kudo survit mais perd tout, et l'alternance dont rêvaient les
-   garçons disparaît pour tout le monde. **La rançon de la saison 1 est payée** : les ressources
-   sont redistribuées.
+
+   Il le prend en triangle. Le Directeur tape, et le territoire se brise.
+7. **Le peuple doit choisir** (ép. 5-6) : un mois de rations complètes contre la bande.
 
 ---
 
 ## 8. La conclusion de la saison 2
 
 ### Épisode 6, dans l'ordre
-1. Descente dans les **Archives** sous le Palais : une cathédrale de papier, des millions de
-   contrats sur des rayonnages infinis.
-2. Augustin déploie **Signature Éternelle**. Kudo, avec son dernier jour de préavis, déploie
-   **L'Origine**. C'est le duel des deux territoires, le maître contre l'élève. Kudo :
-   「最後の一日だ。」 « C'est mon dernier jour. »
-3. En parallèle, Elyes est à l'hôpital et soigne la sœur d'Ulas. Il s'effondre.
-4. Ulas reçoit l'appel de sa sœur, qui respire. Il se retourne contre Augustin.
-5. Riyad libère son démon, et la lave touche le papier. Les Archives brûlent.
-6. Le sceau de Kudo passe à **0**. Il tombe, puis se relève, sans aura, avec des cheveux
-   entièrement noirs.
-7. Augustin, intact, les regarde partir sans les poursuivre : 「面白い。」
+1. **Le choix du peuple.** La Marine fouille les quartiers avec l'offre du Conseil en main.
+   La famille du port, les gens soignés par Elyes, les gamins nourris par les convois : **tout
+   le monde se tait**. Une vieille femme ferme sa porte au nez d'Abdé. Les héros sont cachés
+   par ceux qu'ils ont aidés.
+2. **L'assaut de la Réserve** sous le Palais, grâce à Soleiman. C'est une salle immense,
+   remplie de vivres, de médicaments et d'or, alors que le pays a faim.
+3. **Augustin** déploie La Nuit dorée. Les héros sont écrasés.
+4. **Kudo arrive.** L'Origine contre La Nuit dorée, l'élève contre le maître. Kudo retient
+   Augustin **sans le tuer**.
+5. Au même moment, Elyes sauve la sœur d'Ulas à l'hôpital. Ulas reçoit l'appel et change de camp.
+6. Le démon de Riyad défonce les portes de la Réserve. **Les camions repartent vers les
+   quartiers**, conduits par la Marine de Soleiman.
+7. Riyad tient Augustin à sa merci : « On n'est pas des héros. Mais on n'est pas toi. » Il le
+   laisse. Augustin sourit : 「面白い。」
 
 ### Dernière scène
-C'est le reflet des retrouvailles de la saison 1. Le toit du hangar, le ciel étoilé, **sans
-musique**, seulement les sons d'ambiance. Riyad, Chady, Naël, Kudo, Elyes, Ulas, et Soleiman
-à l'écart. Macron tombe de sa chaise. Kudo rit pour la première fois de la série.
+C'est le reflet des retrouvailles de la saison 1 : le toit du hangar, le ciel étoilé, sans
+musique. Des affiches « RECHERCHÉS » avec leurs visages s'envolent dans le vent. En bas, le
+quartier mange. Le Président refuse de partir (« Ici, au moins, on mange ») et tombe de sa
+chaise. Kudo s'assoit avec eux. Ils sont les plus recherchés du pays, et ils n'ont jamais été
+aussi libres.
 
 ### Le teaser de la saison 3
-Dans les cendres des Archives, Augustin ramasse **la seule page qui n'a pas brûlé**. C'est un
-contrat très ancien, signé d'une écriture d'enfant : **« Riyad »**.
-> Augustin : 「面白い。」
-> Carton : **SAISON 3**
+Riyad est seul. Ses yeux deviennent rouges. Dans sa tête, une voix grave, celle de son démon,
+qui n'avait jamais parlé :
+> 「面白い。」
 
-Ce teaser ouvre ce que la saison 3 explorera : le démon de Riyad est-il vraiment sauvage ? Kudo
-a-t-il signé son CDI pour sauver Riyad enfant ? Pourquoi cette page résiste-t-elle au feu ? Et
-puisque les héros sont désormais les seuls pouvoirs « libres » d'une ville sans contrats, tout
-le monde va vouloir les posséder.
+Le tic d'Augustin, dans la bouche du démon de Riyad. Carton : **SAISON 3**.
+
+Ce teaser ouvre plusieurs pistes pour la saison 3. Qu'est-ce que le démon de Riyad, et quel
+lien a-t-il avec Augustin ? Comment Kudo a-t-il connu Riyad enfant ? Qui occupe les deux sièges
+dans l'ombre ? Le pays nourri une fois peut-il le rester ?
 
 ---
 
@@ -393,23 +337,22 @@ le monde va vouloir les posséder.
 
 | Saison | Thème | Question centrale |
 |---|---|---|
-| **S1** | La porte fermée | Pourquoi ne veut-on pas de nous ? |
-| **S2** | Le contrat | Qu'est-ce que ça coûte d'entrer ? |
-| **S3** | Le premier contrat | Qui a signé pour nous, avant nous ? (Riyad, Kudo, les deux sièges voilés) |
+| **S1** | La révolte | Jusqu'où oser se lever ? |
+| **S2** | Les hors-la-loi | Peut-on sauver un pays sans devenir ce qu'on combat ? |
+| **S3** | Le démon | Qui est vraiment Riyad, et que doit-il à Augustin ? |
 
 ---
 
 ## 10. Notes de production
 
-- **Prompts :** « le vieil homme en toge noire au sceau doré » (Augustin) ; « l'homme en costume
-  bleu marine » (le Président). Pas de noms d'œuvres tierces.
-- **Sceau de Kudo :** à ajouter en calque dans CapCut (chiffre vert lumineux dans la paume),
-  jamais généré par l'IA.
-- **Signes de perte de contrat :** épaulettes qui tombent en poussière, broderie qui s'efface,
-  mèches qui noircissent. Ils sont visuels, non sanglants et passent les filtres.
-- **Décors nouveaux :** le Vieux-Port à l'aube, une chambre d'hôpital, les Archives (le grand
-  plan de la saison, à soigner sous Kling).
-- **Réutilisation :** le feu de camp et le ciel étoilé reviennent volontairement, comme miroirs
-  de la saison 1.
-- **Musique (Suno) :** thème d'Augustin, « dark orchestral, pipe organ, ticking clock, choir » ;
-  thème du préavis, « slow piano, ticking, strings swell ».
+- **Prompts :** « le vieil homme en toge noire au médaillon doré » (Augustin) ; « l'homme en
+  costume bleu marine » (le Président et son double). Pas de noms d'œuvres tierces.
+- **Le double du Président :** même image de référence, avec un regard vide et un sourire figé.
+- **La misère à l'écran :** files d'attente, rues dans le noir, étagères de pharmacie vides.
+  Ce sont des plans calmes, faciles à générer, qui donnent du poids aux combats.
+- **Tags « MD » et affiches « RECHERCHÉS » :** à ajouter dans CapCut, jamais générés par l'IA.
+- **Nouveaux décors :** le Vieux-Port à l'aube, l'appartement de la famille pauvre, l'hôpital,
+  la Réserve (le grand plan de la saison, à soigner sous Kling).
+- **Réutilisation :** le feu de camp et le ciel étoilé reviennent comme miroirs de la saison 1.
+- **Musique (Suno) :** thème d'Augustin, « dark orchestral, pipe organ, choir » ; thème des
+  quartiers, « melancholic piano, oud, strings, hopeful ».
