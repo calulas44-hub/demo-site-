@@ -1,0 +1,50 @@
+<section class="section container">
+  <header class="page-header">
+    <h1>Recherche</h1>
+  </header>
+
+  <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
+    <label class="visually-hidden" for="SearchInput">Rechercher</label>
+    <input
+      type="search"
+      id="SearchInput"
+      name="q"
+      value="{{ search.terms | escape }}"
+      placeholder="Un parfum, une marque…"
+      autocomplete="off"
+    >
+    <input type="hidden" name="options[prefix]" value="last">
+    <button class="btn btn--primary" type="submit">Rechercher</button>
+  </form>
+
+  {%- if search.performed -%}
+    {%- paginate search.results by 16 -%}
+      <p class="muted search-count">
+        {{ search.results_count }} résultat{% if search.results_count > 1 %}s{% endif %} pour « {{ search.terms | escape }} »
+      </p>
+
+      {%- if search.results.size > 0 -%}
+        <ul class="grid" role="list">
+          {%- for item in search.results -%}
+            <li>
+              {%- if item.object_type == 'product' -%}
+                {% render 'product-card', product: item %}
+              {%- else -%}
+                <a class="result-link" href="{{ item.url }}">{{ item.title }}</a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+        {% render 'pagination', paginate: paginate %}
+      {%- else -%}
+        <p class="empty">Aucun résultat. Essaie avec un autre mot.</p>
+      {%- endif -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Recherche"
+}
+{% endschema %}

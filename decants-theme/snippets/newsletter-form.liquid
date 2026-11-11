@@ -1,0 +1,28 @@
+{%- comment -%}
+  Formulaire d'inscription à la newsletter.
+  Paramètre : id (identifiant unique pour les labels)
+{%- endcomment -%}
+{%- form 'customer', class: 'newsletter__form' -%}
+  <input type="hidden" name="contact[tags]" value="newsletter">
+  <div class="newsletter__row">
+    <label class="visually-hidden" for="NewsletterEmail-{{ id }}">Adresse e-mail</label>
+    <input
+      id="NewsletterEmail-{{ id }}"
+      type="email"
+      name="contact[email]"
+      value="{{ form.email }}"
+      autocomplete="email"
+      placeholder="Ton adresse e-mail"
+      required
+    >
+    <button class="btn btn--accent" type="submit">S'inscrire</button>
+  </div>
+  <p class="newsletter__legal">En t'inscrivant, tu acceptes de recevoir nos e-mails. Tu peux te désinscrire à tout moment.</p>
+
+  {%- if form.posted_successfully? -%}
+    <p class="form-status form-status--success" role="status">Merci, ton inscription est bien prise en compte.</p>
+  {%- endif -%}
+  {%- if form.errors -%}
+    <div class="form-status form-status--error" role="alert">{{ form.errors | default_errors }}</div>
+  {%- endif -%}
+{%- endform -%}

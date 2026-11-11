@@ -1,0 +1,66 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": { "type": "vendor" },
+        "title": { "type": "title" },
+        "price": { "type": "price" },
+        "variants": { "type": "variant_picker" },
+        "buy": {
+          "type": "buy_buttons",
+          "settings": { "show_dynamic_checkout": true }
+        },
+        "trust1": {
+          "type": "trust_item",
+          "settings": { "icon": "flask", "text": "Décanté depuis le flacon d'origine" }
+        },
+        "trust2": {
+          "type": "trust_item",
+          "settings": { "icon": "truck", "text": "Colis protégé pour le transport" }
+        },
+        "notes": {
+          "type": "notes",
+          "settings": { "heading": "Pyramide olfactive" }
+        },
+        "description": { "type": "description" },
+        "acc1": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Conservation",
+            "content": "<p>Conserve ton décant à l'abri de la lumière et de la chaleur, bouchon fermé.</p>"
+          }
+        },
+        "acc2": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Livraison et retours",
+            "content": "<p>Indique ici tes délais, tes transporteurs et ta politique de retour.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "variants",
+        "buy",
+        "trust1",
+        "trust2",
+        "notes",
+        "description",
+        "acc1",
+        "acc2"
+      ],
+      "settings": {}
+    },
+    "recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "heading": "Tu pourrais aussi aimer",
+        "products_to_show": 4
+      }
+    }
+  },
+  "order": ["main", "recommendations"]
+}

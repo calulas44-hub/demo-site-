@@ -1,0 +1,131 @@
+<section class="section container cart-page">
+  <header class="page-header">
+    <h1>Mon panier</h1>
+  </header>
+
+  {%- if cart.item_count == 0 -%}
+    <div class="empty">
+      <p>Ton panier est vide.</p>
+      <a class="btn btn--primary" href="{{ routes.all_products_collection_url }}">Découvrir les parfums</a>
+    </div>
+  {%- else -%}
+    {%- liquid
+      assign threshold = settings.free_shipping_threshold | times: 100
+      if threshold > 0
+        assign remaining = threshold | minus: cart.total_price
+        assign progress = cart.total_price | times: 100 | divided_by: threshold
+        if progress > 100
+          assign progress = 100
+        endif
+      endif
+    -%}
+
+    <form action="{{ routes.cart_url }}" method="post" class="cart" id="CartForm">
+      {%- if threshold > 0 -%}
+        <div class="cart-progress">
+          <p>
+            {%- if remaining > 0 -%}
+              Plus que <strong>{{ remaining | money }}</strong> pour profiter de la livraison offerte.
+            {%- else -%}
+              Bravo, la livraison est offerte !
+            {%- endif -%}
+          </p>
+          <div
+            class="cart-progress__bar"
+            role="progressbar"
+            aria-label="Progression vers la livraison offerte"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="{{ progress }}"
+          >
+            <span style="width: {{ progress }}%"></span>
+          </div>
+        </div>
+      {%- endif -%}
+
+      <ul class="cart__items" role="list">
+        {%- for item in cart.items -%}
+          <li class="cart-item">
+            <a class="cart-item__media" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+              {%- if item.image -%}
+                {{
+                  item.image
+                  | image_url: width: 240
+                  | image_tag: loading: 'lazy', widths: '120, 240', alt: ''
+                }}
+              {%- endif -%}
+            </a>
+
+            <div class="cart-item__info">
+              {%- if item.product.vendor != blank -%}
+                <p class="card__vendor">{{ item.product.vendor }}</p>
+              {%- endif -%}
+              <a class="cart-item__title" href="{{ item.url }}">{{ item.product.title }}</a>
+              {%- unless item.product.has_only_default_variant -%}
+                <p class="muted">{{ item.variant.title }}</p>
+              {%- endunless -%}
+              {%- for discount in item.line_level_discount_allocations -%}
+                <p class="cart-item__discount">{{ discount.discount_application.title }} (&minus;{{ discount.amount | money }})</p>
+              {%- endfor -%}
+              <a class="cart-item__remove" href="{{ item.url_to_remove }}">Retirer</a>
+            </div>
+
+            <div class="cart-item__qty">
+              <div class="qty">
+                <button type="button" data-qty-step="-1" aria-label="Diminuer la quantité">{% render 'icon', icon: 'minus' %}</button>
+                <input
+                  type="number"
+                  name="updates[]"
+                  value="{{ item.quantity }}"
+                  min="0"
+                  inputmode="numeric"
+                  data-cart-qty
+                  aria-label="Quantité pour {{ item.product.title | escape }}"
+                >
+                <button type="button" data-qty-step="1" aria-label="Augmenter la quantité">{% render 'icon', icon: 'plus' %}</button>
+              </div>
+            </div>
+
+            <p class="cart-item__total">
+              {%- if item.original_line_price != item.final_line_price -%}
+                <s>{{ item.original_line_price | money }}</s>
+              {%- endif -%}
+              <span>{{ item.final_line_price | money }}</span>
+            </p>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      <div class="cart__footer">
+        {%- if section.settings.show_note -%}
+          <div class="cart__note">
+            <label for="CartNote">Instructions pour la commande</label>
+            <textarea id="CartNote" name="note" rows="3">{{ cart.note }}</textarea>
+          </div>
+        {%- endif -%}
+
+        <div class="cart__summary">
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <p class="cart__discount">{{ discount.title }} (&minus;{{ discount.total_allocated_amount | money }})</p>
+          {%- endfor -%}
+          <p class="cart__total"><span>Sous-total</span> <strong>{{ cart.total_price | money }}</strong></p>
+          <p class="muted">
+            {%- if shop.taxes_included %}TVA incluse. {% endif -%}
+            Frais de livraison calculés à l'étape suivante.
+          </p>
+          <button type="submit" name="checkout" class="btn btn--primary btn--block">Passer la commande</button>
+          <button type="submit" name="update" class="btn btn--secondary btn--block" data-cart-update>Mettre à jour le panier</button>
+        </div>
+      </div>
+    </form>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Panier",
+  "settings": [
+    { "type": "checkbox", "id": "show_note", "label": "Afficher le champ de note", "default": false }
+  ]
+}
+{% endschema %}

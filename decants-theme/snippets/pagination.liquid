@@ -1,0 +1,28 @@
+{%- comment -%}
+  Pagination. Paramètre : paginate (l'objet du tag {% paginate %})
+{%- endcomment -%}
+{%- if paginate.pages > 1 -%}
+  <nav class="pagination" aria-label="Pagination">
+    <ul>
+      {%- if paginate.previous -%}
+        <li><a href="{{ paginate.previous.url }}" aria-label="Page précédente">&larr;</a></li>
+      {%- endif -%}
+
+      {%- for part in paginate.parts -%}
+        <li>
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}" aria-label="Page {{ part.title }}">{{ part.title }}</a>
+          {%- elsif part.title == paginate.current_page -%}
+            <span aria-current="page">{{ part.title }}</span>
+          {%- else -%}
+            <span>{{ part.title }}</span>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+
+      {%- if paginate.next -%}
+        <li><a href="{{ paginate.next.url }}" aria-label="Page suivante">&rarr;</a></li>
+      {%- endif -%}
+    </ul>
+  </nav>
+{%- endif -%}

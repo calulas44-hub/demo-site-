@@ -1,0 +1,14 @@
+{
+  "general": {
+    "skip_to_content": "Aller au contenu",
+    "menu": "Menu",
+    "close": "Fermer",
+    "search": "Rechercher",
+    "account": "Mon compte",
+    "cart": "Panier",
+    "cart_count": {
+      "one": "{{ count }} article",
+      "other": "{{ count }} articles"
+    }
+  }
+}

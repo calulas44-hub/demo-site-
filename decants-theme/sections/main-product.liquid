@@ -1,0 +1,283 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign form_id = 'ProductForm-' | append: section.id
+
+  capture per_ml_initial
+    render 'price-per-ml', variant: current_variant
+  endcapture
+  assign per_ml_initial = per_ml_initial | strip
+
+  assign low_stock = 0
+  if current_variant.inventory_management == 'shopify' and current_variant.inventory_quantity > 0 and current_variant.inventory_quantity <= 5
+    assign low_stock = current_variant.inventory_quantity
+  endif
+
+  assign has_compare = false
+  if current_variant.compare_at_price > current_variant.price
+    assign has_compare = true
+  endif
+-%}
+
+<script type="application/ld+json">
+  {{ product | structured_data }}
+</script>
+
+<section class="product container" data-product-section>
+  <div class="product__gallery">
+    {%- if product.media.size > 0 -%}
+      <ul class="product__media-list" role="list">
+        {%- for media in product.media -%}
+          <li class="product__media{% if forloop.first %} product__media--first{% endif %}">
+            {%- if media.media_type == 'image' -%}
+              {%- assign loading = 'lazy' -%}
+              {%- if forloop.first -%}{%- assign loading = 'eager' -%}{%- endif -%}
+              {{
+                media.preview_image
+                | image_url: width: 1400
+                | image_tag:
+                  loading: loading,
+                  widths: '550, 750, 1100, 1400',
+                  sizes: '(min-width: 990px) 55vw, 100vw',
+                  alt: media.alt | default: product.title
+              }}
+            {%- else -%}
+              {{ media | media_tag: image_size: '1400x' }}
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <div class="product__media product__media--first">
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="product__info">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'vendor' -%}
+          {%- if product.vendor != blank -%}
+            <p class="product__vendor" {{ block.shopify_attributes }}>{{ product.vendor | link_to_vendor }}</p>
+          {%- endif -%}
+
+        {%- when 'title' -%}
+          <div {{ block.shopify_attributes }}>
+            <h1 class="product__title">{{ product.title }}</h1>
+            {%- assign family = product.metafields.custom.famille_olfactive.value -%}
+            {%- assign concentration = product.metafields.custom.concentration.value -%}
+            {%- if family != blank or concentration != blank -%}
+              <ul class="chips" role="list">
+                {%- if concentration != blank -%}<li class="chip">{{ concentration | join: ', ' }}</li>{%- endif -%}
+                {%- if family != blank -%}<li class="chip">{{ family | join: ', ' }}</li>{%- endif -%}
+              </ul>
+            {%- endif -%}
+          </div>
+
+        {%- when 'price' -%}
+          <div class="product__price" {{ block.shopify_attributes }}>
+            <p class="price">
+              <s class="price__compare" data-compare{% unless has_compare %} hidden{% endunless %}>{{ current_variant.compare_at_price | money }}</s>
+              <span class="price__current" data-price>{{ current_variant.price | money }}</span>
+            </p>
+            <p class="price__per-ml" data-per-ml{% if per_ml_initial == blank %} hidden{% endif %}>
+              {%- if per_ml_initial != blank -%}{{ per_ml_initial }} / ml{%- endif -%}
+            </p>
+            <p class="price__note">
+              {%- if shop.taxes_included %}TVA incluse. {% endif -%}
+              {%- if shop.shipping_policy.body != blank -%}
+                <a href="{{ shop.shipping_policy.url }}">Frais de livraison</a> calculés à l'étape suivante.
+              {%- else -%}
+                Frais de livraison calculés à l'étape suivante.
+              {%- endif -%}
+            </p>
+          </div>
+
+        {%- when 'variant_picker' -%}
+          {%- unless product.has_only_default_variant -%}
+            <div class="variant-picker" {{ block.shopify_attributes }}>
+              {%- for option in product.options_with_values -%}
+                <fieldset class="variant-picker__group" data-option-group>
+                  <legend class="variant-picker__legend">{{ option.name }}</legend>
+                  <div class="pills">
+                    {%- for value in option.values -%}
+                      {%- assign input_id = section.id | append: '-' | append: option.position | append: '-' | append: forloop.index -%}
+                      <input
+                        type="radio"
+                        class="pills__input"
+                        id="{{ input_id }}"
+                        name="{{ section.id }}-option-{{ option.position }}"
+                        value="{{ value | escape }}"
+                        {% if option.selected_value == value %}checked{% endif %}
+                      >
+                      <label class="pills__label" for="{{ input_id }}">{{ value }}</label>
+                    {%- endfor -%}
+                  </div>
+                </fieldset>
+              {%- endfor -%}
+            </div>
+          {%- endunless -%}
+
+        {%- when 'buy_buttons' -%}
+          <div class="product__buy" {{ block.shopify_attributes }}>
+            <p class="product__stock" data-stock{% unless low_stock > 0 %} hidden{% endunless %}>
+              {%- if low_stock > 0 -%}Plus que {{ low_stock }} en stock{%- endif -%}
+            </p>
+
+            {%- form 'product', product, id: form_id, class: 'product-form', novalidate: 'novalidate' -%}
+              <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+              <div class="product-form__row">
+                <div class="qty">
+                  <button type="button" data-qty-step="-1" aria-label="Diminuer la quantité">{% render 'icon', icon: 'minus' %}</button>
+                  <input type="number" name="quantity" value="1" min="1" inputmode="numeric" aria-label="Quantité">
+                  <button type="button" data-qty-step="1" aria-label="Augmenter la quantité">{% render 'icon', icon: 'plus' %}</button>
+                </div>
+                <button
+                  type="submit"
+                  name="add"
+                  class="btn btn--primary product-form__submit"
+                  data-add-to-cart
+                  data-label-add="Ajouter au panier"
+                  data-label-sold="Épuisé"
+                  {% unless current_variant.available %}disabled{% endunless %}
+                >
+                  <span data-add-label>
+                    {%- if current_variant.available -%}Ajouter au panier{%- else -%}Épuisé{%- endif -%}
+                  </span>
+                </button>
+              </div>
+              {%- if block.settings.show_dynamic_checkout -%}
+                {{ form | payment_button }}
+              {%- endif -%}
+            {%- endform -%}
+          </div>
+
+        {%- when 'notes' -%}
+          {%- assign notes_top = product.metafields.custom.notes_tete.value -%}
+          {%- assign notes_heart = product.metafields.custom.notes_coeur.value -%}
+          {%- assign notes_base = product.metafields.custom.notes_fond.value -%}
+          {%- if notes_top != blank or notes_heart != blank or notes_base != blank -%}
+            <div class="notes" {{ block.shopify_attributes }}>
+              <h2 class="notes__title">{{ block.settings.heading }}</h2>
+              <dl class="notes__list">
+                {%- if notes_top != blank -%}
+                  <div class="notes__row"><dt>Tête</dt><dd>{{ notes_top | join: ', ' }}</dd></div>
+                {%- endif -%}
+                {%- if notes_heart != blank -%}
+                  <div class="notes__row"><dt>Cœur</dt><dd>{{ notes_heart | join: ', ' }}</dd></div>
+                {%- endif -%}
+                {%- if notes_base != blank -%}
+                  <div class="notes__row"><dt>Fond</dt><dd>{{ notes_base | join: ', ' }}</dd></div>
+                {%- endif -%}
+              </dl>
+            </div>
+          {%- endif -%}
+
+        {%- when 'trust_item' -%}
+          <p class="trust-item" {{ block.shopify_attributes }}>
+            {% render 'icon', icon: block.settings.icon %}
+            <span>{{ block.settings.text }}</span>
+          </p>
+
+        {%- when 'description' -%}
+          {%- if product.description != blank -%}
+            <div class="product__desc rte" {{ block.shopify_attributes }}>{{ product.description }}</div>
+          {%- endif -%}
+
+        {%- when 'accordion' -%}
+          <details class="accordion" {{ block.shopify_attributes }}>
+            <summary>{{ block.settings.heading }}</summary>
+            <div class="accordion__body rte">{{ block.settings.content }}</div>
+          </details>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+
+  <script type="application/json" data-variant-json>
+    [
+      {%- for variant in product.variants -%}
+        {%- capture per_ml -%}{% render 'price-per-ml', variant: variant %}{%- endcapture -%}
+        {%- assign variant_low = 0 -%}
+        {%- if variant.inventory_management == 'shopify' and variant.inventory_quantity > 0 and variant.inventory_quantity <= 5 -%}
+          {%- assign variant_low = variant.inventory_quantity -%}
+        {%- endif -%}
+        {%- assign compare_text = '' -%}
+        {%- if variant.compare_at_price > variant.price -%}
+          {%- assign compare_text = variant.compare_at_price | money -%}
+        {%- endif -%}
+        {
+          "id": {{ variant.id }},
+          "options": {{ variant.options | json }},
+          "available": {{ variant.available | json }},
+          "price": {{ variant.price | money | json }},
+          "compare_at": {{ compare_text | json }},
+          "per_ml": {{ per_ml | strip | json }},
+          "low_stock": {{ variant_low }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Fiche produit",
+  "blocks": [
+    { "type": "vendor", "name": "Marque", "limit": 1 },
+    { "type": "title", "name": "Titre", "limit": 1 },
+    { "type": "price", "name": "Prix", "limit": 1 },
+    { "type": "variant_picker", "name": "Choix de la contenance", "limit": 1 },
+    {
+      "type": "buy_buttons",
+      "name": "Bouton d'achat",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "label": "Afficher les boutons de paiement express",
+          "info": "Apple Pay, Shop Pay, PayPal… selon ta configuration de paiement.",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "notes",
+      "name": "Pyramide olfactive",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Titre", "default": "Pyramide olfactive" }
+      ]
+    },
+    {
+      "type": "trust_item",
+      "name": "Argument de réassurance",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "options": [
+            { "value": "flask", "label": "Flacon" },
+            { "value": "spray", "label": "Vaporisateur" },
+            { "value": "truck", "label": "Livraison" },
+            { "value": "shield", "label": "Bouclier" },
+            { "value": "check", "label": "Coche" }
+          ],
+          "default": "check"
+        },
+        { "type": "text", "id": "text", "label": "Texte", "default": "Argument" }
+      ]
+    },
+    { "type": "description", "name": "Description", "limit": 1 },
+    {
+      "type": "accordion",
+      "name": "Volet déroulant",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Titre", "default": "Titre" },
+        { "type": "richtext", "id": "content", "label": "Contenu", "default": "<p>Contenu.</p>" }
+      ]
+    }
+  ]
+}
+{% endschema %}

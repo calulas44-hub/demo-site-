@@ -1,0 +1,49 @@
+<section class="section container">
+  <header class="section__header">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <h2>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+  </header>
+
+  {%- if section.settings.collection != blank and section.settings.collection.products.size > 0 -%}
+    <ul class="grid" role="list">
+      {%- for product in section.settings.collection.products limit: section.settings.products_to_show -%}
+        <li>{% render 'product-card', product: product %}</li>
+      {%- endfor -%}
+    </ul>
+
+    {%- if section.settings.show_view_all -%}
+      <p class="section__footer">
+        <a class="btn btn--secondary" href="{{ section.settings.collection.url }}">{{ section.settings.view_all_label }}</a>
+      </p>
+    {%- endif -%}
+  {%- else -%}
+    <p class="empty">Choisis une collection contenant des produits dans l'éditeur de thème.</p>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Collection en vedette",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Sélection" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Les incontournables" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Nombre de produits",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    { "type": "checkbox", "id": "show_view_all", "label": "Afficher le bouton « Tout voir »", "default": true },
+    { "type": "text", "id": "view_all_label", "label": "Texte du bouton", "default": "Tout voir" }
+  ],
+  "presets": [{ "name": "Collection en vedette" }]
+}
+{% endschema %}

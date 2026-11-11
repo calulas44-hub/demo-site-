@@ -1,0 +1,44 @@
+<section class="section container" id="comment-ca-marche">
+  <header class="section__header">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <h2>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+  </header>
+
+  <ol class="steps" role="list">
+    {%- for block in section.blocks -%}
+      <li class="step" {{ block.shopify_attributes }}>
+        <span class="step__num" aria-hidden="true">{{ forloop.index }}</span>
+        <h3 class="step__title">{{ block.settings.title }}</h3>
+        {%- if block.settings.text != blank -%}
+          <p class="step__text">{{ block.settings.text }}</p>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ol>
+</section>
+
+{% schema %}
+{
+  "name": "Comment ça marche",
+  "max_blocks": 5,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Le principe" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Comment ça marche" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Étape",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titre", "default": "Étape" },
+        { "type": "textarea", "id": "text", "label": "Texte" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Comment ça marche" }]
+}
+{% endschema %}

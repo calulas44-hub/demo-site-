@@ -1,0 +1,40 @@
+<section class="section container contact">
+  <div class="contact__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- form 'contact', class: 'form' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form-status form-status--success" role="status">Merci, ton message est bien parti. Nous te répondons rapidement.</p>
+      {%- endif -%}
+      {%- if form.errors -%}
+        <div class="form-status form-status--error" role="alert">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+
+      <div class="field">
+        <label for="ContactName">Nom</label>
+        <input id="ContactName" type="text" name="contact[name]" value="{{ form.name }}" autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="ContactEmail">E-mail</label>
+        <input id="ContactEmail" type="email" name="contact[email]" value="{{ form.email }}" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="ContactBody">Message</label>
+        <textarea id="ContactBody" name="contact[body]" rows="6" required>{{ form.body }}</textarea>
+      </div>
+      <button type="submit" class="btn btn--primary">Envoyer</button>
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Formulaire de contact",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Écris-nous" }
+  ],
+  "presets": [{ "name": "Formulaire de contact" }]
+}
+{% endschema %}

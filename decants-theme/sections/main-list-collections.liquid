@@ -1,0 +1,36 @@
+{%- paginate collections by 24 -%}
+  <section class="section container">
+    <header class="page-header">
+      <h1>{{ page_title }}</h1>
+    </header>
+
+    <ul class="tiles" role="list">
+      {%- for collection in collections -%}
+        <li class="tile">
+          <a href="{{ collection.url }}" class="tile__link">
+            <span class="tile__media">
+              {%- if collection.featured_image -%}
+                {{
+                  collection.featured_image
+                  | image_url: width: 640
+                  | image_tag: loading: 'lazy', widths: '320, 480, 640', sizes: '(min-width: 750px) 30vw, 46vw', alt: ''
+                }}
+              {%- else -%}
+                {{ 'collection-1' | placeholder_svg_tag: 'placeholder' }}
+              {%- endif -%}
+            </span>
+            <span class="tile__title">{{ collection.title }}</span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    {% render 'pagination', paginate: paginate %}
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Liste des collections"
+}
+{% endschema %}

@@ -1,0 +1,102 @@
+{%- if section.settings.sticky -%}
+  {% style %}
+    #shopify-section-{{ section.id }} {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+  {% endstyle %}
+{%- endif -%}
+
+<header class="header">
+  <div class="container header__inner">
+    <button
+      type="button"
+      class="icon-btn header__burger"
+      aria-controls="MainNav"
+      aria-expanded="false"
+      data-nav-toggle
+    >
+      {% render 'icon', icon: 'menu' %}
+      <span class="visually-hidden">{{ 'general.menu' | t }}</span>
+    </button>
+
+    <a class="header__logo" href="{{ routes.root_url }}">
+      {%- if section.settings.logo != blank -%}
+        {{
+          section.settings.logo
+          | image_url: width: 480
+          | image_tag: width: section.settings.logo_width, alt: shop.name, loading: 'eager'
+        }}
+      {%- else -%}
+        <span class="header__brand">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+
+    <nav class="header__nav" id="MainNav" aria-label="Navigation principale" data-nav>
+      <ul class="header__menu">
+        {%- for link in section.settings.menu.links -%}
+          <li>
+            {%- if link.links.size > 0 -%}
+              <details class="dropdown">
+                <summary>{{ link.title }}</summary>
+                <ul class="dropdown__list">
+                  {%- for child in link.links -%}
+                    <li>
+                      <a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title }}</a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </details>
+            {%- else -%}
+              <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a class="icon-btn" href="{{ routes.search_url }}">
+        {% render 'icon', icon: 'search' %}
+        <span class="visually-hidden">{{ 'general.search' | t }}</span>
+      </a>
+
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="icon-btn header__account" href="{{ routes.account_url }}">
+          {% render 'icon', icon: 'account' %}
+          <span class="visually-hidden">{{ 'general.account' | t }}</span>
+        </a>
+      {%- endif -%}
+
+      <a class="icon-btn header__cart" href="{{ routes.cart_url }}">
+        {% render 'icon', icon: 'cart' %}
+        <span class="visually-hidden">{{ 'general.cart' | t }} ({{ 'general.cart_count' | t: count: cart.item_count }})</span>
+        {%- if cart.item_count > 0 -%}
+          <span class="cart-bubble" aria-hidden="true">{{ cart.item_count }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "En-tête",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo" },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Largeur du logo",
+      "min": 60,
+      "max": 240,
+      "step": 10,
+      "unit": "px",
+      "default": 140
+    },
+    { "type": "link_list", "id": "menu", "label": "Menu principal", "default": "main-menu" },
+    { "type": "checkbox", "id": "sticky", "label": "En-tête fixe au défilement", "default": true }
+  ]
+}
+{% endschema %}

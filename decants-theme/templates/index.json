@@ -1,0 +1,178 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "overlay": 45,
+        "height": "large",
+        "eyebrow": "Parfums en décants",
+        "heading": "Essaie avant d'adopter",
+        "text": "Des parfums de créateurs et de niche en 2, 5 ou 10 ml, sans acheter le flacon complet.",
+        "button_label": "Voir les parfums"
+      }
+    },
+    "reassurance": {
+      "type": "reassurance",
+      "blocks": {
+        "t1": {
+          "type": "item",
+          "settings": {
+            "icon": "flask",
+            "title": "Décantés depuis le flacon d'origine",
+            "text": "Le parfum que tu connais, dans un format plus petit."
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Colis soigné",
+            "text": "Chaque décant est protégé pour voyager sans casse."
+          }
+        },
+        "t3": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "title": "Paiement sécurisé",
+            "text": "Cartes bancaires et paiements express."
+          }
+        }
+      },
+      "block_order": ["t1", "t2", "t3"],
+      "settings": {}
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "Sélection",
+        "heading": "Les incontournables",
+        "collection": "all",
+        "products_to_show": 8,
+        "show_view_all": true,
+        "view_all_label": "Tout voir"
+      }
+    },
+    "sizes": {
+      "type": "size-guide",
+      "blocks": {
+        "s1": {
+          "type": "size",
+          "settings": {
+            "label": "2 ml",
+            "tag": "Pour essayer",
+            "sprays": "≈ 20 vaporisations",
+            "text": "Idéal pour découvrir un parfum avant de craquer pour le flacon."
+          }
+        },
+        "s2": {
+          "type": "size",
+          "settings": {
+            "label": "5 ml",
+            "tag": "Pour porter",
+            "sprays": "≈ 50 vaporisations",
+            "text": "Assez pour l'adopter quelques semaines ou l'emmener en voyage."
+          }
+        },
+        "s3": {
+          "type": "size",
+          "settings": {
+            "label": "10 ml",
+            "tag": "Pour adopter",
+            "sprays": "≈ 100 vaporisations",
+            "text": "Le bon format pour un parfum que tu portes souvent."
+          }
+        }
+      },
+      "block_order": ["s1", "s2", "s3"],
+      "settings": {
+        "eyebrow": "Contenances",
+        "heading": "Quelle taille choisir ?",
+        "text": "Les nombres de vaporisations sont indicatifs et varient selon le vaporisateur."
+      }
+    },
+    "how": {
+      "type": "how-it-works",
+      "blocks": {
+        "h1": {
+          "type": "step",
+          "settings": {
+            "title": "Choisis ton parfum",
+            "text": "Parcours le catalogue et sélectionne ta contenance : 2, 5 ou 10 ml."
+          }
+        },
+        "h2": {
+          "type": "step",
+          "settings": {
+            "title": "On prépare ton décant",
+            "text": "Ton parfum est transvasé depuis le flacon d'origine dans un vaporisateur propre."
+          }
+        },
+        "h3": {
+          "type": "step",
+          "settings": {
+            "title": "Tu le reçois chez toi",
+            "text": "Ton décant arrive protégé, prêt à être vaporisé dans ton sac ou ton tiroir."
+          }
+        }
+      },
+      "block_order": ["h1", "h2", "h3"],
+      "settings": {
+        "eyebrow": "Le principe",
+        "heading": "Comment ça marche"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Qu'est-ce qu'un décant ?",
+            "answer": "<p>Un décant est une petite quantité de parfum transvasée depuis le flacon d'origine dans un vaporisateur plus petit. Tu portes le même parfum, sans acheter le grand format.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Combien de temps dure un décant ?",
+            "answer": "<p>À titre indicatif : 2 ml correspondent à environ 20 vaporisations, 5 ml à environ 50 et 10 ml à environ 100. Cela dépend de ta façon de te parfumer.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Comment conserver mon décant ?",
+            "answer": "<p>À l'abri de la lumière et de la chaleur, bouchon fermé. Évite la salle de bain et la voiture.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Puis-je l'emporter en voyage ?",
+            "answer": "<p>Le format est pratique, mais les règles sur les parfums (liquides inflammables) varient selon la compagnie et le pays. Vérifie-les avant de partir.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Quels sont les délais de livraison ?",
+            "answer": "<p>Indique ici tes délais de préparation et les transporteurs proposés.</p>"
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5"],
+      "settings": {
+        "heading": "Questions fréquentes"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Ne rate aucun retour en stock",
+        "text": "Inscris-toi pour être prévenu·e des nouveautés et des parfums de retour."
+      }
+    }
+  },
+  "order": ["hero", "reassurance", "featured", "sizes", "how", "faq", "newsletter"]
+}

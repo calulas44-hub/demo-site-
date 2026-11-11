@@ -1,0 +1,137 @@
+{%- paginate collection.products by section.settings.products_per_page -%}
+  {%- liquid
+    assign has_active = false
+    for filter in collection.filters
+      if filter.active_values.size > 0 or filter.min_value.value != nil or filter.max_value.value != nil
+        assign has_active = true
+      endif
+    endfor
+    assign sort_by = collection.sort_by | default: collection.default_sort_by
+  -%}
+
+  <section class="section container">
+    <header class="page-header">
+      <h1>{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="rte page-header__text">{{ collection.description }}</div>
+      {%- endif -%}
+    </header>
+
+    <form class="toolbar" method="get" action="{{ collection.url }}" data-filter-form>
+      {%- if section.settings.enable_filtering and collection.filters.size > 0 -%}
+        <details class="filters">
+          <summary class="btn btn--secondary filters__toggle">Filtrer</summary>
+          <div class="filters__panel">
+            {%- for filter in collection.filters -%}
+              <fieldset class="filters__group">
+                <legend>{{ filter.label }}</legend>
+                {%- if filter.type == 'price_range' -%}
+                  <div class="filters__price">
+                    <label>
+                      <span class="visually-hidden">Prix minimum</span>
+                      <input
+                        type="number"
+                        name="{{ filter.min_value.param_name }}"
+                        value="{% if filter.min_value.value != nil %}{{ filter.min_value.value | divided_by: 100.0 }}{% endif %}"
+                        placeholder="0"
+                        min="0"
+                        step="any"
+                      >
+                    </label>
+                    <span aria-hidden="true">–</span>
+                    <label>
+                      <span class="visually-hidden">Prix maximum</span>
+                      <input
+                        type="number"
+                        name="{{ filter.max_value.param_name }}"
+                        value="{% if filter.max_value.value != nil %}{{ filter.max_value.value | divided_by: 100.0 }}{% endif %}"
+                        placeholder="{{ filter.range_max | divided_by: 100.0 | ceil }}"
+                        min="0"
+                        step="any"
+                      >
+                    </label>
+                  </div>
+                {%- else -%}
+                  <ul class="filters__list" role="list">
+                    {%- for value in filter.values -%}
+                      <li>
+                        <label class="check">
+                          <input
+                            type="checkbox"
+                            name="{{ value.param_name }}"
+                            value="{{ value.value }}"
+                            {% if value.active %}checked{% endif %}
+                            {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                          >
+                          <span>{{ value.label }} <small>({{ value.count }})</small></span>
+                        </label>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </fieldset>
+            {%- endfor -%}
+          </div>
+        </details>
+      {%- endif -%}
+
+      <div class="toolbar__sort">
+        <label class="visually-hidden" for="SortBy">Trier par</label>
+        <select name="sort_by" id="SortBy">
+          {%- for option in collection.sort_options -%}
+            <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>
+          {%- endfor -%}
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn--primary" data-filter-apply>Appliquer</button>
+
+      <p class="toolbar__count">
+        {{ collection.products_count }} produit{% if collection.products_count > 1 %}s{% endif %}
+      </p>
+    </form>
+
+    {%- if has_active -%}
+      <div class="active-filters">
+        {%- for filter in collection.filters -%}
+          {%- for active_value in filter.active_values -%}
+            <a class="chip chip--removable" href="{{ active_value.url_to_remove }}">
+              {{ active_value.label }} <span aria-hidden="true">&times;</span>
+              <span class="visually-hidden">Retirer le filtre</span>
+            </a>
+          {%- endfor -%}
+        {%- endfor -%}
+        <a class="active-filters__clear" href="{{ collection.url }}">Tout effacer</a>
+      </div>
+    {%- endif -%}
+
+    {%- if collection.products.size > 0 -%}
+      <ul class="grid" role="list">
+        {%- for product in collection.products -%}
+          <li>{% render 'product-card', product: product %}</li>
+        {%- endfor -%}
+      </ul>
+      {% render 'pagination', paginate: paginate %}
+    {%- else -%}
+      <p class="empty">Aucun produit ne correspond à ta recherche.</p>
+    {%- endif -%}
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Page collection",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Produits par page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 16
+    },
+    { "type": "checkbox", "id": "enable_filtering", "label": "Activer les filtres", "default": true }
+  ]
+}
+{% endschema %}

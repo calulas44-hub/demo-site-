@@ -1,0 +1,63 @@
+{%- comment -%}
+  Carte produit. Paramètre : product
+{%- endcomment -%}
+{%- liquid
+  assign hover_image = product.images[1]
+  assign has_compare = false
+  if product.compare_at_price > product.price
+    assign has_compare = true
+  endif
+-%}
+<article class="card{% unless product.available %} card--soldout{% endunless %}">
+  <a class="card__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+    {%- if product.featured_image -%}
+      {{
+        product.featured_image
+        | image_url: width: 640
+        | image_tag:
+          loading: 'lazy',
+          widths: '320, 480, 640',
+          sizes: '(min-width: 990px) 22vw, (min-width: 750px) 30vw, 46vw',
+          class: 'card__img',
+          alt: ''
+      }}
+      {%- if hover_image -%}
+        {{
+          hover_image
+          | image_url: width: 640
+          | image_tag:
+            loading: 'lazy',
+            widths: '320, 480, 640',
+            sizes: '(min-width: 990px) 22vw, (min-width: 750px) 30vw, 46vw',
+            class: 'card__img card__img--hover',
+            alt: ''
+        }}
+      {%- endif -%}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'card__img placeholder' }}
+    {%- endif -%}
+
+    {%- unless product.available -%}
+      <span class="badge">Épuisé</span>
+    {%- elsif has_compare -%}
+      <span class="badge badge--sale">Promo</span>
+    {%- endunless -%}
+  </a>
+
+  <div class="card__info">
+    {%- if product.vendor != blank -%}
+      <p class="card__vendor">{{ product.vendor }}</p>
+    {%- endif -%}
+    <h3 class="card__title"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+
+    {%- unless product.has_only_default_variant -%}
+      <p class="card__sizes">{{ product.options_with_values.first.values | join: ' · ' }}</p>
+    {%- endunless -%}
+
+    <p class="card__price">
+      {%- if product.price_varies -%}<span class="card__from">À partir de</span> {% endif -%}
+      {%- if has_compare and product.price_varies == false -%}<s>{{ product.compare_at_price | money }}</s> {% endif -%}
+      <span>{{ product.price | money }}</span>
+    </p>
+  </div>
+</article>

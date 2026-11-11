@@ -1,0 +1,27 @@
+<section class="section section--dark newsletter">
+  <div class="container newsletter__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}
+      <p class="section__lead">{{ section.settings.text }}</p>
+    {%- endif -%}
+    {% render 'newsletter-form', id: section.id %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Ne rate aucun retour en stock" },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Texte",
+      "default": "Inscris-toi pour être prévenu·e des nouveautés et des parfums de retour."
+    }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}

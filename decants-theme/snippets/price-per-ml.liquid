@@ -1,0 +1,18 @@
+{%- comment -%}
+  Prix au millilitre d'une variante, déduit d'une valeur d'option contenant « ml » (ex. « 5 ml », « 2,5 ml »).
+  Ne renvoie rien si aucune option ne contient de contenance.
+  Paramètre : variant
+{%- endcomment -%}
+{%- liquid
+  assign ml = 0
+  for opt in variant.options
+    assign opt_down = opt | downcase
+    if opt_down contains 'ml'
+      assign ml = opt_down | remove: 'ml' | replace: ',', '.' | strip | plus: 0
+    endif
+  endfor
+  if ml > 0
+    assign per_ml = variant.price | times: 1.0 | divided_by: ml | round
+    echo per_ml | money
+  endif
+-%}

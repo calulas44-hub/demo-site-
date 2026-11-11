@@ -1,0 +1,117 @@
+<footer class="footer">
+  <div class="container footer__grid">
+    <div class="footer__about">
+      <p class="footer__brand">{{ shop.name }}</p>
+      {%- if section.settings.about != blank -%}
+        <div class="rte">{{ section.settings.about }}</div>
+      {%- endif -%}
+
+      {%- liquid
+        assign has_social = false
+        if settings.social_instagram != blank or settings.social_tiktok != blank or settings.social_facebook != blank
+          assign has_social = true
+        endif
+      -%}
+      {%- if has_social -%}
+        <ul class="footer__social" role="list">
+          {%- if settings.social_instagram != blank -%}
+            <li>
+              <a class="icon-btn" href="{{ settings.social_instagram }}" target="_blank" rel="noopener">
+                {% render 'icon', icon: 'instagram' %}<span class="visually-hidden">Instagram</span>
+              </a>
+            </li>
+          {%- endif -%}
+          {%- if settings.social_tiktok != blank -%}
+            <li>
+              <a class="icon-btn" href="{{ settings.social_tiktok }}" target="_blank" rel="noopener">
+                {% render 'icon', icon: 'tiktok' %}<span class="visually-hidden">TikTok</span>
+              </a>
+            </li>
+          {%- endif -%}
+          {%- if settings.social_facebook != blank -%}
+            <li>
+              <a class="icon-btn" href="{{ settings.social_facebook }}" target="_blank" rel="noopener">
+                {% render 'icon', icon: 'facebook' %}<span class="visually-hidden">Facebook</span>
+              </a>
+            </li>
+          {%- endif -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.menu.links.size > 0 -%}
+      <nav class="footer__links" aria-labelledby="FooterMenuTitle">
+        <h2 class="footer__title" id="FooterMenuTitle">{{ section.settings.menu_title }}</h2>
+        <ul role="list">
+          {%- for link in section.settings.menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    <div class="footer__newsletter">
+      <h2 class="footer__title">{{ section.settings.newsletter_title }}</h2>
+      {%- if section.settings.newsletter_text != blank -%}
+        <p>{{ section.settings.newsletter_text }}</p>
+      {%- endif -%}
+      {% render 'newsletter-form', id: section.id %}
+    </div>
+  </div>
+
+  <div class="container footer__bottom">
+    {%- if section.settings.disclaimer != blank -%}
+      <p class="footer__disclaimer">{{ section.settings.disclaimer }}</p>
+    {%- endif -%}
+
+    <div class="footer__legal">
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</p>
+
+      {%- if shop.policies.size > 0 -%}
+        <ul role="list" class="footer__policies">
+          {%- for policy in shop.policies -%}
+            <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if shop.enabled_payment_types.size > 0 -%}
+        <ul role="list" class="footer__payments">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag: class: 'payment-icon' }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Pied de page",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "about",
+      "label": "Présentation",
+      "default": "<p>Des parfums de créateurs et de niche en format décant, pour essayer avant d'adopter.</p>"
+    },
+    { "type": "text", "id": "menu_title", "label": "Titre du menu", "default": "Informations" },
+    { "type": "link_list", "id": "menu", "label": "Menu du pied de page", "default": "footer" },
+    { "type": "text", "id": "newsletter_title", "label": "Titre de la newsletter", "default": "Reste informé·e" },
+    {
+      "type": "text",
+      "id": "newsletter_text",
+      "label": "Texte de la newsletter",
+      "default": "Nouveautés, retours en stock et conseils."
+    },
+    {
+      "type": "textarea",
+      "id": "disclaimer",
+      "label": "Mention légale sur les marques",
+      "info": "À faire valider selon ton activité et les marques que tu proposes.",
+      "default": "Les marques citées appartiennent à leurs propriétaires respectifs. Nous ne sommes affiliés à aucune d'entre elles. Nos décants sont des produits reconditionnés à partir de flacons d'origine."
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,83 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Décants",
+    "theme_version": "1.0.0",
+    "theme_author": "Boutique de décants",
+    "theme_documentation_url": "https://help.shopify.com/fr/manual/online-store/themes",
+    "theme_support_url": "https://help.shopify.com/fr/support"
+  },
+  {
+    "name": "Couleurs",
+    "settings": [
+      { "type": "color", "id": "color_bg", "label": "Fond de page", "default": "#FAF7F2" },
+      { "type": "color", "id": "color_surface", "label": "Fond des cartes et des blocs", "default": "#F1EBE2" },
+      { "type": "color", "id": "color_text", "label": "Texte", "default": "#1A1714" },
+      { "type": "color", "id": "color_muted", "label": "Texte secondaire", "default": "#6B6358" },
+      { "type": "color", "id": "color_border", "label": "Bordures", "default": "#DDD3C5" },
+      { "type": "color", "id": "color_accent", "label": "Accent (sur fond clair)", "default": "#8C6A36" },
+      { "type": "color", "id": "color_dark", "label": "Fond sombre (boutons, pied de page)", "default": "#14110F" },
+      { "type": "color", "id": "color_on_dark", "label": "Texte sur fond sombre", "default": "#F6F1EA" },
+      { "type": "color", "id": "color_accent_on_dark", "label": "Accent sur fond sombre", "default": "#C9A96E" }
+    ]
+  },
+  {
+    "name": "Typographie",
+    "settings": [
+      { "type": "font_picker", "id": "type_body_font", "label": "Police du texte", "default": "assistant_n4" },
+      {
+        "type": "checkbox",
+        "id": "heading_serif",
+        "label": "Titres en serif élégant (police système, aucun chargement)",
+        "default": true
+      },
+      {
+        "type": "font_picker",
+        "id": "type_heading_font",
+        "label": "Police des titres (utilisée si l'option ci-dessus est décochée)",
+        "default": "assistant_n4"
+      }
+    ]
+  },
+  {
+    "name": "Mise en page",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "label": "Largeur maximale du contenu",
+        "min": 1000,
+        "max": 1600,
+        "step": 100,
+        "unit": "px",
+        "default": 1300
+      }
+    ]
+  },
+  {
+    "name": "Logo et favicon",
+    "settings": [
+      { "type": "image_picker", "id": "favicon", "label": "Favicon (carré, 48 × 48 px minimum)" }
+    ]
+  },
+  {
+    "name": "Panier",
+    "settings": [
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Seuil de livraison offerte (en €)",
+        "info": "Affiche une barre de progression dans le panier. Mettre 0 pour la désactiver. À n'utiliser que si ce seuil est bien configuré dans Paramètres > Expédition.",
+        "default": 0
+      }
+    ]
+  },
+  {
+    "name": "Réseaux sociaux",
+    "settings": [
+      { "type": "url", "id": "social_instagram", "label": "Instagram" },
+      { "type": "url", "id": "social_tiktok", "label": "TikTok" },
+      { "type": "url", "id": "social_facebook", "label": "Facebook" }
+    ]
+  }
+]

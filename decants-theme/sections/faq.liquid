@@ -1,0 +1,36 @@
+<section class="section container faq">
+  <header class="section__header">
+    {%- if section.settings.heading != blank -%}
+      <h2>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+  </header>
+
+  <div class="faq__list">
+    {%- for block in section.blocks -%}
+      <details class="faq__item" {{ block.shopify_attributes }}>
+        <summary>{{ block.settings.question }}</summary>
+        <div class="faq__answer rte">{{ block.settings.answer }}</div>
+      </details>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Questions fréquentes",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Questions fréquentes" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "Question" },
+        { "type": "richtext", "id": "answer", "label": "Réponse", "default": "<p>Réponse.</p>" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Questions fréquentes" }]
+}
+{% endschema %}

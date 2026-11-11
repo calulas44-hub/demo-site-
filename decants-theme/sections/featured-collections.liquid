@@ -1,0 +1,56 @@
+<section class="section container">
+  <header class="section__header">
+    {%- if section.settings.heading != blank -%}
+      <h2>{{ section.settings.heading }}</h2>
+    {%- endif -%}
+  </header>
+
+  {%- if section.blocks.size > 0 -%}
+    <ul class="tiles" role="list">
+      {%- for block in section.blocks -%}
+        {%- assign collection = block.settings.collection -%}
+        {%- if collection != blank -%}
+          <li class="tile" {{ block.shopify_attributes }}>
+            <a href="{{ collection.url }}" class="tile__link">
+              <span class="tile__media">
+                {%- if collection.featured_image -%}
+                  {{
+                    collection.featured_image
+                    | image_url: width: 640
+                    | image_tag: loading: 'lazy', widths: '320, 480, 640', sizes: '(min-width: 750px) 30vw, 46vw', alt: ''
+                  }}
+                {%- else -%}
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder' }}
+                {%- endif -%}
+              </span>
+              <span class="tile__title">{{ block.settings.title | default: collection.title }}</span>
+            </a>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  {%- else -%}
+    <p class="empty">Ajoute des collections (familles olfactives, marques…) dans l'éditeur de thème.</p>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Liste de collections",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Explorer par famille" }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "title", "label": "Titre personnalisé (facultatif)" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Liste de collections" }]
+}
+{% endschema %}

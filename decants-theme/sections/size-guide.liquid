@@ -1,0 +1,57 @@
+<section class="section section--surface">
+  <div class="container">
+    <header class="section__header">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2>{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <p class="section__lead">{{ section.settings.text }}</p>
+      {%- endif -%}
+    </header>
+
+    <ul class="sizes" role="list">
+      {%- for block in section.blocks -%}
+        <li class="size-card" {{ block.shopify_attributes }}>
+          <p class="size-card__ml">{{ block.settings.label }}</p>
+          {%- if block.settings.tag != blank -%}
+            <p class="eyebrow size-card__tag">{{ block.settings.tag }}</p>
+          {%- endif -%}
+          {%- if block.settings.sprays != blank -%}
+            <p class="size-card__sprays">{{ block.settings.sprays }}</p>
+          {%- endif -%}
+          {%- if block.settings.text != blank -%}
+            <p class="size-card__text">{{ block.settings.text }}</p>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Guide des contenances",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Contenances" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Quelle taille choisir ?" },
+    { "type": "textarea", "id": "text", "label": "Texte" }
+  ],
+  "blocks": [
+    {
+      "type": "size",
+      "name": "Contenance",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Contenance", "default": "5 ml" },
+        { "type": "text", "id": "tag", "label": "Étiquette", "default": "Pour porter" },
+        { "type": "text", "id": "sprays", "label": "Nombre de vaporisations (indicatif)", "default": "≈ 50 vaporisations" },
+        { "type": "textarea", "id": "text", "label": "Description" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Guide des contenances" }]
+}
+{% endschema %}
