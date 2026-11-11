@@ -19,7 +19,7 @@ Ces personnages n'ont pas encore d'image validée :
 1. **Augustin** : vieillard très grand, longs cheveux blancs, toge noire, médaillon doré sur la
    poitrine, pipe.
 2. **Le Double** : même image que le Président, avec un sourire figé et un regard vide.
-3. **La famille du port** : un vieux pêcheur, sa femme et une petite fille d'environ 7 ans, en
+3. **La famille du port** : un vieux pêcheur, sa femme et une petite fille d'environ 8 ans (image validée : sweat à capuche beige déchiré, jupe en lambeaux, baskets sales), en
    vêtements usés.
 4. **La petite sœur d'Ulas** : fillette dans un lit d'hôpital, pour la photo sur le téléphone.
 5. **Elyes** : son apparence n'est toujours pas validée, voir la passation.
@@ -37,9 +37,10 @@ ci-dessous disent « grisonnants ». Change-le partout si tu choisis châtains.
 | KUDO | homme grand et élancé, cheveux noirs mi-longs en catogan avec mèches blanches, long manteau blanc à motifs verts avec capuche, yeux blanc-vert lumineux |
 | ELYES | jeune homme aux traits doux, cheveux châtains, tenue blanche et verte |
 | ULAS | jeune homme athlétique, cheveux courts, veste blanche à capuche |
-| SOLEIMAN | homme en uniforme blanc d'amiral déchiré, manteau à épaulettes dorées |
+| SOLEIMAN | homme à la peau mate, barbe courte et bouc, cheveux noirs, t-shirt noir, long manteau blanc d'amiral à épaulettes dorées sali, sans casquette |
 | ABDÉ | homme en costume noir, lunettes, long manteau blanc d'amiral, sabre |
 | AUGUSTIN | vieillard très grand, longs cheveux blancs, toge noire, médaillon doré, pipe |
+| LA PETITE FILLE | petite fille d'environ 8 ans, cheveux noirs en bataille, visage sali, sweat à capuche beige trop grand et déchiré, jupe en lambeaux sur un pantalon usé, baskets sales (image validée) |
 | LE PRÉSIDENT | l'homme en costume bleu marine, cheveux grisonnants, ligoté sur une chaise, bâillon baissé autour du cou |
 
 ---
@@ -53,9 +54,9 @@ réverbération : 「もう一度チャンスを」 / 「いや」.
 ```
 Durée : 10 s. Format 16:9. Style : animé japonais shōnen cinématographique, haute qualité, traits nets, éclairage dramatique.
 Décor : fond d'un port, eau sombre et trouble, rayons de lumière bleu pâle qui descendent de la surface, bulles.
-Personnage : SOLEIMAN — homme en uniforme blanc d'amiral déchiré, manteau à épaulettes dorées qui flotte autour de lui.
+Personnage : SOLEIMAN — homme à la peau mate, barbe courte et bouc, cheveux noirs, t-shirt noir, long manteau blanc d'amiral à épaulettes dorées qui flotte autour de lui, sans casquette.
 Plan par plan :
-0-4 s : plan large, Soleiman coule lentement, immobile, yeux fermés, manteau ondulant.
+0-4 s : plan large, Soleiman coule lentement, immobile, yeux fermés, manteau ondulant ; sa casquette blanche à ancre dorée s'éloigne en flottant vers la surface.
 4-7 s : gros plan sur son visage, quelques bulles s'échappent de sa bouche.
 7-10 s : ses yeux s'ouvrent brusquement.
 Aucun dialogue. Aucun texte à l'écran.
@@ -65,7 +66,7 @@ Aucun dialogue. Aucun texte à l'écran.
 ```
 Durée : 8 s. Format 16:9. Style : animé japonais shōnen cinématographique, haute qualité, traits nets.
 Décor : de sous l'eau vers la surface, puis un vieux port méditerranéen à l'aube, ciel orange et rose, une basilique au sommet d'une colline au loin.
-Personnage : SOLEIMAN — homme en uniforme blanc d'amiral déchiré, manteau à épaulettes dorées.
+Personnage : SOLEIMAN — homme à la peau mate, barbe courte et bouc, cheveux noirs, t-shirt noir, long manteau blanc d'amiral à épaulettes dorées sali, sans casquette.
 Plan par plan :
 0-4 s : Soleiman donne de puissants coups de jambes vers la lumière.
 4-8 s : il crève la surface en aspirant une immense bouffée d'air, eau qui gicle, contre-jour de l'aube.
@@ -76,7 +77,7 @@ Aucun dialogue. Aucun texte à l'écran.
 ```
 Durée : 10 s. Format 16:9. Style : animé japonais shōnen cinématographique, haute qualité.
 Décor : quai de pierre d'un vieux port à l'aube, petites barques de pêcheurs, filets, cordages.
-Personnages : SOLEIMAN — homme en uniforme blanc d'amiral déchiré et trempé, manteau à épaulettes dorées. Une petite fille d'environ 7 ans en vêtements usés.
+Personnages : SOLEIMAN — homme à la peau mate, barbe courte et bouc, cheveux noirs mouillés, t-shirt noir trempé, long manteau blanc d'amiral à épaulettes dorées, trempé et sali, sans casquette. Une petite fille d'environ 8 ans, cheveux noirs en bataille, visage sali, sweat à capuche beige trop grand et déchiré, jupe en lambeaux sur un pantalon usé, baskets sales.
 Plan par plan :
 0-5 s : Soleiman se hisse sur le quai, rampe, s'effondre sur le ventre, haletant.
 5-10 s : des petits pieds s'approchent ; la petite fille se penche sur lui, curieuse, sans peur.
@@ -87,7 +88,7 @@ Aucun dialogue. Aucun texte à l'écran.
 ```
 Durée : 12 s. Format 16:9. Style : animé japonais cinématographique, lumière chaude et douce.
 Décor : petit appartement très pauvre, murs écaillés, un matelas au sol, une table presque vide.
-Personnages : SOLEIMAN — homme en uniforme blanc d'amiral déchiré, allongé sur le matelas. Un vieux pêcheur et sa femme en vêtements usés. La petite fille d'environ 7 ans.
+Personnages : SOLEIMAN — homme en t-shirt noir sous un long manteau blanc d'amiral à épaulettes dorées sali, sans casquette, allongé sur le matelas. Un vieux pêcheur et sa femme en vêtements usés. La petite fille d'environ 8 ans, cheveux noirs en bataille, sweat à capuche beige trop grand et déchiré, jupe en lambeaux sur un pantalon usé.
 Plan par plan :
 0-4 s : le vieux pêcheur et sa femme posent une couverture sur Soleiman.
 4-8 s : la petite fille casse son unique morceau de pain en deux et lui tend la moitié.
@@ -103,7 +104,7 @@ Sous-titres : « …Pourquoi moi ? » / « T'as faim, non ? »
 ```
 Durée : 8 s. Format 16:9. Style : animé japonais cinématographique, ambiance silencieuse et triste.
 Décor : la même cuisine pauvre, étagères vides, la lumière électrique vacille puis s'éteint ; la femme allume une bougie.
-Personnage : SOLEIMAN — homme en uniforme blanc d'amiral déchiré, assis, un morceau de pain dans la main.
+Personnage : SOLEIMAN — homme en t-shirt noir sous un long manteau blanc d'amiral à épaulettes dorées sali, sans casquette, assis, un morceau de pain dans la main.
 Plan par plan :
 0-4 s : Soleiman lève les yeux vers les étagères vides.
 4-8 s : coupure de courant, la bougie s'allume, son visage éclairé d'en bas.
@@ -583,7 +584,7 @@ Aucun dialogue. Aucun texte à l'écran.
 ```
 Durée : 8 s. Format 16:9. Style : animé japonais cinématographique.
 Décor : la cour de la cité à l'aube, la foule.
-Personnages : le vieux pêcheur en vêtements usés, qui reçoit une caisse. SOLEIMAN — en retrait dans l'ombre d'un porche, long manteau à capuche par-dessus un uniforme blanc d'amiral déchiré.
+Personnages : le vieux pêcheur en vêtements usés, qui reçoit une caisse. SOLEIMAN — en retrait dans l'ombre d'un porche, long manteau à capuche par-dessus un t-shirt noir et un long manteau blanc d'amiral à épaulettes dorées sali.
 Plan par plan :
 0-4 s : le vieux pêcheur serre une caisse contre lui, ému.
 4-8 s : derrière lui, dans l'ombre, Soleiman observe la bande ; ses yeux se plissent.
@@ -681,7 +682,7 @@ Sous-titre : « Intéressant. »
 ```
 Durée : 8 s. Format 16:9. Style : animé japonais shōnen, action brutale.
 Décor : porte métallique du hangar.
-Personnage : SOLEIMAN — long manteau à capuche par-dessus un uniforme blanc d'amiral déchiré, épaulettes dorées.
+Personnage : SOLEIMAN — long manteau à capuche par-dessus un t-shirt noir et un long manteau blanc d'amiral à épaulettes dorées sali.
 Plan par plan :
 0-3 s : la porte métallique est enfoncée d'un coup, elle vole à travers le hangar.
 3-8 s : Soleiman entre, rabat sa capuche, le regard rivé sur Ulas.
@@ -692,7 +693,7 @@ Aucun dialogue. Aucun texte à l'écran.
 ```
 Durée : 12 s. Format 16:9. Style : animé japonais shōnen, colère.
 Décor : intérieur du hangar, le feu de camp.
-Personnages : SOLEIMAN — uniforme blanc d'amiral déchiré, manteau à capuche. ULAS — veste blanche à capuche, impassible.
+Personnages : SOLEIMAN — t-shirt noir sous un long manteau blanc d'amiral à épaulettes dorées sali, sans casquette, manteau à capuche. ULAS — veste blanche à capuche, impassible.
 Plan par plan :
 0-6 s : Soleiman pointe Ulas du doigt en hurlant.
 6-12 s : gros plan sur Ulas, qui ne bouge pas.
@@ -720,7 +721,7 @@ Sous-titre : « Ulas est des nôtres. »
 ```
 Durée : 10 s. Format 16:9. Style : animé japonais shōnen, combat au corps à corps.
 Décor : sol en béton du hangar.
-Personnages : SOLEIMAN — uniforme blanc d'amiral déchiré, une aura blanche faible qui vacille autour de lui. CHADY — kimono de jiu-jitsu bleu, ceinture noire.
+Personnages : SOLEIMAN — t-shirt noir sous un long manteau blanc d'amiral à épaulettes dorées sali, sans casquette, une aura blanche faible qui vacille autour de lui. CHADY — kimono de jiu-jitsu bleu, ceinture noire.
 Plan par plan :
 0-3 s : Soleiman charge, son aura vacille et s'éteint.
 3-6 s : Chady esquive en se baissant, passe dans son dos.
@@ -732,7 +733,7 @@ Aucun dialogue. Aucun texte à l'écran.
 ```
 Durée : 10 s. Format 16:9. Style : animé japonais, gag sec puis tension.
 Décor : coin du hangar.
-Personnages : SOLEIMAN — uniforme blanc d'amiral déchiré, ligoté sur une chaise. LE PRÉSIDENT — l'homme en costume bleu marine, cheveux grisonnants, ligoté sur la chaise d'à côté.
+Personnages : SOLEIMAN — t-shirt noir sous un long manteau blanc d'amiral à épaulettes dorées sali, sans casquette, ligoté sur une chaise. LE PRÉSIDENT — l'homme en costume bleu marine, cheveux grisonnants, ligoté sur la chaise d'à côté.
 Plan par plan :
 0-4 s : les deux hommes ligotés côte à côte ; le Président tourne la tête vers Soleiman.
 4-10 s : Soleiman relève les yeux vers la bande, sérieux.
