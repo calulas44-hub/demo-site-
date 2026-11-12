@@ -9,6 +9,7 @@ next-env.d.ts
 .env
 .env.local
 .env.*.local
+.setup-code
 
 # Données locales (base SQLite, images téléversées, sauvegardes)
 storage/

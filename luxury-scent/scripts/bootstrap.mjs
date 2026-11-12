@@ -8,6 +8,7 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { createHash, randomBytes } from "node:crypto";
+import { writeFileSync } from "node:fs";
 
 const prisma = new PrismaClient();
 const QA_DOMAIN = "@qa.luxury-scent.invalid";
@@ -41,6 +42,11 @@ END $$;`);
       const hash = createHash("sha256").update(raw).digest("hex");
       const value = JSON.stringify({ hash, createdAt: new Date().toISOString() });
       await prisma.setting.upsert({ where: { key: "setup-code" }, create: { key: "setup-code", value }, update: { value } });
+      try {
+        writeFileSync(".setup-code", code); // lu par le plugin netlify-plugins/setup-summary
+      } catch {
+        /* facultatif */
+      }
       const line = "=".repeat(64);
       console.log(`\n${line}\n  PREMIÈRE INSTALLATION — CODE D'INSTALLATION : ${code}\n  Ouvrez ${(process.env.URL || "https://<votre-site>").replace(/\/$/, "")}/admin/setup et saisissez ce code\n  pour créer votre compte administrateur (valable jusqu'au prochain déploiement).\n${line}\n`);
     } else if (await prisma.adminUser.findUnique({ where: { email } })) {

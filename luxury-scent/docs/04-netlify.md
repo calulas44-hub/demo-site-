@@ -30,8 +30,10 @@ et conservées dans la base, qui n'est jamais exposée publiquement.
 
 ## 2. Créer votre compte administrateur
 
-1. Dans Netlify : **Deploys** → cliquez sur le dernier déploiement → dans le journal, cherchez
-   `CODE D'INSTALLATION` (ex. `T7E9-J2NR-6GUN`).
+1. Dans Netlify : **Deploys** → cliquez sur le **dernier** déploiement. Le code (ex. `T7E9-J2NR-6GUN`) s'affiche
+   en haut de la page, dans le **Deploy summary** (« Code d'installation : … »). Il figure aussi dans le journal
+   (**Deploy log** → section de la commande de build → cherchez `INSTALLATION`).
+   Chaque déploiement génère un nouveau code tant qu'aucun compte n'existe : utilisez toujours celui du dernier.
 2. Ouvrez `https://<votre-site>.netlify.app/admin` : la page **Première installation** s'affiche.
 3. Saisissez le code, votre e-mail et un mot de passe (10 caractères minimum).
    Le code ne sert qu'une fois ; la page disparaît dès que le compte existe.
