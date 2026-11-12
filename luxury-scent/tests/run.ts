@@ -7,6 +7,12 @@
 import { chromium, type Page } from "playwright";
 import sharp from "sharp";
 
+try {
+  process.loadEnvFile(".env");
+} catch {
+  /* .env facultatif */
+}
+
 const base = process.env.APP_URL ?? "http://localhost:3000";
 const adminEmail = process.env.ADMIN_EMAIL ?? "admin@luxury-scent.local";
 const adminPassword = process.env.ADMIN_PASSWORD ?? "change-me-now";
@@ -23,7 +29,11 @@ async function shop(page: Page) {
 
   await page.goto(`${base}/parfums?tri=price_asc`, { waitUntil: "networkidle" });
   const prices = await page.locator(".grid .card__price").allInnerTexts();
-  const nums = prices.map((p) => Number(p.replace(/[^\d,]/g, "").replace(",", ".")));
+  // Dernier montant de la carte = prix effectif (le premier peut être le prix barré).
+  const nums = prices.map((p) => {
+    const all = p.match(/\d[\d\s\u202f]*,\d{2}/g) ?? ["0"];
+    return Number(all[all.length - 1].replace(/[\s\u202f]/g, "").replace(",", "."));
+  });
   check("catalogue : tri par prix croissant", nums.every((n, i) => i === 0 || n >= nums[i - 1]), prices.slice(0, 4).join(" | "));
 
   await page.goto(`${base}/recherche?q=rose`, { waitUntil: "networkidle" });

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+export const revalidate = 3600;
 import { prisma } from "@/lib/db";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
