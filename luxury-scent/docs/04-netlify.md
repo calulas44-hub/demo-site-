@@ -11,45 +11,43 @@ Tout est hébergé chez Netlify, sans autre service :
 
 Aucune clé secrète n'est dans le code : tout se règle dans les variables d'environnement Netlify.
 
-## 1. Créer le site (≈ 5 min)
+## 1. Créer le site (≈ 3 min, aucune variable à saisir)
 
 1. https://app.netlify.com → **Add new project → Import an existing project → GitHub** → dépôt `demo-site-`.
 2. Réglages :
    - **Branch to deploy** : `claude/zealous-dijkstra-uc5a0d` (ou `main` après fusion)
    - **Base directory** : `luxury-scent`
    - Build command / Publish directory : laisser vides (lus dans `luxury-scent/netlify.toml`)
-3. **Environment variables** (bouton « Add environment variables » sur cet écran, ou plus tard
-   dans *Project configuration → Environment variables → Import from a .env file*) :
+   - **Aucune variable d'environnement** n'est nécessaire.
+3. **Deploy**.
 
-```
-SESSION_SECRET=…64 caractères aléatoires…
-BANK_ENCRYPTION_KEY=…64 caractères 0-9 a-f…
-ADMIN_EMAIL=votre@email.fr
-ADMIN_PASSWORD=un mot de passe provisoire (10 caractères min.)
-SEED_DEMO=1
-```
+La base **Netlify Database** est créée automatiquement (le projet contient le module `@netlify/database`).
+Si le build s'arrête avec « Aucune base de données », ouvrez **Data & Storage → Database → Create database**,
+puis **Deploys → Trigger deploy**.
 
-   `APP_URL` est facultatif (l'adresse Netlify est utilisée par défaut) : ajoutez-le quand vous aurez un nom de domaine.
-4. **Deploy**.
+Les clés secrètes (sessions, chiffrement des IBAN) sont générées automatiquement au premier démarrage
+et conservées dans la base, qui n'est jamais exposée publiquement.
 
-La base **Netlify Database** est créée automatiquement au premier déploiement (le projet contient le
-module `@netlify/database`). Si le build s'arrête avec « base de données », ouvrez
-**Data & Storage → Database → Create database**, puis **Deploys → Trigger deploy**.
+## 2. Créer votre compte administrateur
 
-À chaque déploiement : migrations de la base, compte propriétaire (s'il n'en existe aucun),
-couverture et pages légales (si absentes), produits de démonstration si `SEED_DEMO=1` (une seule fois).
-Les « deploy previews » utilisent une copie isolée de la base : la boutique en ligne n'est jamais touchée.
+1. Dans Netlify : **Deploys** → cliquez sur le dernier déploiement → dans le journal, cherchez
+   `CODE D'INSTALLATION` (ex. `T7E9-J2NR-6GUN`).
+2. Ouvrez `https://<votre-site>.netlify.app/admin` : la page **Première installation** s'affiche.
+3. Saisissez le code, votre e-mail et un mot de passe (10 caractères minimum).
+   Le code ne sert qu'une fois ; la page disparaît dès que le compte existe.
 
-## 2. Première connexion
-
-- Admin : `https://<votre-site>.netlify.app/admin` avec `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
-- Changez le mot de passe (Réglages → Utilisateurs), puis supprimez `ADMIN_PASSWORD` des variables Netlify.
+Ensuite, dans l'admin :
 - **Réglages → Paramètres** : raison sociale, adresse, e-mail, téléphone, SIRET, TVA… (rien n'est pré-rempli).
 - **Contenu → Pages** : CGV, mentions légales, confidentialité, livraison, retours (modèles « À compléter »,
   à faire valider par un professionnel du droit).
 - **Réglages → Livraison** : remplacez le mode « Démo » (0 €) par vos vrais tarifs **avant toute vente**.
-- **Catalogue → Produits** : « Supprimer les produits de démo » quand vos produits sont prêts.
+- **Catalogue → Produits** : « Supprimer les produits de démo » quand vos produits sont prêts
+  (ils ne reviennent pas aux déploiements suivants).
 - **Catalogue → Promotions** : offre « 2e parfum » et moyens de paiement.
+
+Variables facultatives (pour plus tard) : `APP_URL` (nom de domaine), `SEED_DEMO=0` (pas de produits démo),
+Stripe et SMTP ci-dessous. `SESSION_SECRET` / `BANK_ENCRYPTION_KEY` peuvent aussi être fournies, mais
+**n'ajoutez pas `BANK_ENCRYPTION_KEY` après avoir enregistré un IBAN** : les IBAN déjà chiffrés deviendraient illisibles.
 
 ## 3. Coûts et limites (offre gratuite Netlify, novembre 2026)
 

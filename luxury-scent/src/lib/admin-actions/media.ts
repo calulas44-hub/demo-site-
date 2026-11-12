@@ -10,7 +10,7 @@ export type UploadResult = { ok: true; url: string; kind: string } | { ok: false
 export async function requestUploadAction(input: { folder: string; contentType: string; size: number; privateFile?: boolean }): Promise<UploadTicket> {
   await requireAdmin();
   try {
-    const target = createUploadTarget({ folder: String(input.folder), contentType: String(input.contentType), size: Number(input.size), bucket: input.privateFile ? PRIVATE_BUCKET : undefined });
+    const target = await createUploadTarget({ folder: String(input.folder), contentType: String(input.contentType), size: Number(input.size), bucket: input.privateFile ? PRIVATE_BUCKET : undefined });
     return { ok: true, target };
   } catch (e) {
     return { ok: false, message: e instanceof Error ? e.message : "Envoi refusé." };

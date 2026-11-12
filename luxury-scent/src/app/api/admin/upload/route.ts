@@ -16,7 +16,7 @@ export async function PUT(request: Request) {
   const part = Number(u.searchParams.get("part") ?? -1);
   if (bucketParam !== MEDIA_BUCKET && bucketParam !== PRIVATE_BUCKET) return new Response("Stockage inconnu", { status: 400 });
   const bucket: Bucket = bucketParam;
-  if (!verifyUploadSignature(bucket, objectPath, type, expires, sig)) return new Response("Autorisation invalide ou expirée", { status: 403 });
+  if (!(await verifyUploadSignature(bucket, objectPath, type, expires, sig))) return new Response("Autorisation invalide ou expirée", { status: 403 });
   if (!validObjectPath(objectPath) || !Number.isInteger(part) || part < 0 || part > 10) return new Response("Requête invalide", { status: 400 });
   if (!kindOf(type)) return new Response("Type refusé", { status: 415 });
   const body = Buffer.from(await request.arrayBuffer());

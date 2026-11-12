@@ -1,18 +1,13 @@
 import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
+import { appSecrets } from "./app-secrets";
 
-function getKey(): Buffer {
-  const hex = process.env.BANK_ENCRYPTION_KEY ?? "";
-  if (!/^[0-9a-fA-F]{64}$/.test(hex)) {
-    throw new Error(
-      "BANK_ENCRYPTION_KEY doit contenir 32 octets en hexadécimal (openssl rand -hex 32).",
-    );
-  }
-  return Buffer.from(hex, "hex");
+async function getKey(): Promise<Buffer> {
+  return Buffer.from((await appSecrets()).bank, "hex");
 }
 
 /** Chiffre une chaîne en AES-256-GCM. Résultat : base64(iv | tag | données). */
-export function encryptSecret(plain: string): string {
-  const key = getKey();
+export async function encryptSecret(plain: string): Promise<string> {
+  const key = await getKey();
   const iv = randomBytes(12);
   const cipher = createCipheriv("aes-256-gcm", key, iv);
   const encrypted = Buffer.concat([cipher.update(plain, "utf8"), cipher.final()]);
@@ -20,8 +15,8 @@ export function encryptSecret(plain: string): string {
   return Buffer.concat([iv, tag, encrypted]).toString("base64");
 }
 
-export function decryptSecret(payload: string): string {
-  const key = getKey();
+export async function decryptSecret(payload: string): Promise<string> {
+  const key = await getKey();
   const buf = Buffer.from(payload, "base64");
   const iv = buf.subarray(0, 12);
   const tag = buf.subarray(12, 28);

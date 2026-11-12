@@ -4,15 +4,14 @@ import { redirect } from "next/navigation";
 import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
+import { appSecrets } from "./app-secrets";
 import { ADMIN_COOKIE, CUSTOMER_COOKIE, type AdminRole } from "./constants";
 
 const ADMIN_TTL_SECONDS = 60 * 60 * 12; // 12 h
 const CUSTOMER_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 jours
 
-function secret(): Uint8Array {
-  const s = process.env.SESSION_SECRET ?? "";
-  if (s.length < 32) throw new Error("SESSION_SECRET doit faire au moins 32 caractères.");
-  return new TextEncoder().encode(s);
+async function secret(): Promise<Uint8Array> {
+  return new TextEncoder().encode((await appSecrets()).session);
 }
 
 type SessionKind = "admin" | "customer";
@@ -29,12 +28,12 @@ async function sign(payload: SessionPayload, ttl: number): Promise<string> {
     .setSubject(payload.sub)
     .setIssuedAt()
     .setExpirationTime(`${ttl}s`)
-    .sign(secret());
+    .sign(await secret());
 }
 
 async function verify(token: string): Promise<SessionPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, secret());
+    const { payload } = await jwtVerify(token, await secret());
     if (!payload.sub || typeof payload.kind !== "string") return null;
     return { sub: payload.sub, kind: payload.kind as SessionKind, tv: Number(payload.tv ?? 0) };
   } catch {

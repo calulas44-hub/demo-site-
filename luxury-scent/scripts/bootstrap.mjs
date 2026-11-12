@@ -7,6 +7,7 @@
  */
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { createHash, randomBytes } from "node:crypto";
 
 const prisma = new PrismaClient();
 const QA_DOMAIN = "@qa.luxury-scent.invalid";
@@ -32,7 +33,16 @@ END $$;`);
     const email = (process.env.ADMIN_EMAIL ?? "").trim().toLowerCase();
     const password = process.env.ADMIN_PASSWORD ?? "";
     if (!email || password.length < 10) {
-      console.warn("[bootstrap] Aucun propriétaire : définissez ADMIN_EMAIL et ADMIN_PASSWORD (10 caractères min.) puis redéployez.");
+      // Installation sans variable : code à usage unique affiché dans le journal de déploiement.
+      const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      const bytes = randomBytes(12);
+      const raw = Array.from(bytes, (b) => alphabet[b % alphabet.length]).join("");
+      const code = `${raw.slice(0, 4)}-${raw.slice(4, 8)}-${raw.slice(8, 12)}`;
+      const hash = createHash("sha256").update(raw).digest("hex");
+      const value = JSON.stringify({ hash, createdAt: new Date().toISOString() });
+      await prisma.setting.upsert({ where: { key: "setup-code" }, create: { key: "setup-code", value }, update: { value } });
+      const line = "=".repeat(64);
+      console.log(`\n${line}\n  PREMIÈRE INSTALLATION — CODE D'INSTALLATION : ${code}\n  Ouvrez ${(process.env.URL || "https://<votre-site>").replace(/\/$/, "")}/admin/setup et saisissez ce code\n  pour créer votre compte administrateur (valable jusqu'au prochain déploiement).\n${line}\n`);
     } else if (await prisma.adminUser.findUnique({ where: { email } })) {
       console.warn(`[bootstrap] ${email} existe mais n'est pas propriétaire actif : aucune modification.`);
     } else {

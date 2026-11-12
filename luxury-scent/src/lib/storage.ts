@@ -2,6 +2,7 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { mkdir, readFile, stat, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { prisma } from "./db";
+import { appSecrets } from "./app-secrets";
 
 /**
  * Stockage durable des médias.
@@ -171,14 +172,14 @@ export interface UploadTarget {
   url: string;
 }
 
-function signature(bucket: string, objectPath: string, contentType: string, expires: number): string {
-  const secret = process.env.SESSION_SECRET ?? "";
-  return createHmac("sha256", secret).update(`${bucket}|${objectPath}|${contentType}|${expires}`).digest("hex");
+async function signature(bucket: string, objectPath: string, contentType: string, expires: number): Promise<string> {
+  const secret = (await appSecrets()).session;
+  return createHmac("sha256", secret).update(`upload|${bucket}|${objectPath}|${contentType}|${expires}`).digest("hex");
 }
 
-export function verifyUploadSignature(bucket: string, objectPath: string, contentType: string, expires: number, sig: string): boolean {
-  if (!process.env.SESSION_SECRET || Date.now() > expires) return false;
-  const expected = Buffer.from(signature(bucket, objectPath, contentType, expires));
+export async function verifyUploadSignature(bucket: string, objectPath: string, contentType: string, expires: number, sig: string): Promise<boolean> {
+  if (Date.now() > expires) return false;
+  const expected = Buffer.from(await signature(bucket, objectPath, contentType, expires));
   const given = Buffer.from(sig);
   return expected.length === given.length && timingSafeEqual(expected, given);
 }
@@ -188,7 +189,7 @@ export function partKey(objectPath: string, part: number): string {
 }
 
 /** Prépare l'envoi d'un fichier (après vérification des droits d'administration). */
-export function createUploadTarget(opts: { folder: string; contentType: string; size: number; bucket?: Bucket }): UploadTarget {
+export async function createUploadTarget(opts: { folder: string; contentType: string; size: number; bucket?: Bucket }): Promise<UploadTarget> {
   const kind = kindOf(opts.contentType);
   if (!kind) throw new Error("Format non pris en charge (images JPEG/PNG/WebP/AVIF/GIF, vidéos MP4/WebM, PDF).");
   if (opts.size <= 0 || opts.size > maxBytes(kind)) throw new Error(`Fichier trop volumineux (maximum ${Math.round(maxBytes(kind) / 1024 / 1024)} Mo).`);
@@ -196,7 +197,7 @@ export function createUploadTarget(opts: { folder: string; contentType: string; 
   if (bucket === MEDIA_BUCKET && kind === "document") throw new Error("Format non pris en charge.");
   const objectPath = `${safeFolder(opts.folder)}/${Date.now().toString(36)}-${randomBytes(6).toString("hex")}.${EXT[opts.contentType]}`;
   const expires = Date.now() + 30 * 60 * 1000;
-  const sig = signature(bucket, objectPath, opts.contentType, expires);
+  const sig = await signature(bucket, objectPath, opts.contentType, expires);
   const qs = new URLSearchParams({ bucket, path: objectPath, type: opts.contentType, expires: String(expires), sig });
   return { bucket, objectPath, contentType: opts.contentType, chunkSize: CHUNK_BYTES, parts: Math.ceil(opts.size / CHUNK_BYTES), url: `/api/admin/upload?${qs}` };
 }

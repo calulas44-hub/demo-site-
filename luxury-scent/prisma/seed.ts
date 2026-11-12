@@ -1,7 +1,7 @@
 /**
  * Initialisation de Luxury Scent (relançable sans doublon).
  * Toujours : réglages neutres, section de couverture (image fournie), pages légales à compléter.
- * Si SEED_DEMO=1 : catalogue de démonstration (produits marqués « démo », supprimables en un clic
+ * Sauf si SEED_DEMO=0 : catalogue de démonstration, créé une seule fois (produits marqués « démo », supprimables en un clic
  * depuis l'administration). Aucune information juridique ou commerciale n'est inventée.
  * Les images de départ sont des fichiers statiques (public/seed).
  */
@@ -103,14 +103,16 @@ async function main() {
     await prisma.page.upsert({ where: { slug: p.slug }, create: { ...p, system: true, position: i + 1 }, update: {} });
   }
 
-  if (process.env.SEED_DEMO !== "1") {
-    console.log("SEED_DEMO absent : aucun produit de démonstration créé.");
+  if (process.env.SEED_DEMO === "0") {
+    console.log("SEED_DEMO=0 : aucun produit de démonstration créé.");
     return;
   }
-  if ((await prisma.product.count()) > 0) {
-    console.log("Catalogue déjà présent : démonstration ignorée.");
+  // Une seule fois dans la vie de la boutique : une fois supprimés, les produits démo ne reviennent pas.
+  if ((await prisma.product.count()) > 0 || (await prisma.setting.findUnique({ where: { key: "demo-seeded" } }))) {
+    console.log("Catalogue déjà présent ou démonstration déjà créée : rien à faire.");
     return;
   }
+  await prisma.setting.create({ data: { key: "demo-seeded", value: JSON.stringify({ at: new Date().toISOString() }) } });
   {
     // -------------------------------------------------------------- Catégories
     const parfums = await prisma.category.create({ data: { name: "Parfums", slug: "parfums", description: "Eaux de parfum, eaux de toilette et colognes.", position: 1, imageUrl: await saveWebp("categories", await sharp(sceneSvg("#e9dfcf", "#b89968", 1200, 1200)).toBuffer(), "parfums.webp", { filename: "parfums.svg" }) } });

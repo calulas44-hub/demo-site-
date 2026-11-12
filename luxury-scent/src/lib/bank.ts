@@ -56,9 +56,9 @@ export async function createBankAccount(input: BankAccountInput, adminUserId: st
       label: input.label,
       holderName: input.holderName,
       bankName: input.bankName,
-      ibanEncrypted: encryptSecret(iban),
+      ibanEncrypted: await encryptSecret(iban),
       ibanLast4: iban.slice(-4),
-      bicEncrypted: bic ? encryptSecret(bic) : null,
+      bicEncrypted: bic ? await encryptSecret(bic) : null,
       showOnInvoice: input.showOnInvoice,
       isActive: count === 0,
     },
@@ -74,16 +74,16 @@ export async function updateBankAccount(id: string, input: BankAccountInput, adm
   if (!isValidIban(iban)) throw new Error("IBAN invalide (vérifiez la saisie).");
   const bic = input.bic ? input.bic.replace(/\s+/g, "").toUpperCase() : null;
   if (bic && !isValidBic(bic)) throw new Error("BIC invalide.");
-  const previousIban = decryptSecret(existing.ibanEncrypted);
+  const previousIban = await decryptSecret(existing.ibanEncrypted);
   const row = await prisma.bankAccount.update({
     where: { id },
     data: {
       label: input.label,
       holderName: input.holderName,
       bankName: input.bankName,
-      ibanEncrypted: encryptSecret(iban),
+      ibanEncrypted: await encryptSecret(iban),
       ibanLast4: iban.slice(-4),
-      bicEncrypted: bic ? encryptSecret(bic) : null,
+      bicEncrypted: bic ? await encryptSecret(bic) : null,
       showOnInvoice: input.showOnInvoice,
     },
   });
@@ -121,8 +121,8 @@ export async function revealBankAccount(id: string, adminUserId: string) {
     label: row.label,
     holderName: row.holderName,
     bankName: row.bankName,
-    iban: formatIban(decryptSecret(row.ibanEncrypted)),
-    bic: row.bicEncrypted ? decryptSecret(row.bicEncrypted) : null,
+    iban: formatIban(await decryptSecret(row.ibanEncrypted)),
+    bic: row.bicEncrypted ? await decryptSecret(row.bicEncrypted) : null,
     showOnInvoice: row.showOnInvoice,
   };
 }
@@ -135,8 +135,8 @@ export async function getActiveBankDetails(): Promise<{ holderName: string; bank
     return {
       holderName: row.holderName,
       bankName: row.bankName,
-      iban: formatIban(decryptSecret(row.ibanEncrypted)),
-      bic: row.bicEncrypted ? decryptSecret(row.bicEncrypted) : null,
+      iban: formatIban(await decryptSecret(row.ibanEncrypted)),
+      bic: row.bicEncrypted ? await decryptSecret(row.bicEncrypted) : null,
     };
   } catch {
     return null;

@@ -8,7 +8,6 @@ export default async function BankPage({ searchParams }: { searchParams: Promise
   const sp = await searchParams;
   const [accounts, audits] = await Promise.all([listBankAccounts(), getBankAudits(40)]);
   const editing = sp.modifier ? accounts.find((a) => a.id === sp.modifier) : undefined;
-  const keyOk = /^[0-9a-fA-F]{64}$/.test(process.env.BANK_ENCRYPTION_KEY ?? "");
   return (
     <>
       <div className="adm-head">
@@ -17,7 +16,6 @@ export default async function BankPage({ searchParams }: { searchParams: Promise
           <p>IBAN et BIC utilisés pour les paiements par virement et imprimés sur les factures. Chiffrés en base, accès réservé au propriétaire, chaque action est tracée.</p>
         </div>
       </div>
-      {!keyOk && <p className="msg msg--err">BANK_ENCRYPTION_KEY est absente ou invalide : impossible de chiffrer ou lire les IBAN. Générez-la avec <code>openssl rand -hex 32</code> et ajoutez-la à l&apos;environnement.</p>}
       {sp.ok && <p className="msg msg--ok">Coordonnées enregistrées.</p>}
       <div className="grid-side">
         <div>

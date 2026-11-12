@@ -1,18 +1,12 @@
 #!/usr/bin/env bash
 # Build Netlify : base de données Netlify Database (NETLIFY_DB_URL, fournie automatiquement)
-# et stockage Netlify Blobs. Aucun service externe requis.
+# et stockage Netlify Blobs. Aucun service externe ni aucune variable d'environnement requis :
+# les clés secrètes sont générées et conservées dans la base, le compte admin se crée sur /admin/setup.
 set -euo pipefail
 
-missing=()
-for v in SESSION_SECRET BANK_ENCRYPTION_KEY; do
-  [ -n "${!v:-}" ] || missing+=("$v")
-done
 if [ -z "${DATABASE_URL:-${NETLIFY_DB_URL:-}}" ]; then
-  missing+=("base de données (activez Netlify Database : Data & Storage → Database)")
-fi
-if [ ${#missing[@]} -gt 0 ]; then
-  echo "❌ Configuration manquante dans Netlify : ${missing[*]}"
-  echo "   Voir docs/04-netlify.md"
+  echo "❌ Aucune base de données : dans Netlify, ouvrez Data & Storage → Database → Create database,"
+  echo "   puis relancez le déploiement (Deploys → Trigger deploy). Voir docs/04-netlify.md"
   exit 1
 fi
 
