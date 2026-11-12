@@ -1,27 +1,21 @@
 /**
- * Données de démonstration de Luxury Scent.
- * - Crée l'administrateur initial (ADMIN_EMAIL / ADMIN_PASSWORD) s'il n'existe pas.
- * - Crée les réglages, catégories, marques, collections, produits (avec images générées),
- *   sections d'accueil, pages, modes de livraison et un compte bancaire d'exemple.
- * Relançable : les éléments existants ne sont pas dupliqués.
+ * Initialisation de Luxury Scent (relançable sans doublon).
+ * Toujours : réglages neutres, section de couverture (image fournie), pages légales à compléter.
+ * Si SEED_DEMO=1 : catalogue de démonstration (produits marqués « démo », supprimables en un clic
+ * depuis l'administration). Aucune information juridique ou commerciale n'est inventée.
+ * Les images sont envoyées dans le stockage durable (Supabase Storage en production).
  */
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
 import sharp from "sharp";
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { randomBytes, createCipheriv } from "node:crypto";
+import { putObject, MEDIA_BUCKET, ensureBuckets } from "../src/lib/storage";
 
 const prisma = new PrismaClient();
-const uploadRoot = path.resolve(process.cwd(), process.env.UPLOAD_DIR || "./storage/uploads");
 
-async function saveWebp(folder: string, buffer: Buffer, filename: string, meta: { filename: string; alt?: string }) {
-  const dir = path.join(uploadRoot, folder);
-  await mkdir(dir, { recursive: true });
-  const out = await sharp(buffer).webp({ quality: 86 }).toBuffer();
+async function saveWebp(folder: string, buffer: Buffer, filename: string, meta: { filename: string; alt?: string; quality?: number }) {
+  const out = await sharp(buffer).webp({ quality: meta.quality ?? 86 }).toBuffer();
   const info = await sharp(out).metadata();
-  await writeFile(path.join(dir, filename), out);
-  const url = `/uploads/${folder}/${filename}`;
+  const url = await putObject(MEDIA_BUCKET, `${folder}/${filename}`, out, "image/webp");
   await prisma.media.upsert({
     where: { url },
     create: { url, filename: meta.filename, mimeType: "image/webp", size: out.length, width: info.width ?? null, height: info.height ?? null, alt: meta.alt ?? null, folder },
@@ -67,54 +61,49 @@ function sceneSvg(c1: string, c2: string, w = 1800, h = 1200) {
   <rect width="${w}" height="${h}" fill="url(#g)"/>${dots}</svg>`);
 }
 
-function encrypt(plain: string): string {
-  const hex = process.env.BANK_ENCRYPTION_KEY ?? "";
-  if (!/^[0-9a-fA-F]{64}$/.test(hex)) throw new Error("BANK_ENCRYPTION_KEY manquante ou invalide (openssl rand -hex 32).");
-  const iv = randomBytes(12);
-  const cipher = createCipheriv("aes-256-gcm", Buffer.from(hex, "hex"), iv);
-  const enc = Buffer.concat([cipher.update(plain, "utf8"), cipher.final()]);
-  return Buffer.concat([iv, cipher.getAuthTag(), enc]).toString("base64");
-}
+const todo = (title: string, items: string[]) =>
+  `<p><em>Page à compléter par l'exploitant du site (et à faire valider par un professionnel du droit). Aucune information n'a été inventée.</em></p>` +
+  items.map((h) => `<h2>${h}</h2><p>[À compléter]</p>`).join("");
 
 async function main() {
-  // ---------------------------------------------------------------- Administrateur
-  const adminEmail = (process.env.ADMIN_EMAIL ?? "admin@luxury-scent.local").toLowerCase();
-  const adminPassword = process.env.ADMIN_PASSWORD ?? "change-me-now";
-  const existingAdmin = await prisma.adminUser.findUnique({ where: { email: adminEmail } });
-  if (!existingAdmin) {
-    await prisma.adminUser.create({ data: { email: adminEmail, passwordHash: await bcrypt.hash(adminPassword, 12), name: "Propriétaire", role: "OWNER" } });
-    console.log(`Administrateur créé : ${adminEmail}`);
+  const created = await ensureBuckets();
+  if (created.length) console.log(`Buckets de stockage créés : ${created.join(", ")}`);
+
+  // ---------------------------------------------------------------- Réglages (valeurs neutres)
+  if (!(await prisma.setting.findUnique({ where: { key: "site" } }))) {
+    await prisma.setting.create({ data: { key: "site", value: JSON.stringify({ brandName: "Luxury Scent" }) } });
   }
 
-  // ---------------------------------------------------------------- Réglages
-  const hasSettings = await prisma.setting.findUnique({ where: { key: "site" } });
-  if (!hasSettings) {
-    await prisma.setting.create({
-      data: {
-        key: "site",
-        value: JSON.stringify({
-          brandName: "Luxury Scent",
-          tagline: "Parfumerie de luxe",
-          contactEmail: "contact@luxury-scent.fr",
-          contactPhone: "+33 1 00 00 00 00",
-          address: "1 rue de la Paix\n75002 Paris\nFrance",
-          vatRate: 20,
-          freeShippingThreshold: 15000,
-          seoTitle: "Luxury Scent — Parfumerie de luxe en ligne",
-          seoDescription: "Luxury Scent sélectionne des parfums d'exception : eaux de parfum, extraits et coffrets, livrés avec soin.",
-        }),
-      },
+  // ---------------------------------------------------------------- Couverture
+  if ((await prisma.homeSection.count({ where: { type: "HERO" } })) === 0) {
+    const cover = await saveWebp("accueil", await sharp(path.join(__dirname, "seed-assets", "cover.jpg")).rotate().toBuffer(), "couverture.webp", { filename: "cover.jpg", alt: "Flacons de parfum dans la neige", quality: 88 });
+    await prisma.homeSection.create({
+      data: { type: "HERO", title: "Luxury Scent", subtitle: "Parfumerie de luxe", imageUrl: cover, buttonLabel: "Découvrir les parfums", buttonUrl: "/parfums", position: 1, data: JSON.stringify({ align: "center", theme: "dark", layout: "framed" }) },
     });
+    console.log("Section de couverture créée.");
   }
 
-  const already = await prisma.product.count();
-  if (already > 0) {
-    console.log("Catalogue déjà présent : seed des produits ignoré.");
-  } else {
-    // -------------------------------------------------------------- Images d'ambiance
-    const heroUrl = await saveWebp("accueil", await sharp(path.join(__dirname, "seed-assets", "hero.jpg")).resize({ width: 2400, withoutEnlargement: true }).toBuffer(), "hero-hiver.webp", { filename: "hero.jpg", alt: "Flacons Luxury Scent dans la neige" });
-    const editorialUrl = await saveWebp("accueil", await sharp(sceneSvg("#2b2420", "#8c6a36")).toBuffer(), "atelier.webp", { filename: "atelier.svg", alt: "Atelier" });
+  // ---------------------------------------------------------------- Pages légales (modèles à compléter)
+  const pages = [
+    { slug: "conditions-generales-de-vente", title: "Conditions générales de vente", content: todo("CGV", ["Identification du vendeur", "Champ d'application", "Produits", "Prix", "Commande", "Paiement", "Livraison", "Droit de rétractation", "Garanties", "Réclamations et médiation", "Données personnelles", "Droit applicable"]) },
+    { slug: "mentions-legales", title: "Mentions légales", content: todo("Mentions", ["Éditeur du site", "Directeur de la publication", "Hébergement", "Contact"]) },
+    { slug: "politique-de-confidentialite", title: "Politique de confidentialité", content: todo("Confidentialité", ["Responsable du traitement", "Données collectées", "Finalités et bases légales", "Durées de conservation", "Destinataires et sous-traitants", "Cookies", "Vos droits", "Contact"]) },
+    { slug: "livraison", title: "Livraison", content: todo("Livraison", ["Zones desservies", "Délais de préparation et d'expédition", "Transporteurs et tarifs", "Suivi de commande", "Colis endommagé ou perdu"]) },
+    { slug: "retours", title: "Retours et remboursements", content: todo("Retours", ["Conditions de retour", "Procédure", "Frais de retour", "Remboursement"]) },
+  ];
+  for (const [i, p] of pages.entries()) {
+    await prisma.page.upsert({ where: { slug: p.slug }, create: { ...p, system: true, position: i + 1 }, update: {} });
+  }
 
+  if (process.env.SEED_DEMO !== "1") {
+    console.log("SEED_DEMO absent : aucun produit de démonstration créé.");
+    return;
+  }
+  if ((await prisma.product.count()) > 0) {
+    console.log("Catalogue déjà présent : démonstration ignorée.");
+    return;
+  }
+  {
     // -------------------------------------------------------------- Catégories
     const parfums = await prisma.category.create({ data: { name: "Parfums", slug: "parfums", description: "Eaux de parfum, eaux de toilette et colognes.", position: 1, imageUrl: await saveWebp("categories", await sharp(sceneSvg("#e9dfcf", "#b89968", 1200, 1200)).toBuffer(), "parfums.webp", { filename: "parfums.svg" }) } });
     const femme = await prisma.category.create({ data: { name: "Femme", slug: "parfums-femme", parentId: parfums.id, position: 1 } });
@@ -146,14 +135,14 @@ async function main() {
     type P = {
       name: string; slug: string; subtitle: string; brand: string; category: string; collection?: string; gender: "FEMME" | "HOMME" | "MIXTE";
       families: string; notesTop: string; notesHeart: string; notesBase: string; short: string; description: string; inspiration: string;
-      featured?: boolean; isNew?: boolean; isLimited?: boolean; colors: [string, string, string];
+      featured?: boolean; isNew?: boolean; commercialLabel?: string; isLimited?: boolean; colors: [string, string, string];
       variants: { label: string; ml: number | null; price: number; sale?: number; cost: number; stock: number }[];
     };
     const products: P[] = [
-      { name: "Neige d'Or", slug: "neige-d-or-eau-de-parfum", subtitle: "Eau de parfum", brand: maison.id, category: mixte.id, collection: "neige-d-or", gender: "MIXTE", families: "Ambrée, Vanillée, Boisée", notesTop: "Bergamote, Poivre rose, Safran", notesHeart: "Fleur d'oranger, Jasmin, Cannelle douce", notesBase: "Ambre, Vanille bourbon, Bois de santal", short: "L'ambre lumineux d'un matin de neige.", description: "<p>Neige d'Or ouvre sur une bergamote givrée relevée de safran, puis se réchauffe d'ambre et de vanille bourbon. Un sillage doré, enveloppant, pensé pour les journées froides et les soirées longues.</p>", inspiration: "<p>Un jardin sous la neige, traversé par un rayon de soleil. La chaleur qui naît du froid.</p>", featured: true, isNew: true, colors: ["#f4ead8", "#b08d57", "#d9b26a"], variants: [{ label: "30 ml", ml: 30, price: 9500, cost: 2600, stock: 18 }, { label: "50 ml", ml: 50, price: 13500, cost: 3600, stock: 24 }, { label: "100 ml", ml: 100, price: 19500, cost: 5200, stock: 9 }] },
+      { name: "Neige d'Or", slug: "neige-d-or-eau-de-parfum", subtitle: "Eau de parfum", brand: maison.id, category: mixte.id, collection: "neige-d-or", gender: "MIXTE", families: "Ambrée, Vanillée, Boisée", notesTop: "Bergamote, Poivre rose, Safran", notesHeart: "Fleur d'oranger, Jasmin, Cannelle douce", notesBase: "Ambre, Vanille bourbon, Bois de santal", short: "L'ambre lumineux d'un matin de neige.", description: "<p>Neige d'Or ouvre sur une bergamote givrée relevée de safran, puis se réchauffe d'ambre et de vanille bourbon. Un sillage doré, enveloppant, pensé pour les journées froides et les soirées longues.</p>", inspiration: "<p>Un jardin sous la neige, traversé par un rayon de soleil. La chaleur qui naît du froid.</p>", featured: true, isNew: true, commercialLabel: "Édition hiver", colors: ["#f4ead8", "#b08d57", "#d9b26a"], variants: [{ label: "30 ml", ml: 30, price: 9500, cost: 2600, stock: 18 }, { label: "50 ml", ml: 50, price: 13500, cost: 3600, stock: 24 }, { label: "100 ml", ml: 100, price: 19500, cost: 5200, stock: 9 }] },
       { name: "Neige d'Or", slug: "neige-d-or-extrait-de-parfum", subtitle: "Extrait de parfum", brand: maison.id, category: extraits.id, collection: "neige-d-or", gender: "MIXTE", families: "Ambrée, Vanillée, Résineuse", notesTop: "Safran, Cardamome", notesHeart: "Rose de Damas, Jasmin sambac", notesBase: "Ambre gris, Benjoin, Labdanum", short: "La version la plus intense de Neige d'Or.", description: "<p>Concentré à 30 %, l'extrait densifie l'ambre et prolonge la tenue jusqu'au lendemain. Deux vaporisations suffisent.</p>", inspiration: "<p>La nuit tombe sur la neige ; l'or devient braise.</p>", featured: true, colors: ["#efe2c8", "#6b4f2a", "#c9962e"], variants: [{ label: "50 ml", ml: 50, price: 24500, cost: 7200, stock: 7 }] },
       { name: "Ambre Impérial", slug: "ambre-imperial", subtitle: "Eau de parfum", brand: aurore.id, category: mixte.id, collection: "neige-d-or", gender: "MIXTE", families: "Ambrée, Épicée", notesTop: "Gingembre, Mandarine", notesHeart: "Encens, Rose", notesBase: "Ambre, Patchouli, Vanille", short: "Un ambre épicé, chaud et majestueux.", description: "<p>Aurore Lumière signe un ambre oriental où l'encens rencontre la mandarine. Puissant sans être écrasant.</p>", inspiration: "<p>Les salons dorés d'un palais d'hiver.</p>", colors: ["#e9d3b4", "#8a4b25", "#c47b3a"], variants: [{ label: "50 ml", ml: 50, price: 14500, cost: 4100, stock: 11 }, { label: "100 ml", ml: 100, price: 21000, cost: 5900, stock: 5 }] },
-      { name: "Nuit Boréale", slug: "nuit-boreale-eau-de-parfum", subtitle: "Eau de parfum", brand: maison.id, category: homme.id, collection: "nuit-boreale", gender: "HOMME", families: "Boisée, Oud, Fumée", notesTop: "Baies de genièvre, Bergamote", notesHeart: "Oud, Cèdre de l'Atlas, Encens", notesBase: "Cuir, Vétiver, Musc", short: "Un oud profond sous un ciel d'étoiles.", description: "<p>Nuit Boréale associe un oud noble à des bois fumés et à une pointe de cuir. Une signature masculine, sombre et élégante.</p>", inspiration: "<p>Une forêt de pins sous les aurores.</p>", featured: true, colors: ["#1c2230", "#3a3028", "#2c3e55"], variants: [{ label: "50 ml", ml: 50, price: 15500, cost: 4300, stock: 14 }, { label: "100 ml", ml: 100, price: 22500, cost: 6200, stock: 6 }] },
+      { name: "Nuit Boréale", slug: "nuit-boreale-eau-de-parfum", subtitle: "Eau de parfum", brand: maison.id, category: homme.id, collection: "nuit-boreale", gender: "HOMME", families: "Boisée, Oud, Fumée", notesTop: "Baies de genièvre, Bergamote", notesHeart: "Oud, Cèdre de l'Atlas, Encens", notesBase: "Cuir, Vétiver, Musc", short: "Un oud profond sous un ciel d'étoiles.", description: "<p>Nuit Boréale associe un oud noble à des bois fumés et à une pointe de cuir. Une signature masculine, sombre et élégante.</p>", inspiration: "<p>Une forêt de pins sous les aurores.</p>", featured: true, colors: ["#1c2230", "#3a3028", "#2c3e55"], variants: [{ label: "50 ml", ml: 50, price: 15000, cost: 4300, stock: 14 }, { label: "100 ml", ml: 100, price: 22500, cost: 6200, stock: 6 }] },
       { name: "Cèdre Noir", slug: "cedre-noir", subtitle: "Eau de toilette", brand: nord.id, category: homme.id, collection: "nuit-boreale", gender: "HOMME", families: "Boisée, Aromatique", notesTop: "Pamplemousse, Romarin", notesHeart: "Cèdre, Sauge", notesBase: "Vétiver, Ambre gris", short: "Le bois sec et net d'une forêt du Nord.", description: "<p>Une eau de toilette vive et boisée, pensée pour tous les jours. Tenue de six à huit heures.</p>", inspiration: "<p>Une cabane de bois, l'hiver, au bord d'un fjord.</p>", colors: ["#d9d6cf", "#2f2b26", "#5a5247"], variants: [{ label: "50 ml", ml: 50, price: 8900, cost: 2500, stock: 20 }, { label: "100 ml", ml: 100, price: 12900, cost: 3600, stock: 12 }] },
       { name: "Rose Givrée", slug: "rose-givree", subtitle: "Eau de parfum", brand: maison.id, category: femme.id, collection: "jardin-d-hiver", gender: "FEMME", families: "Florale, Musquée", notesTop: "Litchi, Poivre rose", notesHeart: "Rose centifolia, Pivoine", notesBase: "Musc blanc, Bois blonds", short: "Une rose fraîche, cueillie sous la givre.", description: "<p>Rose Givrée joue la transparence : une rose de Grasse portée par des muscs propres et une pointe de litchi.</p>", inspiration: "<p>La première rose de l'année, encore couverte de givre.</p>", featured: true, colors: ["#f6eef0", "#b7899a", "#d8a6b4"], variants: [{ label: "30 ml", ml: 30, price: 8500, cost: 2300, stock: 15 }, { label: "50 ml", ml: 50, price: 12500, cost: 3300, stock: 19 }, { label: "100 ml", ml: 100, price: 17500, cost: 4600, stock: 8 }] },
       { name: "Iris Pâle", slug: "iris-pale-extrait", subtitle: "Extrait de parfum", brand: aurore.id, category: extraits.id, collection: "jardin-d-hiver", gender: "FEMME", families: "Poudrée, Florale", notesTop: "Violette, Mandarine", notesHeart: "Iris de Florence, Mimosa", notesBase: "Fève tonka, Santal", short: "Un iris poudré, précieux et feutré.", description: "<p>L'iris, matière la plus rare de la parfumerie, dans une concentration extrait. Doux, poudré, intemporel.</p>", inspiration: "<p>Un poudrier en nacre, la lumière d'un matin d'hiver.</p>", colors: ["#ece6ee", "#7d6f8f", "#b8a7c7"], variants: [{ label: "50 ml", ml: 50, price: 26500, cost: 8100, stock: 4 }] },
@@ -185,9 +174,11 @@ async function main() {
           description: p.description,
           inspiration: p.inspiration || null,
           status: "ACTIVE",
+          isDemo: true,
           featured: p.featured ?? false,
           isNew: p.isNew ?? false,
           isLimited: p.isLimited ?? false,
+          commercialLabel: p.commercialLabel ?? null,
           position: i + 1,
           images: { create: [{ url: front, alt: `${p.name} — ${p.subtitle}`, position: 0, isPrimary: true }, { url: side, alt: `${p.name} — vue 2`, position: 1 }] },
           variants: {
@@ -196,69 +187,23 @@ async function main() {
         },
       });
     }
-    console.log(`${products.length} produits créés.`);
 
     // -------------------------------------------------------------- Page d'accueil
     const featuredIds = (await prisma.product.findMany({ where: { featured: true }, select: { id: true }, orderBy: { position: "asc" } })).map((p) => p.id);
     await prisma.homeSection.createMany({
       data: [
-        { type: "HERO", title: "L'hiver a son parfum", subtitle: "Nouvelle collection Neige d'Or", text: "Ambre, vanille et bois chauds : un sillage qui réchauffe les jours froids.", imageUrl: heroUrl, buttonLabel: "Découvrir la collection", buttonUrl: "/collections/neige-d-or", position: 1, data: JSON.stringify({ align: "left", theme: "dark" }) },
-        { type: "REASSURANCE", position: 2 },
-        { type: "FEATURED_PRODUCTS", title: "Les signatures", subtitle: "Sélection", buttonLabel: "Voir tous les parfums", buttonUrl: "/parfums", position: 3, data: JSON.stringify({ productIds: featuredIds }) },
-        { type: "COLLECTIONS", title: "Explorer les collections", position: 4 },
-        { type: "EDITORIAL", title: "L'art de composer", subtitle: "La Maison", text: "Chaque création Luxury Scent naît d'un dialogue entre une matière première d'exception et une émotion. Nos parfums sont composés à Grasse, embouteillés à la main et expédiés dans un écrin.", imageUrl: editorialUrl, buttonLabel: "Notre histoire", buttonUrl: "/pages/notre-maison", position: 5, data: JSON.stringify({ imageSide: "right" }) },
-        { type: "BANNER", title: "Le coffret découverte", text: "Cinq parfums en 2 ml, remboursé sur votre premier flacon.", imageUrl: await saveWebp("accueil", await sharp(sceneSvg("#f3ece2", "#c9a96e", 2400, 900)).toBuffer(), "banniere-coffret.webp", { filename: "banniere.svg" }), buttonLabel: "Commander le coffret", buttonUrl: "/produits/coffret-decouverte", position: 6 },
+        { type: "FEATURED_PRODUCTS", title: "Sélection", buttonLabel: "Voir tous les parfums", buttonUrl: "/parfums", position: 3, data: JSON.stringify({ productIds: featuredIds }) },
+        { type: "COLLECTIONS", title: "Collections", position: 4 },
         { type: "CATEGORIES", title: "Par univers", position: 7 },
-        { type: "NEWSLETTER", title: "Restez informé·e", text: "Nouveautés, éditions limitées et conseils, une fois par mois.", position: 8 },
+        { type: "NEWSLETTER", title: "Newsletter", text: "Recevez nos nouveautés par e-mail.", position: 8 },
       ],
     });
 
-    await prisma.announcement.createMany({
-      data: [
-        { text: "Livraison offerte dès 150 € en France métropolitaine", position: 1 },
-        { text: "Deux échantillons offerts pour toute commande", position: 2 },
-        { text: "Coffret découverte : 35 €, déduits de votre premier flacon", url: "/produits/coffret-decouverte", position: 3 },
-      ],
-    });
-
-    // -------------------------------------------------------------- Pages
-    const pages = [
-      { slug: "notre-maison", title: "Notre Maison", system: false, content: "<h2>Une parfumerie indépendante</h2><p>Luxury Scent est née d'une conviction : le luxe tient à la justesse des matières et à l'attention portée à chaque geste. Nous sélectionnons et composons des parfums d'exception, et nous les expédions comme on offre un cadeau.</p><h2>Nos engagements</h2><ul><li>Des matières premières tracées, en majorité naturelles.</li><li>Des flacons rechargeables et des étuis recyclables.</li><li>Un service client humain, joignable six jours sur sept.</li></ul>" },
-      { slug: "livraison-et-retours", title: "Livraison et retours", system: true, content: "<h2>Livraison</h2><p>Les commandes sont préparées sous 24 à 48 h ouvrées et expédiées en colis suivi. La livraison est offerte en France métropolitaine dès 150 € d'achat.</p><h2>Retours</h2><p>Vous disposez de 14 jours à compter de la réception pour retourner un produit non ouvert, dans son emballage d'origine. Contactez-nous pour obtenir une étiquette de retour.</p>" },
-      { slug: "conditions-generales-de-vente", title: "Conditions générales de vente", system: true, content: "<p><em>Texte à compléter par Luxury Scent et à faire valider par un conseil juridique.</em></p><h2>1. Objet</h2><p>Les présentes conditions régissent les ventes conclues sur le site Luxury Scent.</p><h2>2. Prix</h2><p>Les prix sont indiqués en euros, toutes taxes comprises, hors frais de livraison.</p><h2>3. Commande et paiement</h2><p>Le paiement s'effectue par carte bancaire (via un prestataire sécurisé) ou par virement. La commande est expédiée après encaissement.</p><h2>4. Droit de rétractation</h2><p>Conformément à la loi, vous disposez de 14 jours pour exercer votre droit de rétractation sur les produits non descellés.</p>" },
-      { slug: "mentions-legales", title: "Mentions légales", system: true, content: "<p><em>À compléter avec les informations de votre société.</em></p><p><strong>Éditeur :</strong> Luxury Scent — forme juridique, capital, siège social, RCS, numéro de TVA.</p><p><strong>Directeur de la publication :</strong> —</p><p><strong>Hébergeur :</strong> —</p>" },
-      { slug: "politique-de-confidentialite", title: "Politique de confidentialité", system: true, content: "<p>Les données collectées (identité, adresses, e-mail, historique de commandes) servent uniquement au traitement des commandes, au service client et, avec votre accord, à l'envoi de notre newsletter. Elles ne sont jamais vendues. Vous pouvez demander l'accès, la rectification ou la suppression de vos données en nous écrivant.</p>" },
-      { slug: "faq", title: "Questions fréquentes", system: false, content: "<h3>Comment choisir ma contenance ?</h3><p>30 ml pour essayer, 50 ml pour adopter, 100 ml pour un parfum porté tous les jours.</p><h3>Puis-je essayer avant d'acheter ?</h3><p>Oui : le coffret découverte réunit cinq parfums en 2 ml, et son prix est déduit de votre premier flacon.</p><h3>Comment conserver mon parfum ?</h3><p>À l'abri de la lumière et de la chaleur, flacon fermé.</p>" },
-    ];
-    for (const [i, p] of pages.entries()) {
-      await prisma.page.upsert({ where: { slug: p.slug }, create: { ...p, position: i + 1 }, update: {} });
+    // Mode de livraison de démonstration : tarif à définir dans Administration → Livraison.
+    if ((await prisma.shippingMethod.count()) === 0) {
+      await prisma.shippingMethod.create({ data: { name: "Démo — Livraison (tarif à définir)", description: "Mode de livraison de démonstration : à remplacer par vos tarifs réels.", price: 0, countries: "FR", position: 1 } });
     }
-
-    // -------------------------------------------------------------- Livraison
-    await prisma.shippingMethod.createMany({
-      data: [
-        { name: "Colissimo suivi", description: "Livraison à domicile en 2 à 3 jours ouvrés", price: 690, freeAbove: 15000, estimatedDays: "2 à 3 jours ouvrés", countries: "FR,MC", position: 1 },
-        { name: "Chronopost express", description: "Livraison le lendemain avant 13 h", price: 1490, freeAbove: null, estimatedDays: "1 jour ouvré", countries: "FR", position: 2 },
-        { name: "Livraison Europe", description: "Colis suivi en 4 à 6 jours ouvrés", price: 1490, freeAbove: 25000, estimatedDays: "4 à 6 jours ouvrés", countries: "BE,LU,DE,ES,IT,NL,PT,CH", position: 3 },
-      ],
-    });
-
-    // -------------------------------------------------------------- Compte bancaire d'exemple (IBAN de test officiel, à remplacer)
-    if ((await prisma.bankAccount.count()) === 0) {
-      await prisma.bankAccount.create({
-        data: { label: "EXEMPLE — à remplacer par votre compte", holderName: "LUXURY SCENT", bankName: "Banque exemple", ibanEncrypted: encrypt("FR7630006000011234567890189"), ibanLast4: "0189", bicEncrypted: encrypt("BNPAFRPP"), isActive: true, showOnInvoice: true },
-      });
-    }
-
-    // -------------------------------------------------------------- Dépenses d'exemple
-    const d = new Date();
-    await prisma.expense.createMany({
-      data: [
-        { date: new Date(d.getFullYear(), d.getMonth(), 2), label: "Achat flacons et pompes", supplier: "Verrerie du Rhône", category: "ACHAT_MARCHANDISES", amountHt: 84000, vatRate: 20, vatAmount: 16800, amountTtc: 100800, paymentMethod: "Virement", invoiceNumber: "VR-2026-118" },
-        { date: new Date(d.getFullYear(), d.getMonth(), 5), label: "Étuis et papier de soie", supplier: "Cartonnages Martin", category: "EMBALLAGE", amountHt: 21000, vatRate: 20, vatAmount: 4200, amountTtc: 25200, paymentMethod: "Carte", invoiceNumber: "CM-5521" },
-        { date: new Date(d.getFullYear(), d.getMonth(), 9), label: "Campagne réseaux sociaux", supplier: "Agence Lumen", category: "MARKETING", amountHt: 45000, vatRate: 20, vatAmount: 9000, amountTtc: 54000, paymentMethod: "Virement", invoiceNumber: "LUM-0092" },
-      ],
-    });
+    console.log(`${products.length} produits de démonstration créés.`);
   }
 
   console.log("Seed terminé.");

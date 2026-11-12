@@ -48,6 +48,8 @@ export const productSchema = z.object({
   featured: checkboxSchema.default(false),
   isNew: checkboxSchema.default(false),
   isLimited: checkboxSchema.default(false),
+  commercialLabel: z.string().trim().max(40, "Mention commerciale : 40 caractères maximum.").optional().transform((v) => v || null),
+  upsellEligible: checkboxSchema.default(false),
   vatRate: floatSchema,
   position: intSchema.default(0),
   seoTitle: optionalShort,

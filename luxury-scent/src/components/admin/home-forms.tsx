@@ -1,5 +1,6 @@
 "use client";
 
+import { MediaField } from "./media-upload";
 import { ActionForm } from "@/components/action-form";
 
 import { useActionState, useState } from "react";
@@ -70,33 +71,27 @@ export function HomeSectionForm({ section, products }: { section?: SectionData; 
       )}
       {hasImage && (
         <div className="f-row">
-          <div className="f">
-            <label>Image {type === "HERO" ? "(plein écran, 2400 px conseillés)" : ""}</label>
-            {section?.imageUrl && (
-              <div className="img-preview">
-                <img src={section.imageUrl} alt="" />
-                <label className="f-check" style={{ margin: 0 }}>
-                  <input type="checkbox" name="removeImage" /> Retirer
-                </label>
-              </div>
-            )}
-            <input type="file" name="image" accept="image/*" />
-          </div>
-          {type === "HERO" && (
-            <div className="f">
-              <label>Image mobile (portrait, facultatif)</label>
-              {section?.imageMobileUrl && (
-                <div className="img-preview">
-                  <img src={section.imageMobileUrl} alt="" />
-                </div>
-              )}
-              <input type="file" name="imageMobile" accept="image/*" />
-            </div>
-          )}
+          <MediaField
+            name="imageUrl"
+            label={type === "HERO" ? "Image ou vidéo de couverture (ordinateur)" : "Image"}
+            accept={type === "HERO" ? "media" : "image"}
+            folder="accueil"
+            defaultUrl={section?.imageUrl}
+            hint={type === "HERO" ? "Affichée en entier, sans recadrage abusif. Vidéo : MP4 ou WebM, 50 Mo max, muette et en boucle." : undefined}
+          />
+          {type === "HERO" && <MediaField name="imageMobileUrl" label="Image mobile (facultatif, portrait)" folder="accueil" defaultUrl={section?.imageMobileUrl} hint="Sans image mobile, l'image principale est affichée en entier au-dessus du texte." />}
         </div>
       )}
       {type === "HERO" && (
-        <div className="f-row">
+        <div className="f-row f-row--3">
+          <div className="f">
+            <label>Cadrage de l&apos;image</label>
+            <select name="layout" defaultValue={(section?.data.layout as string) ?? "framed"}>
+              <option value="framed">Image entière, texte en haut (recommandé)</option>
+              <option value="below">Image entière, texte en dessous</option>
+              <option value="cover">Plein écran (image recadrée)</option>
+            </select>
+          </div>
           <div className="f">
             <label>Position du texte</label>
             <select name="align" defaultValue={(section?.data.align as string) ?? "left"}>

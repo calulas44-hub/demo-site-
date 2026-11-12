@@ -4,6 +4,8 @@ import { prisma } from "@/lib/db";
 import { formatPrice } from "@/lib/money";
 import { PRODUCT_STATUS_LABELS, type ProductStatus } from "@/lib/constants";
 import { effectivePrice } from "@/lib/catalog";
+import { ConfirmButton } from "@/components/admin/ui";
+import { deleteDemoProductsAction } from "@/lib/admin-actions/promotions";
 
 const PER_PAGE = 25;
 
@@ -12,13 +14,14 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
   const q = sp.q?.trim() ?? "";
   const page = Math.max(1, Number(sp.page) || 1);
   const where: Prisma.ProductWhereInput = {};
-  if (q) where.OR = [{ name: { contains: q } }, { subtitle: { contains: q } }, { brand: { name: { contains: q } } }, { variants: { some: { sku: { contains: q } } } }];
+  if (q) where.OR = [{ name: { contains: q, mode: "insensitive" } }, { subtitle: { contains: q, mode: "insensitive" } }, { brand: { name: { contains: q, mode: "insensitive" } } }, { variants: { some: { sku: { contains: q, mode: "insensitive" } } } }];
   if (sp.statut) where.status = sp.statut;
   if (sp.categorie) where.categoryId = sp.categorie;
-  const [products, total, categories] = await Promise.all([
+  const [products, total, categories, demoCount] = await Promise.all([
     prisma.product.findMany({ where, include: { brand: true, category: true, images: { orderBy: [{ isPrimary: "desc" }, { position: "asc" }], take: 1 }, variants: true }, orderBy: [{ position: "asc" }, { createdAt: "desc" }], skip: (page - 1) * PER_PAGE, take: PER_PAGE }),
     prisma.product.count({ where }),
     prisma.category.findMany({ orderBy: { position: "asc" } }),
+    prisma.product.count({ where: { isDemo: true } }),
   ]);
   const pages = Math.ceil(total / PER_PAGE);
 
@@ -34,6 +37,14 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
         </Link>
       </div>
       {sp.deleted && <p className="msg msg--ok">Produit supprimé.</p>}
+      {demoCount > 0 && (
+        <form action={deleteDemoProductsAction} className="panel" style={{ display: "flex", gap: "1rem", alignItems: "center", flexWrap: "wrap" }}>
+          <p style={{ margin: 0, flex: 1 }}>
+            <strong>{demoCount} produit(s) de démonstration</strong> sont présents pour tester la boutique. Supprimez-les quand vos vrais produits sont prêts (les commandes passées restent dans l&apos;historique).
+          </p>
+          <ConfirmButton message={`Supprimer définitivement les ${demoCount} produits de démonstration et leurs images ?`}>Supprimer les produits de démo</ConfirmButton>
+        </form>
+      )}
       <form className="filters-bar" method="get">
         <input type="search" name="q" placeholder="Nom, marque, référence…" defaultValue={q} />
         <select name="statut" defaultValue={sp.statut ?? ""}>

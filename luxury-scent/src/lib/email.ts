@@ -83,6 +83,8 @@ type OrderForEmail = {
   total: number;
   shippingPrice: number;
   subtotal: number;
+  discount: number;
+  discountLabel: string | null;
   shippingMethodName: string;
   paymentMethod: string;
   shipFirstName: string;
@@ -105,6 +107,7 @@ function itemsTable(order: OrderForEmail): string {
     )
     .join("");
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0">${rows}
+${order.discount > 0 ? `<tr><td style="padding:8px 0">${escapeHtml(order.discountLabel ?? "Remise")}</td><td align="right">− ${formatPrice(order.discount)}</td></tr>` : ""}
 <tr><td style="padding:8px 0">Livraison (${escapeHtml(order.shippingMethodName)})</td><td align="right">${formatPrice(order.shippingPrice)}</td></tr>
 <tr><td style="padding:8px 0;font-weight:bold">Total TTC</td><td align="right" style="font-weight:bold">${formatPrice(order.total)}</td></tr></table>`;
 }

@@ -23,14 +23,10 @@ export default async function EditProductPage({ params, searchParams }: { params
           <h1>{product.name}</h1>
           <p>
             <Link href="/admin/produits">← Retour aux produits</Link>
-            {product.status === "ACTIVE" && (
-              <>
-                {" · "}
-                <Link href={`/produits/${product.slug}`} target="_blank" rel="noopener">
-                  Voir sur le site ↗
-                </Link>
-              </>
-            )}
+            {" · "}
+            <Link href={`/produits/${product.slug}${product.status === "ACTIVE" ? "" : "?apercu=1"}`} target="_blank" rel="noopener">
+              {product.status === "ACTIVE" ? "Voir sur le site ↗" : "Aperçu avant publication ↗"}
+            </Link>
           </p>
         </div>
         <div className="adm-actions">
@@ -71,6 +67,9 @@ export default async function EditProductPage({ params, searchParams }: { params
           featured: product.featured,
           isNew: product.isNew,
           isLimited: product.isLimited,
+          commercialLabel: product.commercialLabel,
+          upsellEligible: product.upsellEligible,
+          isDemo: product.isDemo,
           vatRate: product.vatRate,
           position: product.position,
           seoTitle: product.seoTitle,

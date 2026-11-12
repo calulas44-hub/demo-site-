@@ -16,6 +16,7 @@ export function ProductCard({ product, priority = false }: { product: Card; prio
         {product.hoverImage && <img className="card__img card__img--hover" src={product.hoverImage} alt="" loading="lazy" />}
         <div className="card__badges">
           {!product.available && <span className="badge badge--dark">Épuisé</span>}
+          {product.available && product.commercialLabel && <span className="badge badge--gold">{product.commercialLabel}</span>}
           {product.available && product.isNew && <span className="badge">Nouveauté</span>}
           {product.available && product.isLimited && <span className="badge badge--gold">Édition limitée</span>}
           {product.available && product.compareAt && <span className="badge badge--gold">Offre</span>}

@@ -105,7 +105,8 @@
 .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: .8rem; }
 .thumb-card { position: relative; border: 1px solid var(--a-line); border-radius: 6px; overflow: hidden; background: #fff; }
 .thumb-card.is-primary { border-color: var(--a-gold); box-shadow: 0 0 0 2px #f1e6d0; }
-.thumb-card img { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; }
+.thumb-card img, .thumb-card video { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; background: #111; }
+.thumb-card__tag { position: absolute; top: .4rem; left: .4rem; background: rgba(0,0,0,.7); color: #fff; font-size: .65rem; padding: .1rem .4rem; border-radius: 3px; letter-spacing: .05em; text-transform: uppercase; }
 .thumb-card__bar { display: flex; flex-wrap: wrap; gap: .25rem; padding: .4rem; }
 .thumb-card__bar button { font-size: .68rem; padding: .15rem .45rem; border: 1px solid var(--a-line); border-radius: 3px; background: #fff; cursor: pointer; }
 .thumb-card__bar button:hover { background: #f0ece5; }
@@ -179,3 +180,4 @@
 .adm-side, .adm-main { min-width: 0; }
 .panel { min-width: 0; }
 .kpi__sub, .msg { overflow-wrap: anywhere; }
+.checklist { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .2rem 1rem; max-height: 420px; overflow: auto; }

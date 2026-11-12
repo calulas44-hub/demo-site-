@@ -7,7 +7,7 @@ import { canManageBank, canManageFinance, logAdminAction, requireAdmin, verifyPa
 import { bankAccountSchema, expenseSchema, firstError, formToObject } from "@/lib/validators";
 import { addVat } from "@/lib/money";
 import { postExpense, removeEntries } from "@/lib/accounting";
-import { saveDocument } from "@/lib/uploads";
+import { parseStoredUrl, PRIVATE_BUCKET } from "@/lib/storage";
 import { activateBankAccount, createBankAccount, deleteBankAccount, revealBankAccount, updateBankAccount } from "@/lib/bank";
 import type { FormState } from "@/lib/shop-actions";
 
@@ -21,14 +21,17 @@ export async function saveExpenseAction(_prev: FormState, formData: FormData): P
   if (!parsed.success) return { ok: false, message: firstError(parsed.error) };
   const d = parsed.data;
   const { tva, ttc } = addVat(d.amountHt ?? 0, d.vatRate ?? 0);
-  let receiptUrl: string | undefined;
-  const receipt = formData.get("receipt");
-  if (receipt instanceof File && receipt.size > 0) {
-    try {
-      receiptUrl = (await saveDocument(receipt, "justificatifs")).url;
-    } catch (e) {
-      return { ok: false, message: e instanceof Error ? e.message : "Justificatif refusé." };
-    }
+  // Le justificatif est envoyé directement au stockage privé ; on n'accepte qu'une référence de ce stockage.
+  const rawReceipt = formData.has("receiptUrl") ? String(formData.get("receiptUrl") ?? "").trim() : undefined;
+  let receiptUrl: string | null | undefined = rawReceipt === undefined ? undefined : rawReceipt || null;
+  if (receiptUrl) {
+    const parsedUrl = parseStoredUrl(receiptUrl);
+    const legacy = receiptUrl.startsWith("/uploads/");
+    if (!legacy && (!parsedUrl || parsedUrl.bucket !== PRIVATE_BUCKET || parsedUrl.objectPath.includes(".."))) return { ok: false, message: "Justificatif refusé." };
+  }
+  if (id && receiptUrl !== undefined) {
+    const current = await prisma.expense.findUnique({ where: { id }, select: { receiptUrl: true } });
+    if (current?.receiptUrl === receiptUrl) receiptUrl = undefined;
   }
   const data = {
     date: new Date(d.date),
@@ -42,7 +45,7 @@ export async function saveExpenseAction(_prev: FormState, formData: FormData): P
     paymentMethod: d.paymentMethod,
     invoiceNumber: d.invoiceNumber,
     notes: d.notes,
-    ...(receiptUrl ? { receiptUrl } : {}),
+    ...(receiptUrl !== undefined ? { receiptUrl } : {}),
   };
   await prisma.$transaction(async (tx) => {
     const row = id ? await tx.expense.update({ where: { id }, data }) : await tx.expense.create({ data });

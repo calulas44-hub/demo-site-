@@ -64,32 +64,38 @@ export async function verifyPassword(plain: string, hash: string): Promise<boole
 
 // ------------------------------------------------------------------ Limitation des tentatives
 
-const attempts = new Map<string, { count: number; until: number }>();
 const MAX_ATTEMPTS = 6;
 const WINDOW_MS = 15 * 60 * 1000;
 
-export function checkRateLimit(key: string): { allowed: boolean; retryAfterMinutes: number } {
+/** Limitation persistée en base : fonctionne aussi avec plusieurs instances serverless. */
+export async function checkRateLimit(key: string): Promise<{ allowed: boolean; retryAfterMinutes: number }> {
   const now = Date.now();
-  const entry = attempts.get(key);
-  if (!entry || entry.until < now) return { allowed: true, retryAfterMinutes: 0 };
+  const entry = await prisma.loginAttempt.findUnique({ where: { key } });
+  if (!entry || entry.until.getTime() < now) return { allowed: true, retryAfterMinutes: 0 };
   if (entry.count >= MAX_ATTEMPTS) {
-    return { allowed: false, retryAfterMinutes: Math.ceil((entry.until - now) / 60000) };
+    return { allowed: false, retryAfterMinutes: Math.ceil((entry.until.getTime() - now) / 60000) };
   }
   return { allowed: true, retryAfterMinutes: 0 };
 }
 
-export function recordFailedAttempt(key: string): void {
-  const now = Date.now();
-  const entry = attempts.get(key);
+export async function recordFailedAttempt(key: string): Promise<void> {
+  const now = new Date();
+  const entry = await prisma.loginAttempt.findUnique({ where: { key } });
   if (!entry || entry.until < now) {
-    attempts.set(key, { count: 1, until: now + WINDOW_MS });
+    await prisma.loginAttempt.upsert({
+      where: { key },
+      create: { key, count: 1, until: new Date(now.getTime() + WINDOW_MS) },
+      update: { count: 1, until: new Date(now.getTime() + WINDOW_MS) },
+    });
   } else {
-    entry.count += 1;
+    await prisma.loginAttempt.update({ where: { key }, data: { count: { increment: 1 } } });
   }
+  // Nettoyage opportuniste des entrées expirées.
+  if (Math.random() < 0.05) await prisma.loginAttempt.deleteMany({ where: { until: { lt: now } } });
 }
 
-export function clearAttempts(key: string): void {
-  attempts.delete(key);
+export async function clearAttempts(key: string): Promise<void> {
+  await prisma.loginAttempt.deleteMany({ where: { key } });
 }
 
 export async function clientIp(): Promise<string> {

@@ -33,11 +33,12 @@ interface Addr {
   phone: string | null;
 }
 interface Props {
-  cart: { lines: { variantId: string; name: string; variantLabel: string; imageUrl: string | null; quantity: number; total: number }[]; subtotal: number };
+  cart: { lines: { variantId: string; name: string; variantLabel: string; imageUrl: string | null; quantity: number; total: number }[]; subtotal: number; total: number; discount: { amount: number; label: string } | null };
   methods: Method[];
   customer: { email: string; firstName: string; lastName: string; phone: string | null } | null;
   addresses: Addr[];
   cardEnabled: boolean;
+  bankTransferEnabled: boolean;
 }
 
 const initial: FormState = { ok: false, message: "" };
@@ -97,7 +98,8 @@ function AddressFields({ prefix, defaults, onCountryChange }: { prefix: string; 
   );
 }
 
-export function CheckoutForm({ cart, methods, customer, addresses, cardEnabled }: Props) {
+export function CheckoutForm({ cart, methods, customer, addresses, cardEnabled, bankTransferEnabled }: Props) {
+  const canPay = cardEnabled || bankTransferEnabled;
   const [state, action, pending] = useActionState(placeOrderAction, initial);
   const [country, setCountry] = useState(addresses[0]?.country ?? "FR");
   const [billingSame, setBillingSame] = useState(true);
@@ -110,8 +112,8 @@ export function CheckoutForm({ cart, methods, customer, addresses, cardEnabled }
       const cs = m.countries.split(",").map((c) => c.trim().toUpperCase());
       return cs.includes("*") || cs.includes(country.toUpperCase());
     });
-    return list.map((m) => ({ ...m, computed: m.freeAbove !== null && cart.subtotal >= m.freeAbove ? 0 : m.price }));
-  }, [methods, country, cart.subtotal]);
+    return list.map((m) => ({ ...m, computed: m.freeAbove !== null && cart.total >= m.freeAbove ? 0 : m.price }));
+  }, [methods, country, cart.total]);
 
   const chosen = available.find((m) => m.id === methodId) ?? available[0];
   const shippingPrice = chosen?.computed ?? 0;
@@ -214,23 +216,27 @@ export function CheckoutForm({ cart, methods, customer, addresses, cardEnabled }
           <h2>
             <span>4</span>Paiement
           </h2>
-          {cardEnabled && (
-            <label className="option">
-              <input type="radio" name="paymentMethod" value="CARD" defaultChecked />
-              <span className="option__body">
-                <span className="option__title">Carte bancaire</span>
-                <span className="option__desc">Paiement sécurisé sur la page de notre prestataire (Stripe). Vos données de carte ne transitent jamais par nos serveurs.</span>
-              </span>
-            </label>
-          )}
-          <label className="option">
-            <input type="radio" name="paymentMethod" value="BANK_TRANSFER" defaultChecked={!cardEnabled} />
+          <label className={`option${cardEnabled ? "" : " option--disabled"}`}>
+            <input type="radio" name="paymentMethod" value="CARD" defaultChecked={cardEnabled} disabled={!cardEnabled} />
             <span className="option__body">
-              <span className="option__title">Virement bancaire</span>
-              <span className="option__desc">Nos coordonnées bancaires vous sont communiquées à l&apos;étape suivante. Votre commande est expédiée dès réception du virement.</span>
+              <span className="option__title">
+                <span>Carte bancaire ou Apple Pay</span>
+                {!cardEnabled && <span className="tag-soon">Bientôt disponible</span>}
+              </span>
+              <span className="option__desc">Paiement sécurisé sur la page de notre prestataire Stripe. Vos données de carte ne transitent jamais par nos serveurs. Apple Pay est proposé automatiquement sur les appareils compatibles.</span>
             </span>
           </label>
-          {!cardEnabled && <p className="small muted">Le paiement par carte sera proposé dès l&apos;activation du prestataire de paiement.</p>}
+          <label className={`option${bankTransferEnabled ? "" : " option--disabled"}`}>
+            <input type="radio" name="paymentMethod" value="BANK_TRANSFER" defaultChecked={!cardEnabled && bankTransferEnabled} disabled={!bankTransferEnabled} />
+            <span className="option__body">
+              <span className="option__title">
+                <span>Virement bancaire</span>
+                {!bankTransferEnabled && <span className="tag-soon">Bientôt disponible</span>}
+              </span>
+              <span className="option__desc">{bankTransferEnabled ? "Nos coordonnées bancaires vous sont communiquées à l'étape suivante. Votre commande est expédiée dès réception du virement." : "Ce moyen de paiement sera proposé prochainement."}</span>
+            </span>
+          </label>
+          {!canPay && <p className="alert alert--error">Le paiement en ligne n&apos;est pas encore activé : les commandes ne peuvent pas être validées pour le moment.</p>}
         </section>
 
         <section className="checkout__step">
@@ -286,23 +292,26 @@ export function CheckoutForm({ cart, methods, customer, addresses, cardEnabled }
           <span>Sous-total</span>
           <span>{formatPrice(cart.subtotal)}</span>
         </div>
+        {cart.discount && (
+          <div className="summary__row summary__row--discount">
+            <span>{cart.discount.label}</span>
+            <span>− {formatPrice(cart.discount.amount)}</span>
+          </div>
+        )}
         <div className="summary__row">
           <span>Livraison</span>
           <span>{chosen ? (shippingPrice === 0 ? "Offerte" : formatPrice(shippingPrice)) : "—"}</span>
         </div>
         <div className="summary__row summary__row--total">
           <span>Total TTC</span>
-          <strong>{formatPrice(cart.subtotal + shippingPrice)}</strong>
+          <strong>{formatPrice(cart.total + shippingPrice)}</strong>
         </div>
-        <button type="submit" className="btn btn--block" disabled={pending || available.length === 0}>
-          {pending ? "Validation…" : "Confirmer la commande"}
+        <button type="submit" className="btn btn--block" disabled={pending || available.length === 0 || !canPay}>
+          {pending ? "Validation…" : cardEnabled ? "Payer la commande" : "Confirmer la commande"}
         </button>
         <ul className="perks">
           <li>
             <Icon name="lock" /> Paiement sécurisé
-          </li>
-          <li>
-            <Icon name="truck" /> Expédition sous 24 à 48 h
           </li>
         </ul>
       </aside>

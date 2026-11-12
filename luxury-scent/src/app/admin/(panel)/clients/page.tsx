@@ -5,7 +5,7 @@ import { formatPrice } from "@/lib/money";
 export default async function CustomersPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q = "" } = await searchParams;
   const customers = await prisma.customer.findMany({
-    where: q ? { OR: [{ email: { contains: q } }, { firstName: { contains: q } }, { lastName: { contains: q } }] } : undefined,
+    where: q ? { OR: [{ email: { contains: q, mode: "insensitive" } }, { firstName: { contains: q, mode: "insensitive" } }, { lastName: { contains: q, mode: "insensitive" } }] } : undefined,
     orderBy: { createdAt: "desc" },
     take: 200,
     include: { orders: { select: { total: true, paymentStatus: true } } },

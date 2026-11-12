@@ -11,15 +11,15 @@ export async function adminLoginAction(_prev: FormState, formData: FormData): Pr
   const password = String(formData.get("password") ?? "");
   if (!email.success || !password) return { ok: false, message: "Identifiants invalides." };
   const key = `admin:${await clientIp()}:${email.data}`;
-  const limit = checkRateLimit(key);
+  const limit = await checkRateLimit(key);
   if (!limit.allowed) return { ok: false, message: `Trop de tentatives. Réessayez dans ${limit.retryAfterMinutes} min.` };
   const user = await prisma.adminUser.findUnique({ where: { email: email.data } });
   if (!user || !user.active || !(await verifyPassword(password, user.passwordHash))) {
-    recordFailedAttempt(key);
+    await recordFailedAttempt(key);
     await logAdminAction(null, "auth", null, "LOGIN_FAILED", { email: email.data });
     return { ok: false, message: "E-mail ou mot de passe incorrect." };
   }
-  clearAttempts(key);
+  await clearAttempts(key);
   await prisma.adminUser.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
   await createAdminSession(user.id, user.tokenVersion);
   await logAdminAction(user.id, "auth", user.id, "LOGIN");

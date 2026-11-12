@@ -29,9 +29,14 @@ export default async function HomeAdminPage({ searchParams }: { searchParams: Pr
           <h1>Page d&apos;accueil</h1>
           <p>Composez l&apos;accueil par sections : ordre, textes, images et boutons.</p>
         </div>
-        <Link href="/" target="_blank" rel="noopener" className="btn-a btn-a--ghost">
-          Voir l&apos;accueil ↗
-        </Link>
+        <div className="adm-actions">
+          <Link href="/?apercu=1" target="_blank" rel="noopener" className="btn-a btn-a--ghost">
+            Aperçu (avec sections masquées) ↗
+          </Link>
+          <Link href="/" target="_blank" rel="noopener" className="btn-a btn-a--ghost">
+            Voir l&apos;accueil publié ↗
+          </Link>
+        </div>
       </div>
       {sp.ok && <p className="msg msg--ok">Modifications enregistrées et publiées.</p>}
       <div className="grid-side">

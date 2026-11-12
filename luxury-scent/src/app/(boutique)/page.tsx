@@ -5,18 +5,30 @@ import { ProductCard } from "@/components/shop/product-card";
 import { Reveal } from "@/components/shop/reveal";
 import { Icon } from "@/components/shop/icon";
 import { NewsletterForm } from "@/components/shop/newsletter-form";
+import { prisma } from "@/lib/db";
+import { isAdminPreview } from "@/lib/preview";
+import { PreviewBanner } from "@/components/shop/preview-banner";
+import { isVideoUrl } from "@/lib/media-url";
 
-export default async function HomePage() {
-  const [sections, settings] = await Promise.all([getHomeSections(), getSettings()]);
+export default async function HomePage({ searchParams }: { searchParams: Promise<{ apercu?: string }> }) {
+  const preview = await isAdminPreview((await searchParams).apercu);
+  const [sections, settings] = await Promise.all([getHomeSections(preview), getSettings()]);
   const first = sections[0];
   const hasHero = first?.type === "HERO";
 
   return (
     <>
       {!hasHero && <div style={{ height: 0 }} />}
-      {sections.map((s, i) => (
-        <Section key={s.id} section={s} index={i} settings={settings} />
-      ))}
+      {preview && <PreviewBanner text="Aperçu : les sections masquées sont affichées (contour pointillé)." />}
+      {sections.map((s, i) =>
+        s.active ? (
+          <Section key={s.id} section={s} index={i} settings={settings} />
+        ) : (
+          <div key={s.id} className="preview-hidden">
+            <Section section={s} index={i} settings={settings} />
+          </div>
+        ),
+      )}
       {sections.length === 0 && (
         <section className="section container prose-center">
           <h1>{settings.brandName}</h1>
@@ -44,15 +56,26 @@ async function Section({ section: s, index, settings }: { section: SectionRow; i
     case "HERO": {
       const align = (data.align as string) ?? "left";
       const theme = (data.theme as string) ?? "dark";
+      const layout = (data.layout as string) ?? "cover";
+      const video = isVideoUrl(s.imageUrl);
+      // Proportions réelles de l'image (médiathèque) : l'image est affichée en entier, sans recadrage.
+      const media = s.imageUrl && layout !== "cover" ? await prisma.media.findUnique({ where: { url: s.imageUrl }, select: { width: true, height: true } }) : null;
+      const ratio = media?.width && media?.height ? `${media.width} / ${media.height}` : "3 / 2";
       return (
-        <section className={`hero${theme === "light" ? " hero--light" : ""}${index > 0 ? " hero--short" : ""}`}>
+        <section
+          className={`hero hero--${layout}${theme === "light" ? " hero--light" : ""}${index > 0 && layout === "cover" ? " hero--short" : ""}${s.imageMobileUrl ? " hero--has-mobile" : ""}`}
+          style={{ "--hero-ratio": ratio } as React.CSSProperties}
+        >
           <div className="hero__media">
-            {s.imageUrl && (
-              <picture>
-                {s.imageMobileUrl && <source media="(max-width: 767px)" srcSet={s.imageMobileUrl} />}
-                <img src={s.imageUrl} alt="" fetchPriority="high" />
-              </picture>
-            )}
+            {s.imageUrl &&
+              (video ? (
+                <video src={s.imageUrl} autoPlay muted loop playsInline preload="metadata" aria-hidden="true" />
+              ) : (
+                <picture>
+                  {s.imageMobileUrl && <source media="(max-width: 767px)" srcSet={s.imageMobileUrl} />}
+                  <img src={s.imageUrl} alt="" fetchPriority="high" />
+                </picture>
+              ))}
           </div>
           <div className={`container`}>
             <div className={`hero__content hero__content--${align}`}>
@@ -72,6 +95,7 @@ async function Section({ section: s, index, settings }: { section: SectionRow; i
       );
     }
     case "REASSURANCE":
+      if (settings.reassurance.length === 0) return null;
       return (
         <section className="reassurance">
           <ul className="container reassurance__list">

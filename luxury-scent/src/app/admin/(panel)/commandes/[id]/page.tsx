@@ -87,6 +87,14 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                   </td>
                   <td className="num">{formatPrice(order.subtotal)}</td>
                 </tr>
+                {order.discount > 0 && (
+                  <tr>
+                    <td colSpan={5} className="ta-r muted">
+                      {order.discountLabel ?? "Remise"}
+                    </td>
+                    <td className="num">− {formatPrice(order.discount)}</td>
+                  </tr>
+                )}
                 <tr>
                   <td colSpan={5} className="ta-r muted">
                     Livraison ({order.shippingMethodName})

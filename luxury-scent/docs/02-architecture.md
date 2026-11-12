@@ -5,7 +5,9 @@
 | Couche | Choix | Pourquoi |
 |---|---|---|
 | Application | **Next.js 15** (App Router, TypeScript, React 19) | Rendu serveur pour le référencement et la vitesse, API et actions serveur dans le même déploiement, écosystème mature. |
-| Base de données | **Prisma** + **SQLite** en développement, **PostgreSQL** en production | Un seul schéma, migrations versionnées, bascule par variable d'environnement et une ligne du schéma. |
+| Base de données | **Prisma** + **PostgreSQL** (Supabase en production) | Migrations versionnées appliquées à chaque déploiement, RLS activée sur toutes les tables. |
+| Médias | **Supabase Storage** (bucket public `media`, bucket privé `private`) | Envoi direct navigateur → stockage par URL signée, compression WebP côté navigateur. |
+| Hébergement | **Netlify** (`@netlify/plugin-nextjs`) | Déploiement automatique à chaque push GitHub. |
 | Paiement | **Stripe Checkout** (page hébergée) + **virement bancaire** | Aucun numéro de carte ne transite par nos serveurs. Le virement utilise l'IBAN actif géré dans l'administration. |
 | E-mails | **Nodemailer** (SMTP) | Fonctionne avec n'importe quel fournisseur (OVH, Gmail pro, Brevo, Mailgun…). |
 | Images | **sharp** | Redimensionnement et conversion WebP au téléversement. |
@@ -28,7 +30,7 @@ luxury-scent/
 │   └── styles/        feuilles de style globales
 ├── scripts/           création d'admin, sauvegarde
 ├── tests/             tests fonctionnels (API et navigateur)
-├── storage/           (ignoré par git) base SQLite et fichiers téléversés
+├── storage/           (ignoré par git) médias en développement local uniquement
 └── docs/              analyse, architecture, déploiement
 ```
 

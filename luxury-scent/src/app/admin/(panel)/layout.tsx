@@ -22,7 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   const groups: { title: string; items: { href: string; label: string; count?: number; show?: boolean }[] }[] = [
     { title: "Pilotage", items: [{ href: "/admin", label: "Tableau de bord" }, { href: "/admin/commandes", label: "Commandes", count: pendingOrders }, { href: "/admin/clients", label: "Clients" }, { href: "/admin/messages", label: "Messages", count: unreadMessages }] },
-    { title: "Catalogue", items: [{ href: "/admin/produits", label: "Produits" }, { href: "/admin/categories", label: "Catégories" }, { href: "/admin/collections", label: "Collections" }, { href: "/admin/marques", label: "Marques" }] },
+    { title: "Catalogue", items: [{ href: "/admin/produits", label: "Produits" }, { href: "/admin/categories", label: "Catégories" }, { href: "/admin/collections", label: "Collections" }, { href: "/admin/marques", label: "Marques" }, { href: "/admin/promotions", label: "Promotions" }] },
     { title: "Contenu", items: [{ href: "/admin/accueil", label: "Page d'accueil" }, { href: "/admin/pages", label: "Pages" }, { href: "/admin/newsletter", label: "Newsletter" }] },
     {
       title: "Finances",

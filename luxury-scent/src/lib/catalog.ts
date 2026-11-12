@@ -31,6 +31,7 @@ export type ProductCard = {
   hasRange: boolean;
   isNew: boolean;
   isLimited: boolean;
+  commercialLabel: string | null;
   available: boolean;
   sizes: string[];
 };
@@ -63,6 +64,7 @@ export function toCard(p: ProductWithCard): ProductCard {
   const priceFrom = prices.length ? Math.min(...prices) : 0;
   const cheapest = priceSource.find((v) => v.eff === priceFrom);
   const compareAt = cheapest && cheapest.salePrice !== null && cheapest.salePrice < cheapest.price ? cheapest.price : null;
+  const photos = p.images.filter((i) => i.kind !== "VIDEO");
   return {
     id: p.id,
     name: p.name,
@@ -70,13 +72,14 @@ export function toCard(p: ProductWithCard): ProductCard {
     subtitle: p.subtitle,
     brand: p.brand?.name ?? null,
     families: splitList(p.families),
-    image: p.images[0]?.url ?? null,
-    hoverImage: p.images[1]?.url ?? null,
+    image: photos[0]?.url ?? null,
+    hoverImage: photos[1]?.url ?? null,
     priceFrom,
     compareAt,
     hasRange: new Set(prices).size > 1,
     isNew: p.isNew,
     isLimited: p.isLimited,
+    commercialLabel: p.commercialLabel,
     available: inStock.length > 0,
     sizes: variants.map((v) => v.label),
   };
@@ -152,21 +155,21 @@ export async function listProducts(filters: CatalogFilters) {
   if (filters.brands?.length) and.push({ brand: { slug: { in: filters.brands } } });
   if (filters.genders?.length) and.push({ gender: { in: filters.genders } });
   if (filters.families?.length) {
-    and.push({ OR: filters.families.map((f) => ({ families: { contains: f } })) });
+    and.push({ OR: filters.families.map((f) => ({ families: { contains: f, mode: "insensitive" } })) });
   }
   if (filters.q) {
     const q = filters.q.trim();
     and.push({
       OR: [
-        { name: { contains: q } },
-        { subtitle: { contains: q } },
-        { families: { contains: q } },
-        { notesTop: { contains: q } },
-        { notesHeart: { contains: q } },
-        { notesBase: { contains: q } },
-        { shortDescription: { contains: q } },
-        { brand: { name: { contains: q } } },
-        { collection: { name: { contains: q } } },
+        { name: { contains: q, mode: "insensitive" } },
+        { subtitle: { contains: q, mode: "insensitive" } },
+        { families: { contains: q, mode: "insensitive" } },
+        { notesTop: { contains: q, mode: "insensitive" } },
+        { notesHeart: { contains: q, mode: "insensitive" } },
+        { notesBase: { contains: q, mode: "insensitive" } },
+        { shortDescription: { contains: q, mode: "insensitive" } },
+        { brand: { name: { contains: q, mode: "insensitive" } } },
+        { collection: { name: { contains: q, mode: "insensitive" } } },
       ],
     });
   }
@@ -255,9 +258,10 @@ export async function getNewProducts(limit = 8): Promise<ProductCard[]> {
 
 // ------------------------------------------------------------------ Fiche produit
 
-export async function getProductBySlug(slug: string) {
+/** preview = aperçu administrateur : affiche aussi les brouillons (jamais indexé, réservé aux sessions admin). */
+export async function getProductBySlug(slug: string, preview = false) {
   const p = await prisma.product.findFirst({
-    where: { slug, status: "ACTIVE" },
+    where: { slug, ...(preview ? {} : { status: "ACTIVE" }) },
     include: {
       brand: true,
       category: { include: { parent: true } },
@@ -315,8 +319,8 @@ export async function getActiveAnnouncements() {
   });
 }
 
-export async function getHomeSections() {
-  return prisma.homeSection.findMany({ where: { active: true }, orderBy: { position: "asc" } });
+export async function getHomeSections(preview = false) {
+  return prisma.homeSection.findMany({ where: preview ? {} : { active: true }, orderBy: { position: "asc" } });
 }
 
 export async function getCategoryBySlug(slug: string) {

@@ -34,6 +34,12 @@ export default async function CustomerOrderPage({ params }: { params: Promise<{ 
             <span>{formatPrice(it.total)}</span>
           </div>
         ))}
+        {order.discount > 0 && (
+          <div className="summary__row summary__row--discount">
+            <span>{order.discountLabel ?? "Remise"}</span>
+            <span>− {formatPrice(order.discount)}</span>
+          </div>
+        )}
         <div className="summary__row">
           <span>Livraison ({order.shippingMethodName})</span>
           <span>{formatPrice(order.shippingPrice)}</span>

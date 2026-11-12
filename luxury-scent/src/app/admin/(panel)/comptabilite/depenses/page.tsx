@@ -1,3 +1,4 @@
+import { receiptHref } from "@/lib/media-url";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -59,7 +60,7 @@ export default async function ExpensesPage({ searchParams }: { searchParams: Pro
                         {e.receiptUrl && (
                           <>
                             {" · "}
-                            <a href={e.receiptUrl} target="_blank" rel="noopener">
+                            <a href={receiptHref(e.receiptUrl)} target="_blank" rel="noopener">
                               justificatif
                             </a>
                           </>

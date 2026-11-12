@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { isAdminPreview } from "@/lib/preview";
+import { PreviewBanner } from "@/components/shop/preview-banner";
 import { notFound } from "next/navigation";
 import { getProductBySlug, getRelatedProducts, splitList } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
@@ -8,7 +10,7 @@ import { ProductCard } from "@/components/shop/product-card";
 import { Reveal } from "@/components/shop/reveal";
 import { Icon } from "@/components/shop/icon";
 
-type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ variante?: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ variante?: string; apercu?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -18,13 +20,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description: p.seoDescription ?? p.shortDescription ?? undefined,
-    openGraph: { title, images: p.images[0] ? [{ url: p.images[0].url }] : undefined, type: "website" },
+    openGraph: { title, images: p.images.find((i) => i.kind !== "VIDEO") ? [{ url: p.images.find((i) => i.kind !== "VIDEO")!.url }] : undefined, type: "website" },
   };
 }
 
 export default async function ProductPage({ params, searchParams }: Props) {
   const [{ slug }, sp] = await Promise.all([params, searchParams]);
-  const p = await getProductBySlug(slug);
+  const preview = await isAdminPreview(sp.apercu);
+  const p = await getProductBySlug(slug, preview);
   if (!p) notFound();
   const [related, settings] = await Promise.all([getRelatedProducts(p.id, p.collectionId, p.categoryId, 4), getSettings()]);
   const families = splitList(p.families);
@@ -35,7 +38,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: `${p.name}${p.subtitle ? " — " + p.subtitle : ""}`,
-    image: p.images.map((i) => `${appUrl}${i.url}`),
+    image: p.images.filter((i) => i.kind !== "VIDEO").map((i) => (i.url.startsWith("http") ? i.url : `${appUrl}${i.url}`)),
     description: p.shortDescription ?? undefined,
     brand: p.brand ? { "@type": "Brand", name: p.brand.name } : undefined,
     offers: p.variantInfos.map((v) => ({
@@ -50,6 +53,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
 
   return (
     <div className="container">
+      {preview && p.status !== "ACTIVE" && <PreviewBanner text="Ce produit n'est pas en ligne (brouillon ou archivé)." />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <nav className="breadcrumb" aria-label="Fil d'Ariane" style={{ justifyContent: "flex-start", margin: "1.5rem 0 0" }}>
         <Link href="/">Accueil</Link>
@@ -74,14 +78,14 @@ export default async function ProductPage({ params, searchParams }: Props) {
           <div className="gallery gallery--mobile">
             {p.images.map((img) => (
               <div className="gallery__item" key={img.id}>
-                <img src={img.url} alt={img.alt ?? p.name} />
+                <GalleryMedia img={img} fallbackAlt={p.name} />
               </div>
             ))}
           </div>
           <div className={`gallery gallery--desktop${p.images.length <= 2 ? " gallery--two" : ""}`}>
             {p.images.map((img, i) => (
               <div className="gallery__item" key={img.id}>
-                <img src={img.url} alt={img.alt ?? p.name} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : undefined} />
+                <GalleryMedia img={img} fallbackAlt={p.name} eager={i === 0} />
               </div>
             ))}
             {p.images.length === 0 && <div className="gallery__item" />}
@@ -94,6 +98,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
               <Link href={`/marques/${p.brand.slug}`}>{p.brand.name}</Link>
             </div>
           )}
+          {p.commercialLabel && <p className="badge badge--gold pdp__label">{p.commercialLabel}</p>}
           <h1 className="pdp__title">{p.name}</h1>
           {p.subtitle && <p className="pdp__subtitle">{p.subtitle}</p>}
           {families.length > 0 && (
@@ -196,4 +201,11 @@ export default async function ProductPage({ params, searchParams }: Props) {
       )}
     </div>
   );
+}
+
+function GalleryMedia({ img, fallbackAlt, eager = false }: { img: { url: string; alt: string | null; kind: string; posterUrl: string | null }; fallbackAlt: string; eager?: boolean }) {
+  if (img.kind === "VIDEO") {
+    return <video src={img.url} poster={img.posterUrl ?? undefined} autoPlay muted loop playsInline controls preload="metadata" aria-label={img.alt ?? fallbackAlt} />;
+  }
+  return <img src={img.url} alt={img.alt ?? fallbackAlt} loading={eager ? "eager" : "lazy"} fetchPriority={eager ? "high" : undefined} />;
 }

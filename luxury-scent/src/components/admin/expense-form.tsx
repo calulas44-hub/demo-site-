@@ -1,5 +1,7 @@
 "use client";
 
+import { MediaField } from "./media-upload";
+import { receiptHref } from "@/lib/media-url";
 import { ActionForm } from "@/components/action-form";
 
 import { useActionState } from "react";
@@ -68,17 +70,14 @@ export function ExpenseForm({ expense, defaultVat }: { expense?: { id: string; d
           </select>
         </div>
       </div>
-      <div className="f">
-        <label>Justificatif (PDF ou image)</label>
-        {expense?.receiptUrl && (
-          <p className="small">
-            <a href={expense.receiptUrl} target="_blank" rel="noopener">
-              Voir le justificatif actuel
-            </a>
-          </p>
-        )}
-        <input type="file" name="receipt" accept="application/pdf,image/*" />
-      </div>
+      {expense?.receiptUrl && (
+        <p className="small">
+          <a href={receiptHref(expense.receiptUrl)} target="_blank" rel="noopener">
+            Voir le justificatif actuel
+          </a>
+        </p>
+      )}
+      <MediaField name="receiptUrl" label="Justificatif (PDF ou image)" accept="document" folder="justificatifs" defaultUrl={expense?.receiptUrl} privateFile />
       <div className="f">
         <label>Notes</label>
         <textarea name="notes" defaultValue={expense?.notes ?? ""} style={{ minHeight: "3.5rem" }} />

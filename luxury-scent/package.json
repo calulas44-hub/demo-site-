@@ -18,13 +18,15 @@
     "admin:create": "tsx scripts/create-admin.ts",
     "backup": "tsx scripts/backup.ts",
     "test": "tsx tests/run.ts",
-    "vitrine:export": "tsx scripts/export-vitrine.ts"
+    "vitrine:export": "tsx scripts/export-vitrine.ts",
+    "build:netlify": "bash scripts/netlify-build.sh"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "6.19.3",
+    "@supabase/supabase-js": "^2.119.0",
     "bcryptjs": "3.0.3",
     "exceljs": "4.4.0",
     "jose": "6.2.17",
@@ -41,6 +43,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.7",
+    "@netlify/plugin-nextjs": "^5.16.6",
     "@types/bcryptjs": "3.0.0",
     "@types/node": "22.19.0",
     "@types/nodemailer": "8.0.2",

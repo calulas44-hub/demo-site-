@@ -17,13 +17,11 @@ export function Footer({ settings, pages, categories, collections }: Props) {
         <div>
           <div className="footer__brand">{settings.brandName}</div>
           <p className="footer__about">{settings.seoDescription}</p>
-          <p className="footer__about small">
-            {settings.contactEmail}
-            <br />
-            {settings.contactPhone}
-            <br />
-            {settings.openingHours}
-          </p>
+          {(settings.contactEmail || settings.contactPhone || settings.openingHours) && (
+            <p className="footer__about small" style={{ whiteSpace: "pre-line" }}>
+              {[settings.contactEmail, settings.contactPhone, settings.openingHours].filter(Boolean).join("\n")}
+            </p>
+          )}
           <div className="footer__social">
             {settings.instagram && (
               <a className="icon-btn" href={settings.instagram} target="_blank" rel="noopener">

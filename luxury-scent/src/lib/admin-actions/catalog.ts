@@ -7,7 +7,7 @@ import { logAdminAction, requireAdmin } from "@/lib/auth";
 import { brandSchema, categorySchema, collectionSchema, firstError, formToObject, productSchema, variantSchema } from "@/lib/validators";
 import { uniqueSlug } from "@/lib/slug";
 import { cleanHtml } from "@/lib/sanitize";
-import { deleteUpload, saveImage } from "@/lib/uploads";
+import { deleteStoredUrl, isOwnMediaUrl, kindOf, mediaUrlFromForm } from "@/lib/storage";
 import type { FormState } from "@/lib/shop-actions";
 
 function revalidateShop() {
@@ -64,6 +64,9 @@ export async function saveProductAction(_prev: FormState, formData: FormData): P
     featured: d.featured,
     isNew: d.isNew,
     isLimited: d.isLimited,
+    commercialLabel: d.commercialLabel,
+    upsellEligible: d.upsellEligible,
+    isDemo: false,
     vatRate: d.vatRate,
     position: d.position,
     seoTitle: d.seoTitle,
@@ -100,34 +103,40 @@ export async function deleteProductAction(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
   const product = await prisma.product.findUnique({ where: { id }, include: { images: true } });
   if (!product) return;
-  for (const img of product.images) await deleteUpload(img.url);
   await prisma.product.delete({ where: { id } });
+  for (const img of product.images) {
+    await deleteStoredUrl(img.url);
+    await deleteStoredUrl(img.posterUrl);
+  }
   await logAdminAction(admin.id, "product", id, "DELETE", { name: product.name });
   revalidateShop();
   redirect("/admin/produits?deleted=1");
 }
 
-export async function uploadProductImagesAction(_prev: FormState, formData: FormData): Promise<FormState> {
+/** Rattache à un produit des médias déjà envoyés au stockage (photos ou vidéos). */
+export async function addProductMediaAction(input: { productId: string; urls: string[] }): Promise<FormState> {
   const admin = await requireAdmin();
-  const productId = String(formData.get("productId") ?? "");
-  const product = await prisma.product.findUnique({ where: { id: productId }, include: { images: true } });
+  const product = await prisma.product.findUnique({ where: { id: input.productId }, include: { images: true } });
   if (!product) return { ok: false, message: "Produit introuvable." };
-  const files = formData.getAll("images").filter((f): f is File => f instanceof File && f.size > 0);
-  if (files.length === 0) return { ok: false, message: "Sélectionnez au moins une image." };
+  const urls = (input.urls ?? []).filter(Boolean).slice(0, 30);
+  if (urls.length === 0) return { ok: false, message: "Aucun fichier reçu." };
+  if (!urls.every(isOwnMediaUrl)) return { ok: false, message: "Fichier refusé : il doit être envoyé depuis l'administration." };
+  const media = await prisma.media.findMany({ where: { url: { in: urls } } });
   let position = product.images.length;
+  let hasPrimary = product.images.some((i) => i.isPrimary);
   let count = 0;
-  for (const file of files) {
-    try {
-      const saved = await saveImage(file, "produits", product.name);
-      await prisma.productImage.create({ data: { productId, url: saved.url, alt: product.name, position: position++, isPrimary: product.images.length === 0 && count === 0 } });
-      count++;
-    } catch (e) {
-      return { ok: false, message: `${file.name} : ${e instanceof Error ? e.message : "erreur"}` };
-    }
+  for (const url of urls) {
+    const m = media.find((x) => x.url === url);
+    if (!m) return { ok: false, message: "Fichier inconnu de la médiathèque." };
+    const kind = kindOf(m.mimeType) === "video" ? "VIDEO" : "IMAGE";
+    const isPrimary = !hasPrimary && kind === "IMAGE";
+    if (isPrimary) hasPrimary = true;
+    await prisma.productImage.create({ data: { productId: product.id, url, kind, alt: product.name, position: position++, isPrimary } });
+    count++;
   }
-  await logAdminAction(admin.id, "product", productId, "UPLOAD_IMAGES", { count });
+  await logAdminAction(admin.id, "product", product.id, "UPLOAD_MEDIA", { count });
   revalidateShop();
-  return { ok: true, message: `${count} image(s) ajoutée(s).` };
+  return { ok: true, message: `${count} média(s) ajouté(s).` };
 }
 
 export async function imageAction(formData: FormData): Promise<void> {
@@ -137,11 +146,12 @@ export async function imageAction(formData: FormData): Promise<void> {
   const img = await prisma.productImage.findUnique({ where: { id: imageId } });
   if (!img) return;
   if (op === "delete") {
-    await deleteUpload(img.url);
     await prisma.productImage.delete({ where: { id: imageId } });
+    await deleteStoredUrl(img.url);
+    await deleteStoredUrl(img.posterUrl);
     const remaining = await prisma.productImage.findMany({ where: { productId: img.productId }, orderBy: { position: "asc" } });
     if (remaining.length && !remaining.some((r) => r.isPrimary)) await prisma.productImage.update({ where: { id: remaining[0].id }, data: { isPrimary: true } });
-  } else if (op === "primary") {
+  } else if (op === "primary" && img.kind !== "VIDEO") {
     await prisma.$transaction([
       prisma.productImage.updateMany({ where: { productId: img.productId }, data: { isPrimary: false } }),
       prisma.productImage.update({ where: { id: imageId }, data: { isPrimary: true, position: -1 } }),
@@ -196,10 +206,13 @@ export async function saveCategoryAction(_prev: FormState, formData: FormData): 
   const d = parsed.data;
   if (id && d.parentId === id) return { ok: false, message: "Une catégorie ne peut pas être sa propre parente." };
   const slug = await uniqueSlug(d.slug || d.name, async (s) => Boolean(await prisma.category.findFirst({ where: { slug: s, NOT: id ? { id } : undefined } })));
-  const image = formData.get("image");
-  let imageUrl: string | undefined;
-  if (image instanceof File && image.size > 0) imageUrl = (await saveImage(image, "categories", d.name)).url;
-  const data = { name: d.name, slug, description: d.description, parentId: d.parentId, position: d.position, active: d.active, showInMenu: d.showInMenu, seoTitle: d.seoTitle, seoDescription: d.seoDescription, ...(imageUrl ? { imageUrl } : {}) };
+  let imageUrl: string | null | undefined;
+  try {
+    imageUrl = mediaUrlFromForm(formData, "imageUrl");
+  } catch (e) {
+    return { ok: false, message: e instanceof Error ? e.message : "Image refusée." };
+  }
+  const data = { name: d.name, slug, description: d.description, parentId: d.parentId, position: d.position, active: d.active, showInMenu: d.showInMenu, seoTitle: d.seoTitle, seoDescription: d.seoDescription, ...(imageUrl !== undefined ? { imageUrl } : {}) };
   const row = id ? await prisma.category.update({ where: { id }, data }) : await prisma.category.create({ data });
   await logAdminAction(admin.id, "category", row.id, id ? "UPDATE" : "CREATE", { name: d.name });
   revalidateShop();
@@ -211,8 +224,8 @@ export async function deleteCategoryAction(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
   const cat = await prisma.category.findUnique({ where: { id } });
   if (!cat) return;
-  if (cat.imageUrl) await deleteUpload(cat.imageUrl);
   await prisma.category.delete({ where: { id } });
+  await deleteStoredUrl(cat.imageUrl);
   await logAdminAction(admin.id, "category", id, "DELETE", { name: cat.name });
   revalidateShop();
 }
@@ -246,11 +259,15 @@ export async function saveCollectionAction(_prev: FormState, formData: FormData)
   if (!parsed.success) return { ok: false, message: firstError(parsed.error) };
   const d = parsed.data;
   const slug = await uniqueSlug(d.slug || d.name, async (s) => Boolean(await prisma.collection.findFirst({ where: { slug: s, NOT: id ? { id } : undefined } })));
-  const extra: { imageUrl?: string; heroImageUrl?: string } = {};
-  const image = formData.get("image");
-  const hero = formData.get("heroImage");
-  if (image instanceof File && image.size > 0) extra.imageUrl = (await saveImage(image, "collections", d.name)).url;
-  if (hero instanceof File && hero.size > 0) extra.heroImageUrl = (await saveImage(hero, "collections", d.name)).url;
+  const extra: { imageUrl?: string | null; heroImageUrl?: string | null } = {};
+  try {
+    const imageUrl = mediaUrlFromForm(formData, "imageUrl");
+    const heroImageUrl = mediaUrlFromForm(formData, "heroImageUrl");
+    if (imageUrl !== undefined) extra.imageUrl = imageUrl;
+    if (heroImageUrl !== undefined) extra.heroImageUrl = heroImageUrl;
+  } catch (e) {
+    return { ok: false, message: e instanceof Error ? e.message : "Image refusée." };
+  }
   const data = { name: d.name, slug, tagline: d.tagline, description: cleanHtml(d.description), position: d.position, active: d.active, ...extra };
   const row = id ? await prisma.collection.update({ where: { id }, data }) : await prisma.collection.create({ data });
   await logAdminAction(admin.id, "collection", row.id, id ? "UPDATE" : "CREATE", { name: d.name });
@@ -263,8 +280,8 @@ export async function deleteCollectionAction(formData: FormData): Promise<void> 
   const id = String(formData.get("id") ?? "");
   const c = await prisma.collection.findUnique({ where: { id } });
   if (!c) return;
-  for (const u of [c.imageUrl, c.heroImageUrl]) if (u) await deleteUpload(u);
   await prisma.collection.delete({ where: { id } });
+  for (const u of [c.imageUrl, c.heroImageUrl]) await deleteStoredUrl(u);
   await logAdminAction(admin.id, "collection", id, "DELETE", { name: c.name });
   revalidateShop();
 }

@@ -11,17 +11,19 @@ export default async function ContactPage() {
       <header className="page-title">
         <p className="eyebrow">Service client</p>
         <h1>Nous contacter</h1>
-        <p className="lead">
-          {s.openingHours} {s.contactPhone && `Téléphone : ${s.contactPhone}.`}
-        </p>
+        {(s.openingHours || s.contactPhone || s.contactEmail) && (
+          <p className="lead">
+            {[s.openingHours, s.contactPhone && `Téléphone : ${s.contactPhone}.`, s.contactEmail && `E-mail : ${s.contactEmail}.`].filter(Boolean).join(" ")}
+          </p>
+        )}
       </header>
       <div className="auth" style={{ maxWidth: "36rem", marginBottom: "5rem" }}>
         <ContactForm />
-        <p className="small muted" style={{ marginTop: "2rem", whiteSpace: "pre-line", textAlign: "center" }}>
-          {s.companyLegalName}
-          {"\n"}
-          {s.address}
-        </p>
+        {(s.companyLegalName || s.address) && (
+          <p className="small muted" style={{ marginTop: "2rem", whiteSpace: "pre-line", textAlign: "center" }}>
+            {[s.companyLegalName, s.address].filter(Boolean).join("\n")}
+          </p>
+        )}
       </div>
     </div>
   );

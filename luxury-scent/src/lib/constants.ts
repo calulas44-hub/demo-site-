@@ -71,7 +71,7 @@ export const HOME_SECTION_TYPES = [
 ] as const;
 export type HomeSectionType = (typeof HOME_SECTION_TYPES)[number];
 export const HOME_SECTION_LABELS: Record<HomeSectionType, string> = {
-  HERO: "Bannière principale (image plein écran)",
+  HERO: "Bannière principale (couverture)",
   BANNER: "Bannière publicitaire",
   FEATURED_PRODUCTS: "Produits mis en avant",
   CATEGORIES: "Grille de catégories",

@@ -18,9 +18,20 @@ export interface ClientCartLine {
   total: number;
 }
 
+export interface ClientUpsellOffer {
+  title: string;
+  text: string;
+  rate: number;
+  maxPrice: number;
+  suggestions: { slug: string; name: string; variantId: string; variantLabel: string; imageUrl: string | null; price: number; discountedPrice: number }[];
+}
+
 export interface ClientCart {
   lines: ClientCartLine[];
   subtotal: number;
+  discount: { variantId: string; amount: number; label: string } | null;
+  total: number;
+  upsellOffer: ClientUpsellOffer | null;
   count: number;
   freeShippingThreshold: number | null;
   freeShippingRemaining: number | null;

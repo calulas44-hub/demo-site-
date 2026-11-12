@@ -5,6 +5,7 @@ import { useTransition } from "react";
 import { useCart } from "./cart-context";
 import { Icon } from "./icon";
 import { Price } from "./price";
+import { UpsellOffer } from "./upsell-offer";
 import { removeFromCartAction, updateCartAction } from "@/lib/cart-actions";
 
 export function CartPageLines() {
@@ -83,6 +84,14 @@ export function CartPageLines() {
             <Price cents={cart.subtotal} />
           </span>
         </div>
+        {cart.discount && (
+          <div className="summary__row summary__row--discount">
+            <span>{cart.discount.label}</span>
+            <span>
+              − <Price cents={cart.discount.amount} />
+            </span>
+          </div>
+        )}
         <div className="summary__row">
           <span>Livraison</span>
           <span className="muted">{cart.freeShippingRemaining === 0 ? "Offerte" : "Calculée à l'étape suivante"}</span>
@@ -90,7 +99,7 @@ export function CartPageLines() {
         <div className="summary__row summary__row--total">
           <span>Total TTC</span>
           <strong>
-            <Price cents={cart.subtotal} />
+            <Price cents={cart.total} />
           </strong>
         </div>
         {cart.freeShippingThreshold !== null && cart.freeShippingRemaining ? (
@@ -98,15 +107,13 @@ export function CartPageLines() {
             Plus que <Price cents={cart.freeShippingRemaining} /> pour la livraison offerte.
           </p>
         ) : null}
+        <UpsellOffer />
         <Link href="/commande" className="btn btn--block">
           Passer la commande
         </Link>
         <ul className="perks">
           <li>
             <Icon name="lock" /> Paiement sécurisé
-          </li>
-          <li>
-            <Icon name="gift" /> Écrin et échantillons offerts
           </li>
         </ul>
       </aside>

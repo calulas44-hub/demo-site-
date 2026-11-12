@@ -1,5 +1,6 @@
 "use client";
 
+import { MediaField } from "./media-upload";
 import { ActionForm } from "@/components/action-form";
 
 import { useActionState } from "react";
@@ -37,22 +38,8 @@ export function SettingsForm({ s }: { s: SiteSettings }) {
             <label>Signature (sous le nom, sur les factures)</label>
             <input name="tagline" defaultValue={s.tagline} />
           </div>
-          <div className="f">
-            <label>Logo (PNG ou SVG converti, fond transparent conseillé)</label>
-            {s.logoUrl && (
-              <div className="img-preview">
-                <img src={s.logoUrl} alt="" />
-                <label className="f-check" style={{ margin: 0 }}>
-                  <input type="checkbox" name="removeLogo" /> Retirer (le nom en toutes lettres sera affiché)
-                </label>
-              </div>
-            )}
-            <input type="file" name="logo" accept="image/*" />
-          </div>
-          <div className="f">
-            <label>Favicon (carré)</label>
-            <input type="file" name="favicon" accept="image/*" />
-          </div>
+          <MediaField name="logoUrl" label="Logo (PNG, fond transparent conseillé)" folder="marque" defaultUrl={s.logoUrl} hint="Sans logo, le nom de la boutique est affiché en toutes lettres." />
+          <MediaField name="faviconUrl" label="Favicon (carré)" folder="marque" defaultUrl={s.faviconUrl} />
           <div className="f-row f-row--3">
             <div className="f">
               <label>Instagram</label>

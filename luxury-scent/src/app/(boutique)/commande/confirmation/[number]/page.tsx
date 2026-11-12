@@ -90,6 +90,12 @@ export default async function ConfirmationPage({ params, searchParams }: { param
             </div>
           ))}
         </div>
+        {order.discount > 0 && (
+          <div className="summary__row summary__row--discount">
+            <span>{order.discountLabel ?? "Remise"}</span>
+            <span>− {formatPrice(order.discount)}</span>
+          </div>
+        )}
         <div className="summary__row">
           <span>Livraison ({order.shippingMethodName})</span>
           <span>{order.shippingPrice === 0 ? "Offerte" : formatPrice(order.shippingPrice)}</span>

@@ -5,6 +5,7 @@ import { useTransition } from "react";
 import { useCart } from "./cart-context";
 import { Icon } from "./icon";
 import { Price } from "./price";
+import { UpsellOffer } from "./upsell-offer";
 import { removeFromCartAction, updateCartAction } from "@/lib/cart-actions";
 
 export function CartDrawer() {
@@ -85,6 +86,7 @@ export function CartDrawer() {
                     </div>
                   </div>
                 ))}
+                <UpsellOffer onNavigate={close} />
               </>
             )}
           </div>
@@ -100,14 +102,22 @@ export function CartDrawer() {
                     <>La livraison vous est offerte</>
                   )}
                   <div className="cart-progress__bar">
-                    <span style={{ width: `${Math.min(100, (cart.subtotal / cart.freeShippingThreshold) * 100)}%` }} />
+                    <span style={{ width: `${Math.min(100, (cart.total / cart.freeShippingThreshold) * 100)}%` }} />
                   </div>
+                </div>
+              )}
+              {cart.discount && (
+                <div className="cart-total cart-total--discount">
+                  <span>{cart.discount.label}</span>
+                  <span>
+                    − <Price cents={cart.discount.amount} />
+                  </span>
                 </div>
               )}
               <div className="cart-total">
                 <span>Sous-total</span>
                 <strong>
-                  <Price cents={cart.subtotal} />
+                  <Price cents={cart.total} />
                 </strong>
               </div>
               <p className="small muted">Livraison calculée à l&apos;étape suivante.</p>

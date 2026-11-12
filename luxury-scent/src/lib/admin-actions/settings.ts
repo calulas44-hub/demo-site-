@@ -6,7 +6,7 @@ import { prisma } from "@/lib/db";
 import { hashPassword, logAdminAction, requireAdmin } from "@/lib/auth";
 import { emailSchema, firstError, formToObject, passwordSchema, settingsSchema, shippingMethodSchema } from "@/lib/validators";
 import { saveSettings } from "@/lib/settings";
-import { saveImage } from "@/lib/uploads";
+import { mediaUrlFromForm } from "@/lib/storage";
 import { ADMIN_ROLES } from "@/lib/constants";
 import type { FormState } from "@/lib/shop-actions";
 
@@ -26,11 +26,14 @@ export async function saveSettingsAction(_prev: FormState, formData: FormData): 
     reassurance.push({ icon: String(formData.get(`reassurance[${i}][icon]`) ?? "check"), title, text: String(formData.get(`reassurance[${i}][text]`) ?? "").trim() });
   }
   const patch: Record<string, unknown> = { ...d, vatRate: d.vatRate ?? 20, reassurance };
-  const logo = formData.get("logo");
-  if (logo instanceof File && logo.size > 0) patch.logoUrl = (await saveImage(logo, "marque", "Logo")).url;
-  if (formData.get("removeLogo") === "on") patch.logoUrl = null;
-  const favicon = formData.get("favicon");
-  if (favicon instanceof File && favicon.size > 0) patch.faviconUrl = (await saveImage(favicon, "marque", "Favicon")).url;
+  try {
+    const logoUrl = mediaUrlFromForm(formData, "logoUrl");
+    const faviconUrl = mediaUrlFromForm(formData, "faviconUrl");
+    if (logoUrl !== undefined) patch.logoUrl = logoUrl;
+    if (faviconUrl !== undefined) patch.faviconUrl = faviconUrl;
+  } catch (e) {
+    return { ok: false, message: e instanceof Error ? e.message : "Image refusée." };
+  }
   await saveSettings(patch);
   await logAdminAction(admin.id, "settings", "site", "UPDATE");
   revalidateShop();

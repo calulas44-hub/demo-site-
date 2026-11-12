@@ -7,7 +7,7 @@ import { logAdminAction, requireAdmin } from "@/lib/auth";
 import { announcementSchema, firstError, formToObject, homeSectionSchema, pageSchema } from "@/lib/validators";
 import { cleanHtml } from "@/lib/sanitize";
 import { uniqueSlug } from "@/lib/slug";
-import { saveImage } from "@/lib/uploads";
+import { mediaUrlFromForm } from "@/lib/storage";
 import type { FormState } from "@/lib/shop-actions";
 
 function revalidateShop() {
@@ -35,13 +35,16 @@ export async function saveHomeSectionAction(_prev: FormState, formData: FormData
     align: formData.get("align") ? String(formData.get("align")) : undefined,
     theme: formData.get("theme") ? String(formData.get("theme")) : undefined,
     imageSide: formData.get("imageSide") ? String(formData.get("imageSide")) : undefined,
+    layout: ["framed", "below", "cover"].includes(String(formData.get("layout"))) ? String(formData.get("layout")) : undefined,
   };
-  const extra: { imageUrl?: string; imageMobileUrl?: string } = {};
-  const image = formData.get("image");
-  const imageMobile = formData.get("imageMobile");
-  if (image instanceof File && image.size > 0) extra.imageUrl = (await saveImage(image, "accueil", d.title ?? "Accueil")).url;
-  if (imageMobile instanceof File && imageMobile.size > 0) extra.imageMobileUrl = (await saveImage(imageMobile, "accueil", d.title ?? "Accueil")).url;
-  if (formData.get("removeImage") === "on") extra.imageUrl = "";
+  let imageUrl: string | null | undefined;
+  let imageMobileUrl: string | null | undefined;
+  try {
+    imageUrl = mediaUrlFromForm(formData, "imageUrl");
+    imageMobileUrl = mediaUrlFromForm(formData, "imageMobileUrl");
+  } catch (e) {
+    return { ok: false, message: e instanceof Error ? e.message : "Image refusée." };
+  }
   const payload = {
     type: d.type,
     title: d.title,
@@ -52,8 +55,8 @@ export async function saveHomeSectionAction(_prev: FormState, formData: FormData
     position: d.position,
     active: d.active,
     data: JSON.stringify(data),
-    ...(extra.imageUrl !== undefined ? { imageUrl: extra.imageUrl || null } : {}),
-    ...(extra.imageMobileUrl !== undefined ? { imageMobileUrl: extra.imageMobileUrl } : {}),
+    ...(imageUrl !== undefined ? { imageUrl } : {}),
+    ...(imageMobileUrl !== undefined ? { imageMobileUrl } : {}),
   };
   if (id) await prisma.homeSection.update({ where: { id }, data: payload });
   else {

@@ -11,7 +11,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
   const q = sp.q?.trim() ?? "";
   const page = Math.max(1, Number(sp.page) || 1);
   const where: Prisma.OrderWhereInput = {};
-  if (q) where.OR = [{ number: { contains: q } }, { email: { contains: q } }, { shipLastName: { contains: q } }, { shipFirstName: { contains: q } }];
+  if (q) where.OR = [{ number: { contains: q, mode: "insensitive" } }, { email: { contains: q, mode: "insensitive" } }, { shipLastName: { contains: q, mode: "insensitive" } }, { shipFirstName: { contains: q, mode: "insensitive" } }];
   if (sp.statut) where.status = sp.statut;
   if (sp.paiement) where.paymentStatus = sp.paiement;
   const [orders, total, counts] = await Promise.all([

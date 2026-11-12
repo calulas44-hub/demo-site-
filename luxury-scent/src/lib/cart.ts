@@ -4,6 +4,7 @@ import { prisma } from "./db";
 import { CART_COOKIE } from "./constants";
 import { effectivePrice } from "./catalog";
 import { getSettings } from "./settings";
+import { computeUpsell, isUpsellCandidate, type UpsellDiscount } from "./upsell";
 
 export interface CartItemInput {
   v: string; // id de variante
@@ -27,11 +28,36 @@ export interface CartLine {
   total: number;
   vatRate: number;
   costPrice: number | null;
+  upsellEligible: boolean;
+}
+
+export interface UpsellSuggestion {
+  slug: string;
+  name: string;
+  variantId: string;
+  variantLabel: string;
+  imageUrl: string | null;
+  price: number;
+  discountedPrice: number;
+}
+
+export interface UpsellOffer {
+  title: string;
+  text: string;
+  rate: number;
+  maxPrice: number;
+  suggestions: UpsellSuggestion[];
 }
 
 export interface CartDetails {
   lines: CartLine[];
   subtotal: number;
+  /** Remise automatique « 2e parfum » (calculée côté serveur) */
+  discount: UpsellDiscount | null;
+  /** Total articles après remise, hors livraison */
+  total: number;
+  /** Offre à présenter quand la remise n'est pas encore obtenue */
+  upsellOffer: UpsellOffer | null;
   count: number;
   freeShippingThreshold: number | null;
   freeShippingRemaining: number | null;
@@ -79,11 +105,11 @@ export async function getCartDetails(items?: CartItemInput[]): Promise<CartDetai
   const input = items ?? (await readCart());
   const settings = await getSettings();
   if (input.length === 0) {
-    return { lines: [], subtotal: 0, count: 0, freeShippingThreshold: settings.freeShippingThreshold, freeShippingRemaining: null, warnings: [] };
+    return { lines: [], subtotal: 0, discount: null, total: 0, upsellOffer: null, count: 0, freeShippingThreshold: settings.freeShippingThreshold, freeShippingRemaining: null, warnings: [] };
   }
   const variants = await prisma.productVariant.findMany({
     where: { id: { in: input.map((i) => i.v) }, active: true, product: { status: "ACTIVE" } },
-    include: { product: { include: { brand: true, images: { orderBy: [{ isPrimary: "desc" }, { position: "asc" }], take: 1 } } } },
+    include: { product: { include: { brand: true, images: { where: { kind: "IMAGE" }, orderBy: [{ isPrimary: "desc" }, { position: "asc" }], take: 1 } } } },
   });
   const byId = new Map(variants.map((v) => [v.id, v]));
   const warnings: string[] = [];
@@ -118,19 +144,56 @@ export async function getCartDetails(items?: CartItemInput[]): Promise<CartDetai
       total: unitPrice * quantity,
       vatRate: v.product.vatRate ?? settings.vatRate,
       costPrice: v.costPrice,
+      upsellEligible: v.product.upsellEligible,
     });
   }
   const subtotal = lines.reduce((s, l) => s + l.total, 0);
   const count = lines.reduce((s, l) => s + l.quantity, 0);
+  const discount = computeUpsell(lines, settings);
+  const total = subtotal - (discount?.amount ?? 0);
   const threshold = settings.freeShippingThreshold;
+  const upsellOffer = !discount && lines.some((l) => l.upsellEligible) ? await buildUpsellOffer(lines, settings) : null;
   return {
     lines,
     subtotal,
+    discount,
+    total,
+    upsellOffer,
     count,
     freeShippingThreshold: threshold,
-    freeShippingRemaining: threshold ? Math.max(0, threshold - subtotal) : null,
+    freeShippingRemaining: threshold ? Math.max(0, threshold - total) : null,
     warnings,
   };
+}
+
+/** Propose jusqu'à 3 parfums éligibles (≤ seuil, sans promotion, en stock) absents du panier. */
+async function buildUpsellOffer(lines: CartLine[], settings: Awaited<ReturnType<typeof getSettings>>): Promise<UpsellOffer | null> {
+  if (!settings.upsellEnabled || !(settings.upsellRate > 0 && settings.upsellRate < 100)) return null;
+  const inCart = new Set(lines.map((l) => l.productId));
+  const variants = await prisma.productVariant.findMany({
+    where: { active: true, stock: { gt: 0 }, price: { lte: settings.upsellMaxPrice }, salePrice: null, product: { status: "ACTIVE", upsellEligible: true, id: { notIn: [...inCart] } } },
+    include: { product: { include: { images: { where: { kind: "IMAGE" }, orderBy: [{ isPrimary: "desc" }, { position: "asc" }], take: 1 } } } },
+    orderBy: [{ product: { featured: "desc" } }, { product: { position: "asc" } }, { price: "desc" }],
+    take: 30,
+  });
+  const seen = new Set<string>();
+  const suggestions: UpsellSuggestion[] = [];
+  for (const v of variants) {
+    if (seen.has(v.productId)) continue;
+    if (!isUpsellCandidate({ unitPrice: effectivePrice(v), regularPrice: v.price, upsellEligible: true }, settings)) continue;
+    seen.add(v.productId);
+    suggestions.push({
+      slug: v.product.slug,
+      name: v.product.name,
+      variantId: v.id,
+      variantLabel: v.label,
+      imageUrl: v.product.images[0]?.url ?? null,
+      price: v.price,
+      discountedPrice: v.price - Math.round((v.price * settings.upsellRate) / 100),
+    });
+    if (suggestions.length === 3) break;
+  }
+  return { title: settings.upsellTitle, text: settings.upsellText, rate: settings.upsellRate, maxPrice: settings.upsellMaxPrice, suggestions };
 }
 
 export async function getCartCount(): Promise<number> {

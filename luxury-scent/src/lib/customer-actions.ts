@@ -17,14 +17,14 @@ export async function customerLoginAction(_prev: FormState, formData: FormData):
   const password = String(formData.get("password") ?? "");
   if (!email.success || !password) return { ok: false, message: "E-mail ou mot de passe invalide." };
   const key = `customer:${await clientIp()}:${email.data}`;
-  const limit = checkRateLimit(key);
+  const limit = await checkRateLimit(key);
   if (!limit.allowed) return { ok: false, message: `Trop de tentatives. Réessayez dans ${limit.retryAfterMinutes} min.` };
   const customer = await prisma.customer.findUnique({ where: { email: email.data } });
   if (!customer?.passwordHash || !(await verifyPassword(password, customer.passwordHash))) {
-    recordFailedAttempt(key);
+    await recordFailedAttempt(key);
     return { ok: false, message: "E-mail ou mot de passe incorrect." };
   }
-  clearAttempts(key);
+  await clearAttempts(key);
   await createCustomerSession(customer.id, customer.tokenVersion);
   redirect(safeReturn(formData.get("retour")));
 }

@@ -6,10 +6,11 @@ import { prisma } from "./db";
 import { clearCart, getCartDetails } from "./cart";
 import { createCustomerSession, getCustomerSession, hashPassword } from "./auth";
 import { checkoutSchema, firstError } from "./validators";
-import { createOrder, OrderError, sendCreatedOrderEmail } from "./orders";
+import { createOrder, OrderError, sendCreatedOrderEmail, updateOrderStatus } from "./orders";
 import { createCheckoutSession, isStripeConfigured } from "./stripe";
 import type { FormState } from "./shop-actions";
 import { LAST_ORDER_COOKIE } from "./constants";
+import { getSettings } from "./settings";
 
 function nested(formData: FormData, prefix: string) {
   const out: Record<string, string> = {};
@@ -36,7 +37,9 @@ export async function placeOrderAction(_prev: FormState, formData: FormData): Pr
   const parsed = checkoutSchema.safeParse(raw);
   if (!parsed.success) return { ok: false, message: firstError(parsed.error) };
   const d = parsed.data;
-  if (d.paymentMethod === "CARD" && !isStripeConfigured()) return { ok: false, message: "Le paiement par carte n'est pas encore activé. Choisissez le virement bancaire." };
+  const settings = await getSettings();
+  if (d.paymentMethod === "BANK_TRANSFER" && !settings.bankTransferEnabled) return { ok: false, message: "Le virement bancaire sera bientôt disponible." };
+  if (d.paymentMethod === "CARD" && !isStripeConfigured()) return { ok: false, message: "Le paiement en ligne n'est pas encore activé sur la boutique." };
 
   const cart = await getCartDetails();
   if (cart.lines.length === 0) return { ok: false, message: "Votre panier est vide." };
@@ -83,18 +86,26 @@ export async function placeOrderAction(_prev: FormState, formData: FormData): Pr
     if (count === 0) await prisma.address.create({ data: { customerId: session.id, ...d.shipping, isDefault: true } });
   }
 
-  await clearCart();
-  (await cookies()).set(LAST_ORDER_COOKIE, order.number, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 60 * 24 });
-  await sendCreatedOrderEmail(order.id);
-
   if (d.paymentMethod === "CARD") {
     let url: string;
     try {
-      url = await createCheckoutSession(order);
+      const s = await createCheckoutSession(order);
+      await prisma.order.update({ where: { id: order.id }, data: { stripeSessionId: s.id } });
+      url = s.url;
     } catch (e) {
-      return { ok: false, message: `Le paiement par carte est indisponible (${e instanceof Error ? e.message : "erreur"}). Votre commande ${order.number} est enregistrée : contactez-nous ou réglez par virement.` };
+      // Échec avant tout paiement : on annule la commande pour libérer le stock, le panier est conservé.
+      await updateOrderStatus(order.id, "CANCELLED", { note: "Création de la session de paiement impossible", notify: false });
+      console.error("[stripe]", e);
+      return { ok: false, message: "Le paiement en ligne est momentanément indisponible. Votre panier est conservé, merci de réessayer dans quelques minutes." };
     }
+    await clearCart();
+    (await cookies()).set(LAST_ORDER_COOKIE, order.number, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 60 * 24 });
+    // L'e-mail de confirmation de paiement est envoyé par le webhook Stripe (markOrderPaid).
     redirect(url);
   }
+
+  await clearCart();
+  (await cookies()).set(LAST_ORDER_COOKIE, order.number, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 60 * 24 });
+  await sendCreatedOrderEmail(order.id);
   redirect(`/commande/confirmation/${encodeURIComponent(order.number)}`);
 }

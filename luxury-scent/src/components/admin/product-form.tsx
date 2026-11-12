@@ -43,6 +43,9 @@ export interface ProductFormData {
   featured: boolean;
   isNew: boolean;
   isLimited: boolean;
+  commercialLabel: string | null;
+  upsellEligible: boolean;
+  isDemo?: boolean;
   vatRate: number | null;
   position: number;
   seoTitle: string | null;
@@ -263,6 +266,15 @@ export function ProductForm({ product, brands, categories, collections }: { prod
             <label className="f-check">
               <input type="checkbox" name="isLimited" defaultChecked={p?.isLimited ?? false} /> Badge « Édition limitée »
             </label>
+            <div className="f">
+              <label htmlFor="commercialLabel">Mention commerciale (badge libre)</label>
+              <input id="commercialLabel" name="commercialLabel" maxLength={40} defaultValue={p?.commercialLabel ?? ""} placeholder="ex. Coup de cœur, Exclusivité web…" />
+              <span className="hint">Affichée sur la fiche et dans le catalogue. 40 caractères max. Laissez vide pour ne rien afficher.</span>
+            </div>
+            <label className="f-check">
+              <input type="checkbox" name="upsellEligible" defaultChecked={p?.upsellEligible ?? true} /> Parfum éligible à l&apos;offre « 2e parfum » (voir Promotions)
+            </label>
+            {p?.isDemo && <p className="msg msg--err small">Produit de démonstration : à remplacer par vos produits réels (suppression groupée dans Produits).</p>}
             <div className="f-row">
               <div className="f">
                 <label htmlFor="position">Ordre d&apos;affichage</label>

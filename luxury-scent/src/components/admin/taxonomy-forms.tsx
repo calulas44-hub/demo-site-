@@ -1,5 +1,6 @@
 "use client";
 
+import { MediaField } from "./media-upload";
 import { ActionForm } from "@/components/action-form";
 
 import { useActionState } from "react";
@@ -40,15 +41,7 @@ export function CategoryForm({ category, parents }: { category?: { id: string; n
         <label>Description (texte d&apos;introduction de la page)</label>
         <textarea name="description" defaultValue={category?.description ?? ""} style={{ minHeight: "4rem" }} />
       </div>
-      <div className="f">
-        <label>Image (bandeau et tuile d&apos;accueil)</label>
-        {category?.imageUrl && (
-          <div className="img-preview">
-            <img src={category.imageUrl} alt="" />
-          </div>
-        )}
-        <input type="file" name="image" accept="image/*" />
-      </div>
+      <MediaField name="imageUrl" label="Image (bandeau et tuile d'accueil)" folder="categories" defaultUrl={category?.imageUrl} />
       <div className="f-row f-row--3">
         <div className="f">
           <label>Ordre</label>
@@ -130,24 +123,8 @@ export function CollectionForm({ collection }: { collection?: { id: string; name
       </div>
       <RichEditor name="description" label="Texte de présentation" initialHtml={collection?.description} />
       <div className="f-row">
-        <div className="f">
-          <label>Image de tuile (carrée ou portrait)</label>
-          {collection?.imageUrl && (
-            <div className="img-preview">
-              <img src={collection.imageUrl} alt="" />
-            </div>
-          )}
-          <input type="file" name="image" accept="image/*" />
-        </div>
-        <div className="f">
-          <label>Image de bandeau (large)</label>
-          {collection?.heroImageUrl && (
-            <div className="img-preview">
-              <img src={collection.heroImageUrl} alt="" />
-            </div>
-          )}
-          <input type="file" name="heroImage" accept="image/*" />
-        </div>
+        <MediaField name="imageUrl" label="Image de tuile (carrée ou portrait)" folder="collections" defaultUrl={collection?.imageUrl} />
+        <MediaField name="heroImageUrl" label="Image de bandeau (large)" folder="collections" defaultUrl={collection?.heroImageUrl} />
       </div>
       <div className="f-row">
         <div className="f">

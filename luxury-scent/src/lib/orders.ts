@@ -69,7 +69,11 @@ export async function createOrder(cart: CartDetails, input: CreateOrderInput) {
   const settings = await getSettings();
   const method = await prisma.shippingMethod.findFirst({ where: { id: input.shippingMethodId, active: true } });
   if (!method) throw new OrderError("Mode de livraison indisponible.");
-  const shippingPrice = computeShippingPrice(method, cart.subtotal);
+  // Remise recalculée ici, côté serveur, à partir des prix en base (jamais transmise par le navigateur).
+  const discount = cart.discount;
+  if (discount && !cart.lines.some((l) => l.variantId === discount.variantId)) throw new OrderError("Remise invalide.");
+  const discountAmount = discount?.amount ?? 0;
+  const shippingPrice = computeShippingPrice(method, cart.subtotal - discountAmount);
 
   return prisma.$transaction(async (tx) => {
     // Vérifie et réserve le stock.
@@ -82,8 +86,8 @@ export async function createOrder(cart: CartDetails, input: CreateOrderInput) {
     }
     const number = await nextNumber(tx, "ORDER");
     const subtotal = cart.subtotal;
-    const total = subtotal + shippingPrice;
-    const breakdown = orderTaxBreakdown({ shippingPrice, vatRate: settings.vatRate, discount: 0, items: cart.lines.map((l) => ({ total: l.total, vatRate: l.vatRate })) });
+    const total = subtotal - discountAmount + shippingPrice;
+    const breakdown = orderTaxBreakdown({ shippingPrice, vatRate: settings.vatRate, discount: discountAmount, items: cart.lines.map((l) => ({ total: l.total, vatRate: l.vatRate })) });
 
     const order = await tx.order.create({
       data: {
@@ -113,7 +117,8 @@ export async function createOrder(cart: CartDetails, input: CreateOrderInput) {
         shippingMethodName: method.name,
         shippingPrice,
         subtotal,
-        discount: 0,
+        discount: discountAmount,
+        discountLabel: discount ? discount.label : null,
         taxTotal: breakdown.totalTva,
         total,
         vatRate: settings.vatRate,
