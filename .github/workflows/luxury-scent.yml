@@ -1,0 +1,40 @@
+name: Luxury Scent — vérifications
+
+on:
+  push:
+    paths: ["luxury-scent/**", ".github/workflows/luxury-scent.yml"]
+  pull_request:
+    paths: ["luxury-scent/**"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: luxury-scent
+    env:
+      DATABASE_URL: file:./storage/ci.db
+      SESSION_SECRET: ci-secret-ci-secret-ci-secret-ci-secret-0123456789
+      BANK_ENCRYPTION_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+      APP_URL: http://localhost:3000
+      ADMIN_EMAIL: admin@ci.local
+      ADMIN_PASSWORD: ci-password-123
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: luxury-scent/package-lock.json
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run build
+      - run: mkdir -p storage && npx prisma db push && npm run db:seed
+      - run: npx playwright install --with-deps chromium
+      - name: Tests de bout en bout
+        run: |
+          npm start &
+          npx wait-on http://localhost:3000 -t 60000 || sleep 20
+          npm test

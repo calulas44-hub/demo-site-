@@ -1,5 +1,7 @@
 "use client";
 
+import { ActionForm } from "@/components/action-form";
+
 import { useActionState } from "react";
 import { subscribeNewsletterAction, type FormState } from "@/lib/shop-actions";
 
@@ -8,7 +10,7 @@ const initial: FormState = { ok: false, message: "" };
 export function NewsletterForm({ compact = false }: { compact?: boolean }) {
   const [state, action, pending] = useActionState(subscribeNewsletterAction, initial);
   return (
-    <form action={action} className="newsletter__form" style={compact ? { marginTop: ".5rem" } : undefined}>
+    <ActionForm action={action} className="newsletter__form" style={compact ? { marginTop: ".5rem" } : undefined}>
       <label className="visually-hidden" htmlFor={`nl-${compact ? "c" : "f"}`}>
         Adresse e-mail
       </label>
@@ -21,6 +23,6 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
           {state.message}
         </p>
       )}
-    </form>
+    </ActionForm>
   );
 }

@@ -1,7 +1,9 @@
 "use client";
 
+import { ActionForm } from "@/components/action-form";
+
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { changePasswordAction, customerLoginAction, customerRegisterAction, saveAddressAction, updateProfileAction } from "@/lib/customer-actions";
 import type { FormState } from "@/lib/shop-actions";
 import { COUNTRIES } from "@/lib/constants";
@@ -19,13 +21,14 @@ function Status({ state }: { state: FormState }) {
 
 export function LoginForm({ retour }: { retour?: string }) {
   const [state, action, pending] = useActionState(customerLoginAction, initial);
+  const [email, setEmail] = useState("");
   return (
-    <form action={action} className="auth">
+    <ActionForm action={action} className="auth">
       <Status state={state} />
       {retour && <input type="hidden" name="retour" value={retour} />}
       <div className="field">
         <label htmlFor="email">E-mail</label>
-        <input id="email" name="email" type="email" autoComplete="email" required />
+        <input id="email" name="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
       </div>
       <div className="field">
         <label htmlFor="password">Mot de passe</label>
@@ -37,14 +40,14 @@ export function LoginForm({ retour }: { retour?: string }) {
       <p className="auth__alt">
         Pas encore de compte ? <Link href={`/compte/inscription${retour ? `?retour=${encodeURIComponent(retour)}` : ""}`}>Créer un compte</Link>
       </p>
-    </form>
+    </ActionForm>
   );
 }
 
 export function RegisterForm({ retour }: { retour?: string }) {
   const [state, action, pending] = useActionState(customerRegisterAction, initial);
   return (
-    <form action={action} className="auth">
+    <ActionForm action={action} className="auth">
       <Status state={state} />
       {retour && <input type="hidden" name="retour" value={retour} />}
       <div className="field-row">
@@ -76,14 +79,14 @@ export function RegisterForm({ retour }: { retour?: string }) {
       <p className="auth__alt">
         Déjà un compte ? <Link href="/compte/connexion">Se connecter</Link>
       </p>
-    </form>
+    </ActionForm>
   );
 }
 
 export function ProfileForm({ customer }: { customer: { firstName: string; lastName: string; email: string; phone: string | null; newsletter: boolean } }) {
   const [state, action, pending] = useActionState(updateProfileAction, initial);
   return (
-    <form action={action}>
+    <ActionForm action={action}>
       <Status state={state} />
       <div className="field-row">
         <div className="field">
@@ -110,14 +113,14 @@ export function ProfileForm({ customer }: { customer: { firstName: string; lastN
       <button type="submit" className="btn" style={{ marginTop: "1rem" }} disabled={pending}>
         Enregistrer
       </button>
-    </form>
+    </ActionForm>
   );
 }
 
 export function PasswordForm() {
   const [state, action, pending] = useActionState(changePasswordAction, initial);
   return (
-    <form action={action}>
+    <ActionForm action={action}>
       <Status state={state} />
       <div className="field">
         <label htmlFor="current">Mot de passe actuel</label>
@@ -130,14 +133,14 @@ export function PasswordForm() {
       <button type="submit" className="btn btn--outline" disabled={pending}>
         Modifier le mot de passe
       </button>
-    </form>
+    </ActionForm>
   );
 }
 
 export function AddressForm({ address }: { address?: { id: string; label: string | null; firstName: string; lastName: string; company: string | null; line1: string; line2: string | null; postalCode: string; city: string; country: string; phone: string | null; isDefault: boolean } }) {
   const [state, action, pending] = useActionState(saveAddressAction, initial);
   return (
-    <form action={action}>
+    <ActionForm action={action}>
       <Status state={state} />
       {address && <input type="hidden" name="id" value={address.id} />}
       <div className="field">
@@ -199,6 +202,6 @@ export function AddressForm({ address }: { address?: { id: string; label: string
       <button type="submit" className="btn" style={{ marginTop: "1rem" }} disabled={pending}>
         Enregistrer l&apos;adresse
       </button>
-    </form>
+    </ActionForm>
   );
 }

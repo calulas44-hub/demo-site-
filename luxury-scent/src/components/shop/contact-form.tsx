@@ -1,5 +1,7 @@
 "use client";
 
+import { ActionForm } from "@/components/action-form";
+
 import { useActionState } from "react";
 import { contactAction, type FormState } from "@/lib/shop-actions";
 
@@ -15,7 +17,7 @@ export function ContactForm() {
     );
   }
   return (
-    <form action={action}>
+    <ActionForm action={action}>
       {state.message && (
         <p className="alert alert--error" role="alert">
           {state.message}
@@ -42,6 +44,6 @@ export function ContactForm() {
       <button type="submit" className="btn btn--block" disabled={pending}>
         {pending ? "Envoi…" : "Envoyer"}
       </button>
-    </form>
+    </ActionForm>
   );
 }

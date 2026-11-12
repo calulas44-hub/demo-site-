@@ -1,5 +1,7 @@
 "use client";
 
+import { ActionForm } from "@/components/action-form";
+
 import Link from "next/link";
 import { useActionState, useMemo, useState } from "react";
 import { placeOrderAction } from "@/lib/checkout-actions";
@@ -116,7 +118,7 @@ export function CheckoutForm({ cart, methods, customer, addresses, cardEnabled }
   const addr = addresses.find((a) => a.id === selectedAddress);
 
   return (
-    <form action={action} className="checkout" noValidate>
+    <ActionForm action={action} className="checkout" noValidate>
       <div>
         {state.message && !state.ok && (
           <p className="alert alert--error" role="alert">
@@ -304,6 +306,6 @@ export function CheckoutForm({ cart, methods, customer, addresses, cardEnabled }
           </li>
         </ul>
       </aside>
-    </form>
+    </ActionForm>
   );
 }

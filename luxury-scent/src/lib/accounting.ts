@@ -388,7 +388,7 @@ export async function exportWorkbook(period: Period): Promise<Buffer> {
 
   for (const ws of wb.worksheets) {
     ws.getRow(1).font = { bold: true };
-    ws.getColumn("date").numFmt = "dd/mm/yyyy";
+    if (ws.columns.some((c) => c.key === "date")) ws.getColumn("date").numFmt = "dd/mm/yyyy";
   }
   const out = await wb.xlsx.writeBuffer();
   return Buffer.from(out);
