@@ -1,0 +1,20 @@
+# Dépendances et build
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Environnement : jamais de secrets dans le dépôt
+.env
+.env.local
+.env.*.local
+
+# Données locales (base SQLite, images téléversées, sauvegardes)
+storage/
+!storage/.gitkeep
+backups/
+
+# Divers
+.DS_Store
+npm-debug.log*

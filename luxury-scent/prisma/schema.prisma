@@ -1,0 +1,508 @@
+// Schéma de données Luxury Scent.
+// Montants en centimes (Int) pour éviter les erreurs d'arrondi.
+// Les listes de valeurs (statuts, rôles) sont des chaînes documentées dans src/lib/constants.ts
+// afin de rester compatibles SQLite (dev) et PostgreSQL (prod).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------- Administration
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  role         String    @default("ADMIN") // OWNER | ADMIN | STAFF
+  active       Boolean   @default(true)
+  tokenVersion Int       @default(0)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  auditLogs AdminAuditLog[]
+  bankAudits BankAccountAudit[]
+  statusChanges OrderStatusHistory[]
+}
+
+model AdminAuditLog {
+  id          String   @id @default(cuid())
+  adminUserId String?
+  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+  entity      String
+  entityId    String?
+  action      String
+  details     String? // JSON
+  ip          String?
+  createdAt   DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------- Clients
+
+model Customer {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String?
+  firstName    String
+  lastName     String
+  phone        String?
+  newsletter   Boolean   @default(false)
+  tokenVersion Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  addresses Address[]
+  orders    Order[]
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  label      String?
+  firstName  String
+  lastName   String
+  company    String?
+  line1      String
+  line2      String?
+  postalCode String
+  city       String
+  country    String   @default("FR")
+  phone      String?
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+// ---------------------------------------------------------------- Catalogue
+
+model Brand {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  logoUrl     String?
+  active      Boolean   @default(true)
+  position    Int       @default(0)
+  products    Product[]
+}
+
+model Category {
+  id             String     @id @default(cuid())
+  name           String
+  slug           String     @unique
+  description    String?
+  imageUrl       String?
+  parentId       String?
+  parent         Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children       Category[] @relation("CategoryTree")
+  position       Int        @default(0)
+  active         Boolean    @default(true)
+  showInMenu     Boolean    @default(true)
+  seoTitle       String?
+  seoDescription String?
+  products       Product[]
+}
+
+// Une « collection » est une ligne / un univers (page éditoriale + produits).
+model Collection {
+  id           String    @id @default(cuid())
+  name         String
+  slug         String    @unique
+  tagline      String?
+  description  String?
+  heroImageUrl String?
+  imageUrl     String?
+  position     Int       @default(0)
+  active       Boolean   @default(true)
+  products     Product[]
+}
+
+model Product {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  subtitle       String?  // Ex. « Eau de parfum »
+  brandId        String?
+  brand          Brand?   @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  categoryId     String?
+  category       Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  collectionId   String?
+  collection     Collection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
+  shortDescription String?
+  description    String?  // HTML nettoyé
+  inspiration    String?  // HTML nettoyé
+  notesTop       String?
+  notesHeart     String?
+  notesBase      String?
+  families       String?  // « Florale, Ambrée, Boisée »
+  gender         String   @default("MIXTE") // FEMME | HOMME | MIXTE
+  status         String   @default("DRAFT") // DRAFT | ACTIVE | ARCHIVED
+  featured       Boolean  @default(false)
+  isNew          Boolean  @default(false)
+  isLimited      Boolean  @default(false)
+  vatRate        Float?   // Surcharge du taux de TVA global (ex. 20)
+  position       Int      @default(0)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  variants   ProductVariant[]
+  images     ProductImage[]
+  orderItems OrderItem[]
+
+  @@index([status, featured])
+  @@index([categoryId])
+  @@index([brandId])
+  @@index([collectionId])
+}
+
+model ProductVariant {
+  id                String   @id @default(cuid())
+  productId         String
+  product           Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label             String   // « 50 ml »
+  volumeMl          Float?
+  sku               String?  @unique
+  price             Int      // Prix TTC en centimes
+  salePrice         Int?     // Prix promotionnel TTC en centimes (si renseigné et < price)
+  costPrice         Int?     // Coût d'achat HT en centimes (marges)
+  stock             Int      @default(0)
+  lowStockThreshold Int      @default(3)
+  active            Boolean  @default(true)
+  position          Int      @default(0)
+  weightGrams       Int?
+  orderItems        OrderItem[]
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  position  Int     @default(0)
+  isPrimary Boolean @default(false)
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  url       String   @unique
+  filename  String
+  mimeType  String
+  size      Int
+  width     Int?
+  height    Int?
+  alt       String?
+  folder    String   @default("general")
+  createdAt DateTime @default(now())
+}
+
+// ---------------------------------------------------------------- Contenu du site
+
+model HomeSection {
+  id             String   @id @default(cuid())
+  type           String   // HERO | BANNER | FEATURED_PRODUCTS | CATEGORIES | COLLECTIONS | EDITORIAL | REASSURANCE | NEWSLETTER
+  title          String?
+  subtitle       String?
+  text           String?
+  imageUrl       String?
+  imageMobileUrl String?
+  buttonLabel    String?
+  buttonUrl      String?
+  data           String?  // JSON : options propres au type
+  position       Int      @default(0)
+  active         Boolean  @default(true)
+  updatedAt      DateTime @updatedAt
+}
+
+model Announcement {
+  id        String    @id @default(cuid())
+  text      String
+  url       String?
+  position  Int       @default(0)
+  active    Boolean   @default(true)
+  startsAt  DateTime?
+  endsAt    DateTime?
+}
+
+model Page {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  content        String   // HTML nettoyé
+  seoTitle       String?
+  seoDescription String?
+  showInFooter   Boolean  @default(true)
+  position       Int      @default(0)
+  published      Boolean  @default(true)
+  system         Boolean  @default(false) // Pages requises (CGV, mentions…) : non supprimables
+  updatedAt      DateTime @updatedAt
+}
+
+model MenuItem {
+  id       String  @id @default(cuid())
+  menu     String  @default("main") // main | footer
+  label    String
+  url      String
+  parentId String?
+  parent   MenuItem? @relation("MenuTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children MenuItem[] @relation("MenuTree")
+  imageUrl String?
+  position Int     @default(0)
+  active   Boolean @default(true)
+}
+
+model Setting {
+  key       String   @id
+  value     String   // JSON
+  updatedAt DateTime @updatedAt
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// ---------------------------------------------------------------- Livraison et commandes
+
+model ShippingMethod {
+  id            String  @id @default(cuid())
+  name          String
+  description   String?
+  price         Int     // TTC en centimes
+  freeAbove     Int?    // Offert à partir de ce montant TTC (centimes)
+  estimatedDays String?
+  countries     String  @default("FR") // Codes pays séparés par des virgules, ou * pour tous
+  position      Int     @default(0)
+  active        Boolean @default(true)
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  number        String   @unique
+  customerId    String?
+  customer      Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  email         String
+  status        String   @default("PENDING_PAYMENT") // PENDING_PAYMENT | PAID | PREPARING | SHIPPED | DELIVERED | CANCELLED | REFUNDED
+  paymentStatus String   @default("PENDING") // PENDING | PAID | FAILED | REFUNDED | PARTIALLY_REFUNDED
+  paymentMethod String   // BANK_TRANSFER | CARD
+  paymentRef    String?
+  // Adresse de livraison (copie figée)
+  shipFirstName String
+  shipLastName  String
+  shipCompany   String?
+  shipLine1     String
+  shipLine2     String?
+  shipPostalCode String
+  shipCity      String
+  shipCountry   String
+  shipPhone     String?
+  // Adresse de facturation (copie figée)
+  billFirstName String
+  billLastName  String
+  billCompany   String?
+  billLine1     String
+  billLine2     String?
+  billPostalCode String
+  billCity      String
+  billCountry   String
+  shippingMethodName String
+  shippingPrice Int
+  subtotal      Int      // Articles TTC
+  discount      Int      @default(0)
+  taxTotal      Int      // TVA incluse dans le total
+  total         Int      // TTC
+  vatRate       Float
+  currency      String   @default("EUR")
+  customerNote  String?
+  adminNote     String?
+  carrier       String?
+  trackingNumber String?
+  paidAt        DateTime?
+  shippedAt     DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  items         OrderItem[]
+  statusHistory OrderStatusHistory[]
+  invoice       Invoice?
+  refunds       Refund[]
+  creditNotes   CreditNote[]
+  emails        EmailLog[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+}
+
+model OrderItem {
+  id           String  @id @default(cuid())
+  orderId      String
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    String?
+  product      Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variantId    String?
+  variant      ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  name         String
+  variantLabel String
+  sku          String?
+  imageUrl     String?
+  unitPrice    Int     // TTC
+  costPrice    Int?    // HT, copie au moment de la vente
+  quantity     Int
+  total        Int     // TTC
+  vatRate      Float
+}
+
+model OrderStatusHistory {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status      String
+  note        String?
+  adminUserId String?
+  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+}
+
+// ---------------------------------------------------------------- Facturation et finances
+
+model Invoice {
+  id        String   @id @default(cuid())
+  number    String   @unique
+  orderId   String   @unique
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  issuedAt  DateTime @default(now())
+  totalHt   Int
+  totalTva  Int
+  totalTtc  Int
+}
+
+model CreditNote {
+  id       String   @id @default(cuid())
+  number   String   @unique
+  orderId  String
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  amount   Int      // TTC
+  reason   String?
+  issuedAt DateTime @default(now())
+  refund   Refund?
+}
+
+model Refund {
+  id           String   @id @default(cuid())
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  amount       Int
+  reason       String?
+  method       String   @default("BANK_TRANSFER") // BANK_TRANSFER | CARD
+  reference    String?
+  creditNoteId String?  @unique
+  creditNote   CreditNote? @relation(fields: [creditNoteId], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+}
+
+model Expense {
+  id            String   @id @default(cuid())
+  date          DateTime
+  label         String
+  supplier      String?
+  category      String   @default("AUTRE") // ACHAT_MARCHANDISES | EMBALLAGE | LIVRAISON | MARKETING | LOGICIEL | FRAIS_BANCAIRES | LOYER | AUTRE
+  amountHt      Int
+  vatRate       Float
+  vatAmount     Int
+  amountTtc     Int
+  paymentMethod String?
+  invoiceNumber String?  // Numéro de la facture fournisseur
+  receiptUrl    String?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([date])
+}
+
+// Journal interne (suivi de gestion). N'est pas une comptabilité certifiée :
+// sert aux tableaux de bord et à l'export vers un logiciel comptable.
+model LedgerEntry {
+  id         String   @id @default(cuid())
+  date       DateTime
+  journal    String   // VENTES | ACHATS | BANQUE | OD
+  account    String   // Numéro de compte (plan comptable général simplifié)
+  label      String
+  debit      Int      @default(0)
+  credit     Int      @default(0)
+  reference  String?  // Numéro de facture / avoir / dépense
+  sourceType String?  // INVOICE | CREDIT_NOTE | EXPENSE | REFUND | PAYMENT
+  sourceId   String?
+  createdAt  DateTime @default(now())
+
+  @@index([date])
+  @@index([sourceType, sourceId])
+}
+
+model BankAccount {
+  id            String   @id @default(cuid())
+  label         String
+  holderName    String
+  bankName      String?
+  ibanEncrypted String
+  ibanLast4     String
+  bicEncrypted  String?
+  isActive      Boolean  @default(false)
+  showOnInvoice Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  audits BankAccountAudit[]
+}
+
+model BankAccountAudit {
+  id            String   @id @default(cuid())
+  bankAccountId String?
+  bankAccount   BankAccount? @relation(fields: [bankAccountId], references: [id], onDelete: SetNull)
+  adminUserId   String?
+  adminUser     AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+  action        String   // CREATE | UPDATE | ACTIVATE | DELETE | VIEW
+  details       String?  // JSON avec valeurs masquées
+  ip            String?
+  createdAt     DateTime @default(now())
+}
+
+model EmailLog {
+  id        String   @id @default(cuid())
+  to        String
+  subject   String
+  template  String
+  status    String   // SENT | FAILED | SKIPPED
+  error     String?
+  orderId   String?
+  order     Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+}
+
+model Counter {
+  key   String @id // ORDER_2026, INVOICE_2026, CREDIT_2026
+  value Int    @default(0)
+}
