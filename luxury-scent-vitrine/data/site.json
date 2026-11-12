@@ -1,0 +1,959 @@
+{
+  "exportedAt": "2026-11-12T12:08:33.319Z",
+  "settings": {
+    "brandName": "Luxury Scent",
+    "tagline": "Parfumerie de luxe",
+    "contactEmail": "contact@luxury-scent.fr",
+    "contactPhone": "+33 1 00 00 00 00",
+    "address": "1 rue de la Paix\r\n75002 Paris\r\nFrance",
+    "openingHours": "Service client du lundi au samedi, de 10h à 19h.",
+    "instagram": "",
+    "facebook": "",
+    "tiktok": "",
+    "seoTitle": "Luxury Scent — Parfumerie de luxe en ligne",
+    "seoDescription": "Luxury Scent sélectionne des parfums d'exception : eaux de parfum, extraits et coffrets, livrés avec soin.",
+    "logoUrl": null,
+    "reassurance": [
+      {
+        "icon": "truck",
+        "title": "Livraison offerte",
+        "text": "dès 150 € en France métropolitaine"
+      },
+      {
+        "icon": "gift",
+        "title": "Écrin offert",
+        "text": "chaque commande est préparée avec soin"
+      },
+      {
+        "icon": "shield",
+        "title": "Paiement sécurisé",
+        "text": "carte bancaire ou virement"
+      },
+      {
+        "icon": "chat",
+        "title": "Un conseiller à votre écoute",
+        "text": "du lundi au samedi, de 10h à 19h"
+      }
+    ]
+  },
+  "announcements": [
+    {
+      "text": "Livraison offerte dès 150 € en France métropolitaine"
+    },
+    {
+      "text": "Deux échantillons offerts pour toute commande"
+    },
+    {
+      "text": "Coffret découverte : 35 €, déduits de votre premier flacon"
+    }
+  ],
+  "sections": [
+    {
+      "type": "HERO",
+      "title": "L'hiver a son parfum",
+      "subtitle": "Nouvelle collection Neige d'Or",
+      "text": "Ambre, vanille et bois chauds : un sillage qui réchauffe les jours froids.",
+      "imageUrl": "/assets/img/accueil/hero-hiver.webp",
+      "imageMobileUrl": null,
+      "buttonLabel": "Découvrir la collection",
+      "buttonUrl": "/collections/neige-d-or",
+      "data": {
+        "productIds": [],
+        "align": "left",
+        "theme": "dark"
+      }
+    },
+    {
+      "type": "REASSURANCE",
+      "title": null,
+      "subtitle": null,
+      "text": null,
+      "imageUrl": null,
+      "imageMobileUrl": null,
+      "buttonLabel": null,
+      "buttonUrl": null,
+      "data": {}
+    },
+    {
+      "type": "FEATURED_PRODUCTS",
+      "title": "Les signatures",
+      "subtitle": "Sélection",
+      "text": null,
+      "imageUrl": null,
+      "imageMobileUrl": null,
+      "buttonLabel": "Voir tous les parfums",
+      "buttonUrl": "/parfums",
+      "data": {
+        "productSlugs": [
+          "neige-d-or-eau-de-parfum",
+          "neige-d-or-extrait-de-parfum",
+          "nuit-boreale-eau-de-parfum",
+          "rose-givree",
+          "coffret-decouverte"
+        ]
+      }
+    },
+    {
+      "type": "COLLECTIONS",
+      "title": "Explorer les collections",
+      "subtitle": null,
+      "text": null,
+      "imageUrl": null,
+      "imageMobileUrl": null,
+      "buttonLabel": null,
+      "buttonUrl": null,
+      "data": {}
+    },
+    {
+      "type": "EDITORIAL",
+      "title": "L'art de composer",
+      "subtitle": "La Maison",
+      "text": "Chaque création Luxury Scent naît d'un dialogue entre une matière première d'exception et une émotion. Nos parfums sont composés à Grasse, embouteillés à la main et expédiés dans un écrin.",
+      "imageUrl": "/assets/img/accueil/atelier.webp",
+      "imageMobileUrl": null,
+      "buttonLabel": "Notre histoire",
+      "buttonUrl": "/pages/notre-maison",
+      "data": {
+        "imageSide": "right"
+      }
+    },
+    {
+      "type": "BANNER",
+      "title": "Le coffret découverte",
+      "subtitle": null,
+      "text": "Cinq parfums en 2 ml, remboursé sur votre premier flacon.",
+      "imageUrl": "/assets/img/accueil/banniere-coffret.webp",
+      "imageMobileUrl": null,
+      "buttonLabel": "Commander le coffret",
+      "buttonUrl": "/produits/coffret-decouverte",
+      "data": {}
+    },
+    {
+      "type": "CATEGORIES",
+      "title": "Par univers",
+      "subtitle": null,
+      "text": null,
+      "imageUrl": null,
+      "imageMobileUrl": null,
+      "buttonLabel": null,
+      "buttonUrl": null,
+      "data": {}
+    },
+    {
+      "type": "NEWSLETTER",
+      "title": "Restez informé·e",
+      "subtitle": null,
+      "text": "Nouveautés, éditions limitées et conseils, une fois par mois.",
+      "imageUrl": null,
+      "imageMobileUrl": null,
+      "buttonLabel": null,
+      "buttonUrl": null,
+      "data": {}
+    }
+  ],
+  "collections": [
+    {
+      "name": "Neige d'Or",
+      "slug": "neige-d-or",
+      "tagline": "L'hiver, doré et enveloppant",
+      "description": "<p>Une collection née d'un matin de neige éclairé par le soleil : ambre, vanille et bois chauds, pour un sillage qui réchauffe.</p>",
+      "imageUrl": "/assets/img/collections/neige-d-or.webp",
+      "heroImageUrl": "/assets/img/collections/neige-d-or-hero.webp"
+    },
+    {
+      "name": "Nuit Boréale",
+      "slug": "nuit-boreale",
+      "tagline": "Profonde, boisée, mystérieuse",
+      "description": "<p>Oud, cèdre et encens sous un ciel d'étoiles. La collection des grands soirs.</p>",
+      "imageUrl": "/assets/img/collections/nuit-boreale.webp",
+      "heroImageUrl": "/assets/img/collections/nuit-boreale-hero.webp"
+    },
+    {
+      "name": "Jardin d'Hiver",
+      "slug": "jardin-d-hiver",
+      "tagline": "Fleurs sous la givre",
+      "description": "<p>Rose, iris et violette, cueillis au cœur de l'hiver. Des floraux poudrés et lumineux.</p>",
+      "imageUrl": "/assets/img/collections/jardin-d-hiver.webp",
+      "heroImageUrl": "/assets/img/collections/jardin-d-hiver-hero.webp"
+    },
+    {
+      "name": "Rivage",
+      "slug": "rivage",
+      "tagline": "Lumière, sel et agrumes",
+      "description": "<p>Une parenthèse de fraîcheur : bergamote, sel marin et musc blanc.</p>",
+      "imageUrl": "/assets/img/collections/rivage.webp",
+      "heroImageUrl": "/assets/img/collections/rivage-hero.webp"
+    }
+  ],
+  "categories": [
+    {
+      "name": "Parfums",
+      "slug": "parfums",
+      "parentSlug": null,
+      "description": "Eaux de parfum, eaux de toilette et colognes.",
+      "imageUrl": "/assets/img/categories/parfums.webp"
+    },
+    {
+      "name": "Femme",
+      "slug": "parfums-femme",
+      "parentSlug": "parfums",
+      "description": null,
+      "imageUrl": null
+    },
+    {
+      "name": "Homme",
+      "slug": "parfums-homme",
+      "parentSlug": "parfums",
+      "description": null,
+      "imageUrl": null
+    },
+    {
+      "name": "Extraits & Élixirs",
+      "slug": "extraits-elixirs",
+      "parentSlug": null,
+      "description": "Les concentrations les plus intenses.",
+      "imageUrl": "/assets/img/categories/extraits.webp"
+    },
+    {
+      "name": "Mixte",
+      "slug": "parfums-mixtes",
+      "parentSlug": "parfums",
+      "description": null,
+      "imageUrl": null
+    },
+    {
+      "name": "Coffrets & Découverte",
+      "slug": "coffrets-decouverte",
+      "parentSlug": null,
+      "description": "Pour offrir ou pour essayer.",
+      "imageUrl": "/assets/img/categories/coffrets.webp"
+    },
+    {
+      "name": "Bain & Corps",
+      "slug": "bain-corps",
+      "parentSlug": null,
+      "description": "Prolonger le sillage.",
+      "imageUrl": "/assets/img/categories/bain.webp"
+    }
+  ],
+  "products": [
+    {
+      "name": "Neige d'Or",
+      "slug": "neige-d-or-eau-de-parfum",
+      "subtitle": "Eau de parfum",
+      "brand": "Luxury Scent",
+      "category": {
+        "name": "Mixte",
+        "slug": "parfums-mixtes",
+        "parent": "Parfums"
+      },
+      "collection": {
+        "name": "Neige d'Or",
+        "slug": "neige-d-or"
+      },
+      "gender": "MIXTE",
+      "families": [
+        "Ambrée",
+        "Vanillée",
+        "Boisée"
+      ],
+      "notesTop": "Bergamote, Poivre rose, Safran",
+      "notesHeart": "Fleur d'oranger, Jasmin, Cannelle douce",
+      "notesBase": "Ambre, Vanille bourbon, Bois de santal",
+      "shortDescription": "L'ambre lumineux d'un matin de neige.",
+      "description": "<p>Neige d'Or ouvre sur une bergamote givrée relevée de safran, puis se réchauffe d'ambre et de vanille bourbon. Un sillage doré, enveloppant, pensé pour les journées froides et les soirées longues.</p>",
+      "inspiration": "<p>Un jardin sous la neige, traversé par un rayon de soleil. La chaleur qui naît du froid.</p>",
+      "featured": true,
+      "isNew": true,
+      "isLimited": false,
+      "images": [
+        {
+          "url": "/assets/img/produits/neige-d-or-eau-de-parfum-1.webp",
+          "alt": "Neige d'Or — Eau de parfum"
+        },
+        {
+          "url": "/assets/img/produits/neige-d-or-eau-de-parfum-2.webp",
+          "alt": "Neige d'Or — vue 2"
+        }
+      ],
+      "variants": [
+        {
+          "label": "30 ml",
+          "volumeMl": 30,
+          "price": 9500,
+          "salePrice": null,
+          "available": true
+        },
+        {
+          "label": "50 ml",
+          "volumeMl": 50,
+          "price": 13500,
+          "salePrice": null,
+          "available": true
+        },
+        {
+          "label": "100 ml",
+          "volumeMl": 100,
+          "price": 19500,
+          "salePrice": null,
+          "available": true
+        }
+      ]
+    },
+    {
+      "name": "Neige d'Or",
+      "slug": "neige-d-or-extrait-de-parfum",
+      "subtitle": "Extrait de parfum",
+      "brand": "Luxury Scent",
+      "category": {
+        "name": "Extraits & Élixirs",
+        "slug": "extraits-elixirs",
+        "parent": null
+      },
+      "collection": {
+        "name": "Neige d'Or",
+        "slug": "neige-d-or"
+      },
+      "gender": "MIXTE",
+      "families": [
+        "Ambrée",
+        "Vanillée",
+        "Résineuse"
+      ],
+      "notesTop": "Safran, Cardamome",
+      "notesHeart": "Rose de Damas, Jasmin sambac",
+      "notesBase": "Ambre gris, Benjoin, Labdanum",
+      "shortDescription": "La version la plus intense de Neige d'Or.",
+      "description": "<p>Concentré à 30 %, l'extrait densifie l'ambre et prolonge la tenue jusqu'au lendemain. Deux vaporisations suffisent.</p>",
+      "inspiration": "<p>La nuit tombe sur la neige ; l'or devient braise.</p>",
+      "featured": true,
+      "isNew": false,
+      "isLimited": false,
+      "images": [
+        {
+          "url": "/assets/img/produits/neige-d-or-extrait-de-parfum-1.webp",
+          "alt": "Neige d'Or — Extrait de parfum"
+        },
+        {
+          "url": "/assets/img/produits/neige-d-or-extrait-de-parfum-2.webp",
+          "alt": "Neige d'Or — vue 2"
+        }
+      ],
+      "variants": [
+        {
+          "label": "50 ml",
+          "volumeMl": 50,
+          "price": 24500,
+          "salePrice": null,
+          "available": true
+        }
+      ]
+    },
+    {
+      "name": "Ambre Impérial",
+      "slug": "ambre-imperial",
+      "subtitle": "Eau de parfum",
+      "brand": "Aurore Lumière",
+      "category": {
+        "name": "Mixte",
+        "slug": "parfums-mixtes",
+        "parent": "Parfums"
+      },
+      "collection": {
+        "name": "Neige d'Or",
+        "slug": "neige-d-or"
+      },
+      "gender": "MIXTE",
+      "families": [
+        "Ambrée",
+        "Épicée"
+      ],
+      "notesTop": "Gingembre, Mandarine",
+      "notesHeart": "Encens, Rose",
+      "notesBase": "Ambre, Patchouli, Vanille",
+      "shortDescription": "Un ambre épicé, chaud et majestueux.",
+      "description": "<p>Aurore Lumière signe un ambre oriental où l'encens rencontre la mandarine. Puissant sans être écrasant.</p>",
+      "inspiration": "<p>Les salons dorés d'un palais d'hiver.</p>",
+      "featured": false,
+      "isNew": false,
+      "isLimited": false,
+      "images": [
+        {
+          "url": "/assets/img/produits/ambre-imperial-1.webp",
+          "alt": "Ambre Impérial — Eau de parfum"
+        },
+        {
+          "url": "/assets/img/produits/ambre-imperial-2.webp",
+          "alt": "Ambre Impérial — vue 2"
+        }
+      ],
+      "variants": [
+        {
+          "label": "50 ml",
+          "volumeMl": 50,
+          "price": 14500,
+          "salePrice": null,
+          "available": true
+        },
+        {
+          "label": "100 ml",
+          "volumeMl": 100,
+          "price": 21000,
+          "salePrice": null,
+          "available": true
+        }
+      ]
+    },
+    {
+      "name": "Nuit Boréale",
+      "slug": "nuit-boreale-eau-de-parfum",
+      "subtitle": "Eau de parfum",
+      "brand": "Luxury Scent",
+      "category": {
+        "name": "Homme",
+        "slug": "parfums-homme",
+        "parent": "Parfums"
+      },
+      "collection": {
+        "name": "Nuit Boréale",
+        "slug": "nuit-boreale"
+      },
+      "gender": "HOMME",
+      "families": [
+        "Boisée",
+        "Oud",
+        "Fumée"
+      ],
+      "notesTop": "Baies de genièvre, Bergamote",
+      "notesHeart": "Oud, Cèdre de l'Atlas, Encens",
+      "notesBase": "Cuir, Vétiver, Musc",
+      "shortDescription": "Un oud profond sous un ciel d'étoiles.",
+      "description": "<p>Nuit Boréale associe un oud noble à des bois fumés et à une pointe de cuir. Une signature masculine, sombre et élégante.</p>",
+      "inspiration": "<p>Une forêt de pins sous les aurores.</p>",
+      "featured": true,
+      "isNew": false,
+      "isLimited": false,
+      "images": [
+        {
+          "url": "/assets/img/produits/nuit-boreale-eau-de-parfum-1.webp",
+          "alt": "Nuit Boréale — Eau de parfum"
+        },
+        {
+          "url": "/assets/img/produits/nuit-boreale-eau-de-parfum-2.webp",
+          "alt": "Nuit Boréale — vue 2"
+        }
+      ],
+      "variants": [
+        {
+          "label": "50 ml",
+          "volumeMl": 50,
+          "price": 15500,
+          "salePrice": null,
+          "available": true
+        },
+        {
+          "label": "100 ml",
+          "volumeMl": 100,
+          "price": 22500,
+          "salePrice": null,
+          "available": true
+        }
+      ]
+    },
+    {
+      "name": "Cèdre Noir",
+      "slug": "cedre-noir",
+      "subtitle": "Eau de toilette",
+      "brand": "Nord & Sel",
+      "category": {
+        "name": "Homme",
+        "slug": "parfums-homme",
+        "parent": "Parfums"
+      },
+      "collection": {
+        "name": "Nuit Boréale",
+        "slug": "nuit-boreale"
+      },
+      "gender": "HOMME",
+      "families": [
+        "Boisée",
+        "Aromatique"
+      ],
+      "notesTop": "Pamplemousse, Romarin",
+      "notesHeart": "Cèdre, Sauge",
+      "notesBase": "Vétiver, Ambre gris",
+      "shortDescription": "Le bois sec et net d'une forêt du Nord.",
+      "description": "<p>Une eau de toilette vive et boisée, pensée pour tous les jours. Tenue de six à huit heures.</p>",
+      "inspiration": "<p>Une cabane de bois, l'hiver, au bord d'un fjord.</p>",
+      "featured": false,
+      "isNew": false,
+      "isLimited": false,
+      "images": [
+        {
+          "url": "/assets/img/produits/cedre-noir-1.webp",
+          "alt": "Cèdre Noir — Eau de toilette"
+        },
+        {
+          "url": "/assets/img/produits/cedre-noir-2.webp",
+          "alt": "Cèdre Noir — vue 2"
+        }
+      ],
+      "variants": [
+        {
+          "label": "50 ml",
+          "volumeMl": 50,
+          "price": 8900,
+          "salePrice": null,
+          "available": true
+        },
+        {
+          "label": "100 ml",
+          "volumeMl": 100,
+          "price": 12900,
+          "salePrice": null,
+          "available": true
+        }
+      ]
+    },
+    {
+      "name": "Rose Givrée",
+      "slug": "rose-givree",
+      "subtitle": "Eau de parfum",
+      "brand": "Luxury Scent",
+      "category": {
+        "name": "Femme",
+        "slug": "parfums-femme",
+        "parent": "Parfums"
+      },
+      "collection": {
+        "name": "Jardin d'Hiver",
+        "slug": "jardin-d-hiver"
+      },
+      "gender": "FEMME",
+      "families": [
+        "Florale",
+        "Musquée"
+      ],
+      "notesTop": "Litchi, Poivre rose",
+      "notesHeart": "Rose centifolia, Pivoine",
+      "notesBase": "Musc blanc, Bois blonds",
+      "shortDescription": "Une rose fraîche, cueillie sous la givre.",
+      "description": "<p>Rose Givrée joue la transparence : une rose de Grasse portée par des muscs propres et une pointe de litchi.</p>",
+      "inspiration": "<p>La première rose de l'année, encore couverte de givre.</p>",
+      "featured": true,
+      "isNew": false,
+      "isLimited": false,
+      "images": [
+        {
+          "url": "/assets/img/produits/rose-givree-1.webp",
+          "alt": "Rose Givrée — Eau de parfum"
+        },
+        {
+          "url": "/assets/img/produits/rose-givree-2.webp",
+          "alt": "Rose Givrée — vue 2"
+        }
+      ],
+      "variants": [
+        {
+          "label": "30 ml",
+          "volumeMl": 30,
+          "price": 8500,
+          "salePrice": null,
+          "available": true
+        },
+        {
+          "label": "50 ml",
+          "volumeMl": 50,
+          "price": 12500,
+          "salePrice": null,
+          "available": true
+        },
+        {
+          "label": "100 ml",
+          "volumeMl": 100,
+          "price": 17500,
+          "salePrice": null,
+          "available": true
+        }
+      ]
+    },
+    {
+      "name": "Iris Pâle",
+      "slug": "iris-pale-extrait",
+      "subtitle": "Extrait de parfum",
+      "brand": "Aurore Lumière",
+      "category": {
+        "name": "Extraits & Élixirs",
+        "slug": "extraits-elixirs",
+        "parent": null
+      },
+      "collection": {
+        "name": "Jardin d'Hiver",
+        "slug": "jardin-d-hiver"
+      },
+      "gender": "FEMME",
+      "families": [
+        "Poudrée",
+        "Florale"
+      ],
+      "notesTop": "Violette, Mandarine",
+      "notesHeart": "Iris de Florence, Mimosa",
+      "notesBase": "Fève tonka, Santal",
+      "shortDescription": "Un iris poudré, précieux et feutré.",
+      "description": "<p>L'iris, matière la plus rare de la parfumerie, dans une concentration extrait. Doux, poudré, intemporel.</p>",
+      "inspiration": "<p>Un poudrier en nacre, la lumière d'un matin d'hiver.</p>",
+      "featured": false,
+      "isNew": false,
+      "isLimited": false,
+      "images": [
+        {
+          "url": "/assets/img/produits/iris-pale-extrait-1.webp",
+          "alt": "Iris Pâle — Extrait de parfum"
+        },
+        {
+          "url": "/assets/img/produits/iris-pale-extrait-2.webp",
+          "alt": "Iris Pâle — vue 2"
+        }
+      ],
+      "variants": [
+        {
+          "label": "50 ml",
+          "volumeMl": 50,
+          "price": 26500,
+          "salePrice": null,
+          "available": true
+        }
+      ]
+    },
+    {
+      "name": "Jardin d'Hiver",
+      "slug": "jardin-d-hiver-eau-de-parfum",
+      "subtitle": "Eau de parfum",
+      "brand": "Luxury Scent",
+      "category": {
+        "name": "Femme",
+        "slug": "parfums-femme",
+        "parent": "Parfums"
+      },
+      "collection": {
+        "name": "Jardin d'Hiver",
+        "slug": "jardin-d-hiver"
+      },
+      "gender": "FEMME",
+      "families": [
+        "Florale",
+        "Verte"
+      ],
+      "notesTop": "Feuille de violette, Poire",
+      "notesHeart": "Jasmin, Muguet, Violette",
+      "notesBase": "Mousse, Musc",
+      "shortDescription": "Des fleurs blanches sous une serre de verre.",
+      "description": "<p>Une composition verte et florale, lumineuse, où le muguet rencontre la feuille de violette.</p>",
+      "inspiration": "<p>Une serre, l'hiver : dehors la neige, dedans les fleurs.</p>",
+      "featured": false,
+      "isNew": true,
+      "isLimited": false,
+      "images": [
+        {
+          "url": "/assets/img/produits/jardin-d-hiver-eau-de-parfum-1.webp",
+          "alt": "Jardin d'Hiver — Eau de parfum"
+        },
+        {
+          "url": "/assets/img/produits/jardin-d-hiver-eau-de-parfum-2.webp",
+          "alt": "Jardin d'Hiver — vue 2"
+        }
+      ],
+      "variants": [
+        {
+          "label": "50 ml",
+          "volumeMl": 50,
+          "price": 12500,
+          "salePrice": null,
+          "available": true
+        },
+        {
+          "label": "100 ml",
+          "volumeMl": 100,
+          "price": 17500,
+          "salePrice": null,
+          "available": true
+        }
+      ]
+    },
+    {
+      "name": "Rivage",
+      "slug": "rivage-eau-de-toilette",
+      "subtitle": "Eau de toilette",
+      "brand": "Luxury Scent",
+      "category": {
+        "name": "Mixte",
+        "slug": "parfums-mixtes",
+        "parent": "Parfums"
+      },
+      "collection": {
+        "name": "Rivage",
+        "slug": "rivage"
+      },
+      "gender": "MIXTE",
+      "families": [
+        "Hespéridée",
+        "Aquatique"
+      ],
+      "notesTop": "Bergamote, Citron de Menton, Sel marin",
+      "notesHeart": "Néroli, Jasmin",
+      "notesBase": "Musc blanc, Ambrette",
+      "shortDescription": "Lumière, sel et agrumes.",
+      "description": "<p>Rivage est une eau fraîche et saline, à vaporiser généreusement. Un parfum de peau propre et d'embruns.</p>",
+      "inspiration": "<p>Une plage d'hiver, vide, baignée de lumière.</p>",
+      "featured": false,
+      "isNew": false,
+      "isLimited": false,
+      "images": [
+        {
+          "url": "/assets/img/produits/rivage-eau-de-toilette-1.webp",
+          "alt": "Rivage — Eau de toilette"
+        },
+        {
+          "url": "/assets/img/produits/rivage-eau-de-toilette-2.webp",
+          "alt": "Rivage — vue 2"
+        }
+      ],
+      "variants": [
+        {
+          "label": "50 ml",
+          "volumeMl": 50,
+          "price": 9900,
+          "salePrice": 8400,
+          "available": true
+        },
+        {
+          "label": "100 ml",
+          "volumeMl": 100,
+          "price": 14500,
+          "salePrice": 12300,
+          "available": true
+        }
+      ]
+    },
+    {
+      "name": "Sel & Lumière",
+      "slug": "sel-et-lumiere-cologne",
+      "subtitle": "Cologne",
+      "brand": "Nord & Sel",
+      "category": {
+        "name": "Mixte",
+        "slug": "parfums-mixtes",
+        "parent": "Parfums"
+      },
+      "collection": {
+        "name": "Rivage",
+        "slug": "rivage"
+      },
+      "gender": "MIXTE",
+      "families": [
+        "Hespéridée",
+        "Aromatique"
+      ],
+      "notesTop": "Citron, Petit grain",
+      "notesHeart": "Lavande, Thym",
+      "notesBase": "Vétiver, Musc",
+      "shortDescription": "Une cologne classique, revisitée.",
+      "description": "<p>Une cologne vive, à la façon des grandes eaux fraîches, avec une tenue renforcée par le vétiver.</p>",
+      "inspiration": "<p>Les falaises, le vent, le sel.</p>",
+      "featured": false,
+      "isNew": false,
+      "isLimited": false,
+      "images": [
+        {
+          "url": "/assets/img/produits/sel-et-lumiere-cologne-1.webp",
+          "alt": "Sel & Lumière — Cologne"
+        },
+        {
+          "url": "/assets/img/produits/sel-et-lumiere-cologne-2.webp",
+          "alt": "Sel & Lumière — vue 2"
+        }
+      ],
+      "variants": [
+        {
+          "label": "100 ml",
+          "volumeMl": 100,
+          "price": 9500,
+          "salePrice": null,
+          "available": true
+        },
+        {
+          "label": "200 ml",
+          "volumeMl": 200,
+          "price": 15500,
+          "salePrice": null,
+          "available": false
+        }
+      ]
+    },
+    {
+      "name": "Coffret Découverte",
+      "slug": "coffret-decouverte",
+      "subtitle": "5 parfums × 2 ml",
+      "brand": "Luxury Scent",
+      "category": {
+        "name": "Coffrets & Découverte",
+        "slug": "coffrets-decouverte",
+        "parent": null
+      },
+      "collection": null,
+      "gender": "MIXTE",
+      "families": [
+        "Ambrée",
+        "Boisée",
+        "Florale",
+        "Hespéridée"
+      ],
+      "notesTop": null,
+      "notesHeart": null,
+      "notesBase": null,
+      "shortDescription": "Cinq signatures de la Maison à essayer sur peau.",
+      "description": "<p>Neige d'Or, Nuit Boréale, Rose Givrée, Jardin d'Hiver et Rivage en format 2 ml. Le montant du coffret est déduit de votre premier flacon.</p>",
+      "inspiration": null,
+      "featured": true,
+      "isNew": false,
+      "isLimited": false,
+      "images": [
+        {
+          "url": "/assets/img/produits/coffret-decouverte-1.webp",
+          "alt": "Coffret Découverte — 5 parfums × 2 ml"
+        },
+        {
+          "url": "/assets/img/produits/coffret-decouverte-2.webp",
+          "alt": "Coffret Découverte — vue 2"
+        }
+      ],
+      "variants": [
+        {
+          "label": "Coffret",
+          "volumeMl": 10,
+          "price": 3500,
+          "salePrice": null,
+          "available": true
+        }
+      ]
+    },
+    {
+      "name": "Lait parfumé Neige d'Or",
+      "slug": "lait-parfume-neige-d-or",
+      "subtitle": "Lait pour le corps",
+      "brand": "Luxury Scent",
+      "category": {
+        "name": "Bain & Corps",
+        "slug": "bain-corps",
+        "parent": null
+      },
+      "collection": {
+        "name": "Neige d'Or",
+        "slug": "neige-d-or"
+      },
+      "gender": "MIXTE",
+      "families": [
+        "Ambrée",
+        "Vanillée"
+      ],
+      "notesTop": null,
+      "notesHeart": null,
+      "notesBase": null,
+      "shortDescription": "Prolonger le sillage de Neige d'Or.",
+      "description": "<p>Un lait hydratant parfumé à Neige d'Or, à appliquer avant le parfum pour en prolonger la tenue.</p>",
+      "inspiration": null,
+      "featured": false,
+      "isNew": false,
+      "isLimited": false,
+      "images": [
+        {
+          "url": "/assets/img/produits/lait-parfume-neige-d-or-1.webp",
+          "alt": "Lait parfumé Neige d'Or — Lait pour le corps"
+        },
+        {
+          "url": "/assets/img/produits/lait-parfume-neige-d-or-2.webp",
+          "alt": "Lait parfumé Neige d'Or — vue 2"
+        }
+      ],
+      "variants": [
+        {
+          "label": "200 ml",
+          "volumeMl": 200,
+          "price": 6500,
+          "salePrice": null,
+          "available": true
+        }
+      ]
+    },
+    {
+      "name": "Bougie Nuit Boréale",
+      "slug": "bougie-nuit-boreale",
+      "subtitle": "Bougie parfumée",
+      "brand": "Luxury Scent",
+      "category": {
+        "name": "Bain & Corps",
+        "slug": "bain-corps",
+        "parent": null
+      },
+      "collection": {
+        "name": "Nuit Boréale",
+        "slug": "nuit-boreale"
+      },
+      "gender": "MIXTE",
+      "families": [
+        "Boisée",
+        "Fumée"
+      ],
+      "notesTop": null,
+      "notesHeart": null,
+      "notesBase": null,
+      "shortDescription": "L'odeur d'un feu de cèdre.",
+      "description": "<p>Cire végétale, mèche en coton, 50 heures de combustion.</p>",
+      "inspiration": null,
+      "featured": false,
+      "isNew": false,
+      "isLimited": true,
+      "images": [
+        {
+          "url": "/assets/img/produits/bougie-nuit-boreale-1.webp",
+          "alt": "Bougie Nuit Boréale — Bougie parfumée"
+        },
+        {
+          "url": "/assets/img/produits/bougie-nuit-boreale-2.webp",
+          "alt": "Bougie Nuit Boréale — vue 2"
+        }
+      ],
+      "variants": [
+        {
+          "label": "220 g",
+          "volumeMl": null,
+          "price": 7500,
+          "salePrice": null,
+          "available": true
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "slug": "notre-maison",
+      "title": "Notre Maison",
+      "content": "<h2>Une parfumerie indépendante</h2><p>Luxury Scent est née d'une conviction : le luxe tient à la justesse des matières et à l'attention portée à chaque geste. Nous sélectionnons et composons des parfums d'exception, et nous les expédions comme on offre un cadeau.</p><h2>Nos engagements</h2><ul><li>Des matières premières tracées, en majorité naturelles.</li><li>Des flacons rechargeables et des étuis recyclables.</li><li>Un service client humain, joignable six jours sur sept.</li></ul>"
+    },
+    {
+      "slug": "mentions-legales",
+      "title": "Mentions légales",
+      "content": "<p><em>À compléter avec les informations de votre société.</em></p><p><strong>Éditeur :</strong> Luxury Scent — forme juridique, capital, siège social, RCS, numéro de TVA.</p><p><strong>Directeur de la publication :</strong> —</p><p><strong>Hébergeur :</strong> —</p>"
+    },
+    {
+      "slug": "politique-de-confidentialite",
+      "title": "Politique de confidentialité",
+      "content": "<p>Les données collectées (identité, adresses, e-mail, historique de commandes) servent uniquement au traitement des commandes, au service client et, avec votre accord, à l'envoi de notre newsletter. Elles ne sont jamais vendues. Vous pouvez demander l'accès, la rectification ou la suppression de vos données en nous écrivant.</p>"
+    },
+    {
+      "slug": "faq",
+      "title": "Questions fréquentes",
+      "content": "<h3>Comment choisir ma contenance ?</h3><p>30 ml pour essayer, 50 ml pour adopter, 100 ml pour un parfum porté tous les jours.</p><h3>Puis-je essayer avant d'acheter ?</h3><p>Oui : le coffret découverte réunit cinq parfums en 2 ml, et son prix est déduit de votre premier flacon.</p><h3>Comment conserver mon parfum ?</h3><p>À l'abri de la lumière et de la chaleur, flacon fermé.</p>"
+    }
+  ]
+}

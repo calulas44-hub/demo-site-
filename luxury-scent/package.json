@@ -17,7 +17,8 @@
     "db:studio": "prisma studio",
     "admin:create": "tsx scripts/create-admin.ts",
     "backup": "tsx scripts/backup.ts",
-    "test": "tsx tests/run.ts"
+    "test": "tsx tests/run.ts",
+    "vitrine:export": "tsx scripts/export-vitrine.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
