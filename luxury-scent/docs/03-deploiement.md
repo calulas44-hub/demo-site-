@@ -80,7 +80,10 @@ persistant et sauvegardé.
 
 ### Option B — conteneur Docker
 
-Un `Dockerfile` est fourni. Montez un volume sur `/app/storage` :
+Un `Dockerfile` est fourni. **Il n'a pas pu être testé de bout en bout** (pas de démon Docker dans l'environnement
+de développement) : faites un premier essai sur une machine de test avant de l'utiliser en production. Au démarrage,
+le conteneur applique les migrations puis crée le compte propriétaire à partir de `ADMIN_EMAIL` / `ADMIN_PASSWORD`
+s'il n'existe aucun administrateur (aucune donnée de démonstration n'est créée). Montez un volume sur `/app/storage` :
 
 ```bash
 docker build -t luxury-scent .
