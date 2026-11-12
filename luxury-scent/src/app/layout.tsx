@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { getSettings } from "@/lib/settings";
+import { siteUrl } from "@/lib/site-url";
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings();
-  const appUrl = process.env.APP_URL ?? "http://localhost:3000";
+  const appUrl = siteUrl();
   return {
     metadataBase: new URL(appUrl),
     title: { default: s.seoTitle || s.brandName, template: `%s — ${s.brandName}` },

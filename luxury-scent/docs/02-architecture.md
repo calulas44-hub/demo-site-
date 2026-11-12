@@ -5,8 +5,8 @@
 | Couche | Choix | Pourquoi |
 |---|---|---|
 | Application | **Next.js 15** (App Router, TypeScript, React 19) | Rendu serveur pour le référencement et la vitesse, API et actions serveur dans le même déploiement, écosystème mature. |
-| Base de données | **Prisma** + **PostgreSQL** (Supabase en production) | Migrations versionnées appliquées à chaque déploiement, RLS activée sur toutes les tables. |
-| Médias | **Supabase Storage** (bucket public `media`, bucket privé `private`) | Envoi direct navigateur → stockage par URL signée, compression WebP côté navigateur. |
+| Base de données | **Prisma** + **PostgreSQL** (Netlify Database en production) | Migrations versionnées appliquées à chaque déploiement ; chaque deploy preview a sa propre copie de la base. |
+| Médias | **Netlify Blobs** (store `media` servi par `/media/…`, store `private` pour les justificatifs) | Envoi en morceaux signés, compression WebP côté navigateur, contrôle du type réel des fichiers. |
 | Hébergement | **Netlify** (`@netlify/plugin-nextjs`) | Déploiement automatique à chaque push GitHub. |
 | Paiement | **Stripe Checkout** (page hébergée) + **virement bancaire** | Aucun numéro de carte ne transite par nos serveurs. Le virement utilise l'IBAN actif géré dans l'administration. |
 | E-mails | **Nodemailer** (SMTP) | Fonctionne avec n'importe quel fournisseur (OVH, Gmail pro, Brevo, Mailgun…). |

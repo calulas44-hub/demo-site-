@@ -1,5 +1,6 @@
 import "server-only";
 import Stripe from "stripe";
+import { siteUrl } from "@/lib/site-url";
 
 export function isStripeConfigured(): boolean {
   return Boolean(process.env.STRIPE_SECRET_KEY);
@@ -54,7 +55,7 @@ export function buildCheckoutParams(order: CheckoutOrder, appUrl: string, coupon
 
 /** Crée une session Stripe Checkout (page de paiement hébergée par Stripe : aucune donnée de carte ne transite par le site). */
 export async function createCheckoutSession(order: CheckoutOrder): Promise<{ url: string; id: string }> {
-  const appUrl = (process.env.APP_URL ?? process.env.URL ?? "http://localhost:3000").replace(/\/$/, "");
+  const appUrl = siteUrl();
   let couponId: string | undefined;
   if (order.discount > 0) {
     // Remise ponctuelle propre à cette commande (montant fixe, utilisable une seule fois).

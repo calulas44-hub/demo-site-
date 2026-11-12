@@ -4,6 +4,7 @@ import { prisma } from "./db";
 import { getSettings } from "./settings";
 import { formatPrice } from "./money";
 import { ORDER_STATUS_LABELS, type OrderStatus } from "./constants";
+import { siteUrl } from "@/lib/site-url";
 
 export function isSmtpConfigured(): boolean {
   return Boolean(process.env.SMTP_HOST && process.env.SMTP_FROM);
@@ -63,7 +64,7 @@ function escapeHtml(s: string): string {
 
 async function layout(title: string, body: string): Promise<string> {
   const s = await getSettings();
-  const appUrl = process.env.APP_URL ?? "";
+  const appUrl = siteUrl();
   return `<!doctype html><html lang="fr"><body style="margin:0;background:#f6f3ee;font-family:Georgia,'Times New Roman',serif;color:#1c1a17">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border:1px solid #e8e2d8">
@@ -114,7 +115,7 @@ ${order.discount > 0 ? `<tr><td style="padding:8px 0">${escapeHtml(order.discoun
 
 export async function sendOrderConfirmation(order: OrderForEmail, bankInstructions?: string | null) {
   const s = await getSettings();
-  const appUrl = process.env.APP_URL ?? "";
+  const appUrl = siteUrl();
   const bank =
     order.paymentMethod === "BANK_TRANSFER"
       ? `<div style="margin:16px 0;padding:16px;background:#f6f3ee;border:1px solid #e8e2d8"><strong>Règlement par virement</strong><br>Votre commande sera préparée dès réception du virement.<br>${bankInstructions ? bankInstructions : "Les coordonnées bancaires vous seront communiquées par notre service client."}<br>Merci d'indiquer la référence <strong>${escapeHtml(order.number)}</strong> dans le libellé du virement.</div>`
@@ -136,7 +137,7 @@ ${itemsTable(order)}${bank}
 
 export async function sendOrderStatusUpdate(order: OrderForEmail, status: OrderStatus) {
   const s = await getSettings();
-  const appUrl = process.env.APP_URL ?? "";
+  const appUrl = siteUrl();
   let intro = `Votre commande <strong>${escapeHtml(order.number)}</strong> est maintenant : <strong>${ORDER_STATUS_LABELS[status]}</strong>.`;
   if (status === "SHIPPED") {
     intro += `<br>Transporteur : ${escapeHtml(order.carrier ?? "—")}${order.trackingNumber ? ` · Numéro de suivi : <strong>${escapeHtml(order.trackingNumber)}</strong>` : ""}`;

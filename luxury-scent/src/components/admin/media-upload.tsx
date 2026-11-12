@@ -2,11 +2,12 @@
 
 import { useRef, useState } from "react";
 import { confirmUploadAction, requestUploadAction } from "@/lib/admin-actions/media";
+import { isVideoUrl } from "@/lib/media-url";
 
 /**
- * Envoi de fichiers direct navigateur → stockage (Supabase Storage en production).
+ * Envoi de fichiers vers le stockage (Netlify Blobs en production), en morceaux de 3,5 Mo.
  * - Les images sont redimensionnées (2400 px max) et converties en WebP dans le navigateur.
- * - Le serveur délivre une autorisation signée, puis vérifie le fichier reçu.
+ * - Le serveur délivre une autorisation signée, réassemble puis vérifie le fichier reçu.
  */
 
 export type Accept = "image" | "video" | "media" | "document";
@@ -52,17 +53,14 @@ export async function uploadFile(file: File, folder: string, opts: { privateFile
   const ticket = await requestUploadAction({ folder, contentType: type, size: blob.size, privateFile: opts.privateFile });
   if (!ticket.ok) throw new Error(ticket.message);
   const t = ticket.target;
-  if (t.driver === "supabase") {
-    const { createClient } = await import("@supabase/supabase-js");
-    const sb = createClient(t.supabaseUrl!, t.supabaseAnonKey!, { auth: { persistSession: false } });
-    const { error } = await sb.storage.from(t.bucket).uploadToSignedUrl(t.objectPath, t.token, blob, { contentType: type, cacheControl: "31536000" });
-    if (error) throw new Error(`Envoi refusé par le stockage : ${error.message}`);
-  } else {
-    const res = await fetch(t.localUrl!, { method: "PUT", body: blob, headers: { "Content-Type": type } });
-    if (!res.ok) throw new Error(`Envoi refusé (${res.status}).`);
+  for (let i = 0; i < t.parts; i++) {
+    if (t.parts > 1) opts.onProgress?.(`Envoi ${Math.round(((i + 1) / t.parts) * 100)} %`);
+    const chunk = blob.slice(i * t.chunkSize, (i + 1) * t.chunkSize);
+    const res = await fetch(`${t.url}&part=${i}`, { method: "PUT", body: chunk, headers: { "Content-Type": "application/octet-stream" } });
+    if (!res.ok) throw new Error(`Envoi refusé (${res.status}) : ${(await res.text()).slice(0, 120)}`);
   }
   opts.onProgress?.("Vérification…");
-  const done = await confirmUploadAction({ bucket: t.bucket, objectPath: t.objectPath, filename: file.name, width, height });
+  const done = await confirmUploadAction({ bucket: t.bucket, objectPath: t.objectPath, parts: t.parts, filename: file.name, width, height });
   if (!done.ok) throw new Error(done.message);
   return { url: done.url, kind: done.kind };
 }
@@ -73,7 +71,7 @@ export function MediaField({ name, label, accept = "image", folder, defaultUrl, 
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const isVideo = /\.(mp4|webm)(\?|$)/i.test(url);
+  const isVideo = isVideoUrl(url);
 
   const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

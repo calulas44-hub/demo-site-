@@ -1,10 +1,10 @@
 # Développement local
 
-La production tourne sur **Netlify + Supabase** : voir [04-netlify-supabase.md](04-netlify-supabase.md).
+La production tourne entièrement sur **Netlify** (site, base Netlify Database, médias Netlify Blobs) : voir [04-netlify.md](04-netlify.md).
 
 ## Démarrer en local
 
-Prérequis : Node 22, PostgreSQL 15+ (local ou un projet Supabase de test).
+Prérequis : Node 22, PostgreSQL 15+ en local.
 
 ```bash
 cp .env.example .env          # renseigner DATABASE_URL / DIRECT_URL, SESSION_SECRET, BANK_ENCRYPTION_KEY, ADMIN_*
@@ -16,7 +16,7 @@ npm run build && npm start    # http://localhost:3000 — admin : /admin
 npm test                      # tests de bout en bout (serveur démarré)
 ```
 
-Sans variables Supabase, les médias sont enregistrés dans `storage/uploads` (développement uniquement).
+En local, les médias sont enregistrés dans `storage/uploads` (sur Netlify : Netlify Blobs).
 
 ## Autre hébergeur (Docker)
 
@@ -25,6 +25,6 @@ Le `Dockerfile` reste utilisable sur un serveur Node : il applique les migration
 
 ## Sauvegardes
 
-- Base : sauvegardes quotidiennes Supabase (plan payant) ou `pg_dump "$DIRECT_URL" > sauvegarde.sql`.
-- Médias : bucket `media` / `private` de Supabase Storage.
+- Base : sauvegardes automatiques de Netlify Database (durée selon l'offre) ou `pg_dump` avec l'adresse de connexion.
+- Médias : stores `media` et `private` de Netlify Blobs ; images de départ dans `public/seed`.
 - **`BANK_ENCRYPTION_KEY`** : à conserver hors du site (gestionnaire de mots de passe). Sans elle, les IBAN enregistrés sont illisibles.

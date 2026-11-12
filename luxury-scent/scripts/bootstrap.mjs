@@ -1,6 +1,6 @@
 /**
  * Initialisation exécutée à chaque déploiement (après `prisma migrate deploy`).
- * - Réactive la Row Level Security sur toutes les tables (y compris celles ajoutées par de futures migrations).
+ * - Sur une base Supabase uniquement : Row Level Security sur toutes les tables.
  * - Crée le compte propriétaire à partir de ADMIN_EMAIL / ADMIN_PASSWORD s'il n'existe aucun propriétaire.
  * - Compte de recette temporaire (QA_ADMIN_EMAIL / QA_ADMIN_PASSWORD, domaine @qa.luxury-scent.invalid) :
  *   créé quand les variables sont présentes, désactivé automatiquement dès qu'elles sont retirées.
@@ -12,14 +12,18 @@ const prisma = new PrismaClient();
 const QA_DOMAIN = "@qa.luxury-scent.invalid";
 
 try {
-  await prisma.$executeRawUnsafe(`DO $$
+  // Base Supabase uniquement (API REST publique) : RLS sur toutes les tables, y compris les nouvelles.
+  const [{ supabase }] = await prisma.$queryRawUnsafe(`SELECT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') AS supabase`);
+  if (supabase) {
+    await prisma.$executeRawUnsafe(`DO $$
 DECLARE r record;
 BEGIN
   FOR r IN SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND NOT rowsecurity LOOP
     EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', r.tablename);
   END LOOP;
 END $$;`);
-  console.log("[bootstrap] Row Level Security active sur toutes les tables.");
+    console.log("[bootstrap] Row Level Security active sur toutes les tables.");
+  }
 
   const owners = await prisma.adminUser.count({ where: { role: "OWNER", active: true, NOT: { email: { endsWith: QA_DOMAIN } } } });
   if (owners > 0) {

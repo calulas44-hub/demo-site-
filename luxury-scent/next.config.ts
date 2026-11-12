@@ -6,6 +6,12 @@ const nextConfig: NextConfig = {
   // Netlify : sortie gérée par @netlify/plugin-nextjs. Docker / serveur Node : sortie autonome.
   ...(onNetlify ? {} : { output: "standalone" as const }),
   poweredByHeader: false,
+  // Pilote de stockage des médias, figé au build : Netlify Blobs sur Netlify, dossier local sinon.
+  env: {
+    MEDIA_DRIVER: process.env.MEDIA_DRIVER || (onNetlify ? "netlify" : "local"),
+    // Adresse du site fournie par Netlify au build (URL) : APP_URL reste prioritaire à l'exécution.
+    SITE_URL: process.env.URL || "",
+  },
   serverExternalPackages: ["pdfkit", "sharp", "exceljs", "nodemailer", "bcryptjs"],
   // Polices intégrées de pdfkit (factures PDF) : à embarquer dans les fonctions serveur.
   outputFileTracingIncludes: { "/**": ["./node_modules/pdfkit/js/data/**"] },

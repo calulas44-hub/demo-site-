@@ -1,6 +1,7 @@
 # Netlify — site Luxury Scent (répertoire de base : luxury-scent)
+# Tout est hébergé sur Netlify : site, fonctions, base Netlify Database, médias Netlify Blobs.
 # Variables d'environnement : à saisir dans Netlify (Site configuration → Environment variables),
-# jamais dans ce fichier. Liste complète : docs/04-netlify-supabase.md
+# jamais dans ce fichier. Liste complète : docs/04-netlify.md
 [build]
   command = "npm run build:netlify"
   publish = ".next"

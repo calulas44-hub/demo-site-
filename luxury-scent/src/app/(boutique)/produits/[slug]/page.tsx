@@ -9,6 +9,7 @@ import { ProductPurchase } from "@/components/shop/product-purchase";
 import { ProductCard } from "@/components/shop/product-card";
 import { Reveal } from "@/components/shop/reveal";
 import { Icon } from "@/components/shop/icon";
+import { siteUrl } from "@/lib/site-url";
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ variante?: string; apercu?: string }> };
 
@@ -32,7 +33,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
   const [related, settings] = await Promise.all([getRelatedProducts(p.id, p.collectionId, p.categoryId, 4), getSettings()]);
   const families = splitList(p.families);
   const hasNotes = p.notesTop || p.notesHeart || p.notesBase;
-  const appUrl = process.env.APP_URL ?? "";
+  const appUrl = siteUrl();
 
   const jsonLd = {
     "@context": "https://schema.org",

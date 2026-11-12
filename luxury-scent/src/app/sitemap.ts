@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
 export const revalidate = 3600;
 import { prisma } from "@/lib/db";
+import { siteUrl } from "@/lib/site-url";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.APP_URL ?? "http://localhost:3000";
+  const base = siteUrl();
   const [products, categories, collections, pages] = await Promise.all([
     prisma.product.findMany({ where: { status: "ACTIVE" }, select: { slug: true, updatedAt: true } }),
     prisma.category.findMany({ where: { active: true }, select: { slug: true } }),

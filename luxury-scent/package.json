@@ -25,8 +25,9 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@netlify/blobs": "^11.1.9",
+    "@netlify/database": "^2.0.3",
     "@prisma/client": "6.19.3",
-    "@supabase/supabase-js": "^2.119.0",
     "bcryptjs": "3.0.3",
     "exceljs": "4.4.0",
     "jose": "6.2.17",

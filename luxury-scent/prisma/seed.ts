@@ -3,22 +3,33 @@
  * Toujours : réglages neutres, section de couverture (image fournie), pages légales à compléter.
  * Si SEED_DEMO=1 : catalogue de démonstration (produits marqués « démo », supprimables en un clic
  * depuis l'administration). Aucune information juridique ou commerciale n'est inventée.
- * Les images sont envoyées dans le stockage durable (Supabase Storage en production).
+ * Les images de départ sont des fichiers statiques (public/seed).
  */
 import { PrismaClient } from "@prisma/client";
 import sharp from "sharp";
 import path from "node:path";
-import { putObject, MEDIA_BUCKET, ensureBuckets } from "../src/lib/storage";
+import { existsSync } from "node:fs";
+import { mkdir, writeFile } from "node:fs/promises";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({ datasourceUrl: process.env.DATABASE_URL || process.env.NETLIFY_DB_URL });
 
+/**
+ * Images de départ : fichiers statiques du site (public/seed, versionnés dans Git et servis par le CDN).
+ * Netlify n'autorise pas l'écriture dans le stockage permanent pendant le build ; les médias ajoutés
+ * ensuite depuis l'administration vont, eux, dans Netlify Blobs.
+ */
 async function saveWebp(folder: string, buffer: Buffer, filename: string, meta: { filename: string; alt?: string; quality?: number }) {
-  const out = await sharp(buffer).webp({ quality: meta.quality ?? 86 }).toBuffer();
-  const info = await sharp(out).metadata();
-  const url = await putObject(MEDIA_BUCKET, `${folder}/${filename}`, out, "image/webp");
+  const name = `${folder}-${filename}`.replace(/[^a-z0-9.-]/g, "-");
+  const file = path.join(process.cwd(), "public", "seed", name);
+  if (!existsSync(file)) {
+    await mkdir(path.dirname(file), { recursive: true });
+    await writeFile(file, await sharp(buffer).webp({ quality: meta.quality ?? 86 }).toBuffer());
+  }
+  const info = await sharp(file).metadata();
+  const url = `/seed/${name}`;
   await prisma.media.upsert({
     where: { url },
-    create: { url, filename: meta.filename, mimeType: "image/webp", size: out.length, width: info.width ?? null, height: info.height ?? null, alt: meta.alt ?? null, folder },
+    create: { url, filename: meta.filename, mimeType: "image/webp", size: info.size ?? 0, width: info.width ?? null, height: info.height ?? null, alt: meta.alt ?? null, folder },
     update: {},
   });
   return url;
@@ -66,9 +77,6 @@ const todo = (title: string, items: string[]) =>
   items.map((h) => `<h2>${h}</h2><p>[À compléter]</p>`).join("");
 
 async function main() {
-  const created = await ensureBuckets();
-  if (created.length) console.log(`Buckets de stockage créés : ${created.join(", ")}`);
-
   // ---------------------------------------------------------------- Réglages (valeurs neutres)
   if (!(await prisma.setting.findUnique({ where: { key: "site" } }))) {
     await prisma.setting.create({ data: { key: "site", value: JSON.stringify({ brandName: "Luxury Scent" }) } });

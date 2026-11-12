@@ -1,4 +1,4 @@
-// Schéma de données Luxury Scent — PostgreSQL (Supabase en production).
+// Schéma de données Luxury Scent — PostgreSQL (Netlify Database en production).
 // Montants en centimes (Int) pour éviter les erreurs d'arrondi.
 // Les listes de valeurs (statuts, rôles) sont des chaînes documentées dans src/lib/constants.ts.
 // Sécurité : RLS est activé sur toutes les tables (migration rls_and_storage) ; l'application
@@ -11,9 +11,9 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  // Connexion « transaction pooler » (port 6543, ?pgbouncer=true) pour les fonctions serverless.
+  // Sur Netlify : dérivée de NETLIFY_DB_URL (scripts/db-url.mjs au build, src/lib/db.ts à l'exécution).
   url       = env("DATABASE_URL")
-  // Connexion directe ou « session pooler » (port 5432) pour les migrations.
+  // Connexion directe (sans pooler) pour les migrations.
   directUrl = env("DIRECT_URL")
 }
 

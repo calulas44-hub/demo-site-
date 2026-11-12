@@ -297,7 +297,8 @@ async function adminFlows(page: Page, anon: BrowserContext) {
   try {
     const dir = mkdtempSync(path.join(tmpdir(), "ls-"));
     const mp4 = path.join(dir, "clip.mp4");
-    execFileSync("ffmpeg", ["-loglevel", "error", "-f", "lavfi", "-i", "color=c=0xc9a96e:s=320x400:d=1", "-pix_fmt", "yuv420p", "-movflags", "+faststart", mp4]);
+    // Vidéo de ~6 Mo : envoyée en plusieurs morceaux (limite Netlify de 6 Mo par requête).
+    execFileSync("ffmpeg", ["-loglevel", "error", "-f", "lavfi", "-i", "testsrc2=s=1280x720:d=3", "-b:v", "16M", "-maxrate", "16M", "-bufsize", "16M", "-pix_fmt", "yuv420p", "-movflags", "+faststart", mp4]);
     files.push({ name: "clip.mp4", mimeType: "video/mp4", buffer: readFileSync(mp4) });
     withVideo = true;
   } catch {
@@ -307,7 +308,12 @@ async function adminFlows(page: Page, anon: BrowserContext) {
   await page.waitForSelector(".msg--ok", { timeout: 90000 });
   await page.waitForTimeout(1500);
   check("médias : photo envoyée (compressée en WebP)", (await page.locator(".thumb-card img[src$='.webp']").count()) === 1);
-  if (withVideo) check("médias : vidéo envoyée", (await page.locator(".thumb-card video").count()) === 1);
+  if (withVideo) {
+    check("médias : vidéo envoyée en plusieurs morceaux", (await page.locator(".thumb-card video").count()) === 1, `${Math.round(files[1].buffer.length / 1024 / 1024 * 10) / 10} Mo`);
+    const vurl = await page.locator(".thumb-card video").first().getAttribute("src");
+    const partial = vurl ? await page.request.get(base + vurl.split("#")[0], { headers: { Range: "bytes=0-99" } }) : null;
+    check("médias : lecture vidéo par plages (Safari/iOS)", partial?.status() === 206 && (await partial.body()).length === 100);
+  }
   const imgUrl = await page.locator(".thumb-card img").first().getAttribute("src");
   const media = imgUrl ? await page.request.get(imgUrl.startsWith("http") ? imgUrl : base + imgUrl) : null;
   check("médias : fichier servi par le stockage", media?.status() === 200 && (media.headers()["content-type"] ?? "").includes("webp"), imgUrl ?? "");
@@ -331,7 +337,7 @@ async function adminFlows(page: Page, anon: BrowserContext) {
   page.once("dialog", (d) => d.accept());
   await page.locator(".thumb-card").first().locator('button[value="delete"]').click();
   await page.waitForTimeout(2500);
-  const gone = imgUrl ? await page.request.get(imgUrl.startsWith("http") ? imgUrl : base + imgUrl) : null;
+  const gone = imgUrl ? await page.request.get(`${imgUrl.startsWith("http") ? imgUrl : base + imgUrl}?v=${Date.now()}`) : null;
   check("médias : suppression (fichier retiré du stockage)", (await page.locator(".thumb-card").count()) === (withVideo ? 1 : 0) && gone?.status() !== 200);
 
   // Couverture remplaçable depuis l'admin
@@ -356,7 +362,7 @@ async function adminFlows(page: Page, anon: BrowserContext) {
   check("comptabilité : journal équilibré", !(await page.locator(".adm-head p").innerText()).includes("Déséquilibre"));
 
   // Sécurité : routes serveur protégées
-  const put = await anonPage.request.put(`${base}/api/admin/local-upload?path=x/y.webp&type=image/webp&expires=0&sig=x`, { data: "x", headers: { "content-type": "image/webp" } });
+  const put = await anonPage.request.put(`${base}/api/admin/upload?bucket=media&path=x/y.webp&type=image/webp&expires=0&sig=x&part=0`, { data: "x", headers: { "content-type": "application/octet-stream" } });
   check("sécurité : envoi de fichier refusé sans session admin", [401, 403, 404].includes(put.status()), String(put.status()));
   const priv = await anonPage.request.get(`${base}/api/admin/private-file?path=justificatifs/x.pdf`);
   check("sécurité : justificatifs privés refusés sans session", priv.status() === 401);
