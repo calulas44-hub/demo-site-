@@ -113,7 +113,9 @@ async function Section({ section: s, index, settings }: { section: SectionRow; i
       );
     case "FEATURED_PRODUCTS": {
       const ids = Array.isArray(data.productIds) ? (data.productIds as string[]) : [];
-      const products = ids.length ? await getProductsByIds(ids) : await getFeaturedProducts(8);
+      // Produits choisis dans la section, puis tous les produits cochés « Mettre en avant sur l'accueil ».
+      const [chosen, featured] = await Promise.all([getProductsByIds(ids), getFeaturedProducts(12)]);
+      const products = [...chosen, ...featured.filter((f) => !chosen.some((c) => c.id === f.id))].slice(0, 12);
       if (products.length === 0) return null;
       return (
         <section className="section container">

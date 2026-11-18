@@ -120,7 +120,7 @@ export function HomeSectionForm({ section, products }: { section?: SectionData; 
       )}
       {type === "FEATURED_PRODUCTS" && (
         <div className="f">
-          <label>Produits à afficher (vide = produits « mis en avant »)</label>
+          <label>Produits à afficher en premier (les produits cochés « Mettre en avant sur l&apos;accueil » sont ajoutés automatiquement, 12 au total)</label>
           <div style={{ maxHeight: "14rem", overflow: "auto", border: "1px solid var(--a-line)", borderRadius: 4, padding: ".5rem .7rem" }}>
             {products.map((p) => (
               <label key={p.id} className="f-check" style={{ marginBottom: ".3rem" }}>
